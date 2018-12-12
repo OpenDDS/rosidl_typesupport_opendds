@@ -46,6 +46,7 @@ if(DEFINED ENV{DDS_ROOT})
   endif()
 
   # Set OpenDDS library directory.
+  set(OpenDDS_INCLUDE_DIRS "${DDS_ROOT}")
   set(OpenDDS_HEADER_DIRS "${DDS_ROOT}/dds")
   set(OpenDDS_LIBRARY_DIRS "${DDS_ROOT}/lib")
 
