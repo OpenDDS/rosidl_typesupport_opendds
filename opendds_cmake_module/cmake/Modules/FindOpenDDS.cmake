@@ -4,6 +4,9 @@ endif()
 
 set(DDS_FOUND FALSE)
 
+if(NOT DEFINED ENV{DDS_ROOT})
+  message(FATAL_ERROR "DDS_ROOT must be set. Have you sourced $DDS_ROOT/setenv.sh?")
+endif()
 if(NOT DEFINED ENV{ACE_ROOT})
   message(FATAL_ERROR "ACE_ROOT must be set. Have you sourced $DDS_ROOT/setenv.sh?")
 endif()
@@ -12,28 +15,34 @@ if(NOT DEFINED ENV{TAO_ROOT})
 endif()
 
 if(DEFINED ENV{DDS_ROOT})
-  # Configure OpenDDS root variable.
+  # Configure OpenDDS/ACE/TAO root variable.
   normalize_path(DDS_ROOT $ENV{DDS_ROOT})
+  normalize_path(ACE_ROOT $ENV{ACE_ROOT})
+  normalize_path(TAO_ROOT $ENV{TAO_ROOT})
   if(DDS_ROOT STREQUAL CMAKE_INSTALL_PREFIX)
     set(DDS_ROOT "$AMENT_CURRENT_PREFIX")
   endif()
   file(TO_NATIVE_PATH "${DDS_ROOT}" DDS_ROOT)
+  file(TO_NATIVE_PATH "${ACE_ROOT}" ACE_ROOT)
+  file(TO_NATIVE_PATH "${TAO_ROOT}" TAO_ROOT)
   message(STATUS "DDS_ROOT is: ${DDS_ROOT}")
   message(STATUS "ACE_ROOT is: ${ACE_ROOT}")
   message(STATUS "TAO_ROOT is: ${TAO_ROOT}")
 
   # Ensure existence of tao_idl compiler.
-  if(NOT EXISTS "$ENV{ACE_ROOT}/bin/tao_idl")
+  find_program(TAO_IDL tao_idl $ENV{ACE_ROOT}/bin NO_DEFAULT_PATH)
+  if(NOT TAO_IDL)
     message(FATAL_ERROR "tao_idl compiler not found. Is $ACE_ROOT configured correctly?")
   else()
-    set(OpenDDS_TaoIdlProcessor "$ENV{ACE_ROOT}/bin/tao_idl")
+    set(OpenDDS_TaoIdlProcessor TAO_IDL)
   endif()
 
   # Ensure existence of opendds_idl compiler.
-  if(NOT EXISTS "$ENV{DDS_ROOT}/bin/opendds_idl")
+  find_program(OPENDDS_IDL opendds_idl $ENV{DDS_ROOT}/bin NO_DEFAULT_PATH)
+  if(NOT OPENDDS_IDL)
   message(FATAL_ERROR "opendds_idl compiler not found. Is $DDS_ROOT configured correctly?")
   else()
-    set(OpenDDS_OpenDdsIdlProcessor "$ENV{DDS_ROOT}/bin/opendds_idl")
+    set(OpenDDS_OpenDdsIdlProcessor OPENDDS_IDL)
   endif()
 
   # Set OpenDDS library directory.
@@ -41,6 +50,4 @@ if(DEFINED ENV{DDS_ROOT})
   set(OpenDDS_LIBRARY_DIRS "${DDS_ROOT}/lib")
 
   set(DDS_FOUND TRUE)
-else()
-  message(FATAL_ERROR "DDS_ROOT must be set. Have you sourced $DDS_ROOT/setenv.sh?")
 endif()
