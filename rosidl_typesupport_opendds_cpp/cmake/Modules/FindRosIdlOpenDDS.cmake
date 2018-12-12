@@ -23,14 +23,14 @@ foreach(rosidl_idl_file ${rosidl_generate_interfaces_IDL_FILES})
         get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
         get_filename_component(_parent_folder "${_parent_folder}" NAME)
         list(APPEND rosidl_idl_files
-             "${rosidl_idl_files_base_path}/${_parent_folder}/opendds_intermediate_omg_idls/${_name}_.idl")
+             "${rosidl_idl_files_base_path}/${_parent_folder}/opendds_intermediate_omg_idls/${_name}.idl")
 
     # ROS .SRVs create 2 IDLs.
     elseif(_extension STREQUAL ".srv")
         list(APPEND _dds_idl_files
-          "${rosidl_idl_files_base_path}/srv/opendds_intermediate_omg_idls/Sample_${_name}_Request_.idl")
+          "${rosidl_idl_files_base_path}/srv/opendds_intermediate_omg_idls/Sample_${_name}_Request.idl")
         list(APPEND _dds_idl_files
-          "${rosidl_idl_files_base_path}/srv/opendds_intermediate_omg_idls/Sample_${_name}_Response_.idl")
+          "${rosidl_idl_files_base_path}/srv/opendds_intermediate_omg_idls/Sample_${_name}_Response.idl")
     endif()
 endforeach()
 
