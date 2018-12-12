@@ -34,7 +34,7 @@ if(DEFINED ENV{DDS_ROOT})
   if(NOT TAO_IDL)
     message(FATAL_ERROR "tao_idl compiler not found. Is $ACE_ROOT configured correctly?")
   else()
-    set(OpenDDS_TaoIdlProcessor TAO_IDL)
+    set(OpenDDS_TaoIdlProcessor ${TAO_IDL})
   endif()
 
   # Ensure existence of opendds_idl compiler.
@@ -42,7 +42,7 @@ if(DEFINED ENV{DDS_ROOT})
   if(NOT OPENDDS_IDL)
   message(FATAL_ERROR "opendds_idl compiler not found. Is $DDS_ROOT configured correctly?")
   else()
-    set(OpenDDS_OpenDdsIdlProcessor OPENDDS_IDL)
+    set(OpenDDS_OpenDdsIdlProcessor ${OPENDDS_IDL})
   endif()
 
   # Set OpenDDS library directory.
