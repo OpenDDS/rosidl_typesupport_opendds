@@ -5,11 +5,9 @@ endif()
 set(DDS_FOUND FALSE)
 
 if(NOT DEFINED ENV{ACE_ROOT})
-  ACE_ROOT MUST be set!
   message(FATAL_ERROR "ACE_ROOT must be set. Have you sourced $DDS_ROOT/setenv.sh?")
 endif()
 if(NOT DEFINED ENV{TAO_ROOT})
-  TAO_ROOT MUST be set!
   message(FATAL_ERROR "TAO_ROOT must be set. Have you sourced $DDS_ROOT/setenv.sh?")
 endif()
 
@@ -44,6 +42,5 @@ if(DEFINED ENV{DDS_ROOT})
 
   set(DDS_FOUND TRUE)
 else()
-  DDS_ROOT MUST be set!
   message(FATAL_ERROR "DDS_ROOT must be set. Have you sourced $DDS_ROOT/setenv.sh?")
 endif()
