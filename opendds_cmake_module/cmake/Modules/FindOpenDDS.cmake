@@ -1,8 +1,8 @@
-if(DEFINED DDS_FOUND)
+if(DEFINED OpenDDS_FOUND)
   return()
 endif()
 
-set(DDS_FOUND FALSE)
+set(OpenDDS_FOUND FALSE)
 
 if(NOT DEFINED ENV{DDS_ROOT})
   message(FATAL_ERROR "DDS_ROOT must be set. Have you sourced $DDS_ROOT/setenv.sh?")
@@ -49,5 +49,5 @@ if(DEFINED ENV{DDS_ROOT})
   set(OpenDDS_HEADER_DIRS "${DDS_ROOT}/dds")
   set(OpenDDS_LIBRARY_DIRS "${DDS_ROOT}/lib")
 
-  set(DDS_FOUND TRUE)
+  set(OpenDDS_FOUND TRUE)
 endif()
