@@ -13,23 +13,17 @@ find_package(ament_cmake_python REQUIRED)
 find_package(opendds_cmake_module REQUIRED)
 find_package(OpenDDS MODULE)
 
-# Declare RMW and ROS-IDL typesupport dependencies.
-ament_export_dependencies(
-    rmw
-    rosidl_cmake
-    rosidl_generator_cpp
-    rosidl_generator_dds_idl
-    rosidl_typesupport_interface
-)
+ament_export_dependencies(rmw)
+ament_export_dependencies(rosidl_cmake)
+ament_export_dependencies(rosidl_generator_cpp)
+ament_export_dependencies(rosidl_generator_dds_idl)
+ament_export_dependencies(rosidl_typesupport_opendds_cpp)
+ament_export_dependencies(rosidl_typesupport_interface)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 endif()
-
-# Install CMake utilities.
-install(DIRECTORY cmake DESTINATION share/${PROJECT_NAME})
-install(PROGRAMS ${PROJECT_NAME}/${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
 
 # Make this package available to other ROS-2 packages.
 ament_python_install_package(${PROJECT_NAME})
@@ -61,10 +55,12 @@ install(
   DIRECTORY cmake
   DESTINATION share/${PROJECT_NAME}
 )
+
 install(
   DIRECTORY include/
   DESTINATION include
 )
+
 install(
   TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION lib
