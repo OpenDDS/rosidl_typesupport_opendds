@@ -28,15 +28,19 @@ ament_export_libraries(${PROJECT_NAME})
 
 ament_index_register_resource("rosidl_typesupport_c")
 
-install(
-  PROGRAMS bin/rosidl_typesupport_opendds_c
-  DESTINATION lib/rosidl_typesupport_opendds_c
-)
-
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+ament_package(
+  CONFIG_EXTRAS "rosidl_typesupport_opendds_c-extras.cmake.in"
+)
+
+install(
+  PROGRAMS bin/rosidl_typesupport_opendds_c
+  DESTINATION lib/rosidl_typesupport_opendds_c
+)
 
 install(
   DIRECTORY cmake
@@ -52,6 +56,3 @@ install(
   DIRECTORY cmake resource
   DESTINATION share/${PROJECT_NAME}
 )
-
-# Make this package available to other ROS-2 packages.
-ament_package(CONFIG_EXTRAS "${PROJECT_NAME}-extras.cmake")
