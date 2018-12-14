@@ -48,11 +48,6 @@ ament_package(
 )
 
 install(
-  PROGRAMS bin/rosidl_typesupport_opendds_c
-  DESTINATION lib/rosidl_typesupport_opendds_c
-)
-
-install(
   DIRECTORY cmake
   DESTINATION share/${PROJECT_NAME}
 )
@@ -60,11 +55,6 @@ install(
 install(
   DIRECTORY include/
   DESTINATION include
-)
-
-install(
-  DIRECTORY cmake resource
-  DESTINATION share/${PROJECT_NAME}
 )
 
 install(
