@@ -2,8 +2,19 @@ cmake_minimum_required(VERSION 3.5)
 
 project(rosidl_typesupport_opendds_c)
 
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
 # Load required CMake packages.
 find_package(ament_cmake REQUIRED)
+
 find_package(ament_cmake_python REQUIRED)
 find_package(opendds_cmake_module REQUIRED)
 find_package(OpenDDS MODULE)
@@ -54,4 +65,11 @@ install(
 install(
   DIRECTORY cmake resource
   DESTINATION share/${PROJECT_NAME}
+)
+
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
