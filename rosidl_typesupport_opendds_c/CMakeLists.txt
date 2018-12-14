@@ -16,8 +16,6 @@ ament_export_dependencies(rosidl_typesupport_opendds_cpp)
 
 ament_export_include_directories(include)
 
-ament_python_install_package(${PROJECT_NAME})
-
 add_library(${PROJECT_NAME} SHARED src/identifier.cpp)
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}
@@ -35,7 +33,7 @@ if(BUILD_TESTING)
 endif()
 
 ament_package(
-  CONFIG_EXTRAS "rosidl_typesupport_opendds_c-extras.cmake.in"
+  CONFIG_EXTRAS "rosidl_typesupport_opendds_c-extras.cmake"
 )
 
 install(
