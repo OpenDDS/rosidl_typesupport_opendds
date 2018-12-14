@@ -6,9 +6,6 @@ project(rosidl_typesupport_opendds_cpp)
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
-endif()
 
 # Load required CMake packages.
 find_package(ament_cmake REQUIRED)
@@ -25,8 +22,6 @@ ament_export_dependencies(
     rosidl_typesupport_interface
 )
 
-ament_index_register_resource("rosidl_typesupport_cpp")
-
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
@@ -38,4 +33,41 @@ install(PROGRAMS ${PROJECT_NAME}/${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME}
 
 # Make this package available to other ROS-2 packages.
 ament_python_install_package(${PROJECT_NAME})
-ament_package(CONFIG_EXTRAS "${PROJECT_NAME}-extras.cmake")
+
+ament_export_include_directories(include)
+add_library(${PROJECT_NAME} SHARED src/identifier.cpp)
+if(WIN32)
+  target_compile_definitions(${PROJECT_NAME}
+    PRIVATE "ROSIDL_TYPESUPPORT_OPENDDS_CPP_BUILDING_DLL")
+endif()
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+  include
+)
+ament_export_libraries(${PROJECT_NAME})
+
+ament_index_register_resource("rosidl_typesupport_cpp")
+
+ament_package(
+  CONFIG_EXTRAS "rosidl_typesupport_opendds_cpp-extras.cmake"
+)
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+install(
+  DIRECTORY cmake
+  DESTINATION share/${PROJECT_NAME}
+)
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+install(
+  TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
