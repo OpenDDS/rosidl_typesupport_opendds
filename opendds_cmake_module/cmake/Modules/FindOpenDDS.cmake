@@ -50,5 +50,42 @@ if(DEFINED ENV{DDS_ROOT})
   set(OpenDDS_HEADER_DIRS "${DDS_ROOT}/dds")
   set(OpenDDS_LIBRARY_DIRS "${DDS_ROOT}/lib")
 
+  set(_ace_libs
+    ACE_XML_Utils
+    ACE)
+
+  set(_tao_libs
+    TAO_IORManip
+    TAO_ImR_Client
+    TAO_Svc_Utils
+    TAO_IORTable
+    TAO_IDL_FE
+    TAO_PortableServer
+    TAO_BiDirGIOP
+    TAO_PI
+    TAO_CodecFactory
+    TAO_AnyTypeCode
+    TAO)
+
+  set(_opendds_libs
+    OpenDDS_Dcps
+    OpenDDS_Federator
+    OpenDDS_InfoRepoDiscovery
+    OpenDDS_InfoRepoLib
+    OpenDDS_InfoRepoServ
+    OpenDDS_Model
+    OpenDDS_monitor
+    OpenDDS_Multicast
+    OpenDDS_QOS_XML_XSC_Handler
+    OpenDDS_Rtps
+    OpenDDS_Rtps_Udp
+    OpenDDS_Shmem
+    OpenDDS_Tcp
+    OpenDDS_Udp)
+
+  list(APPEND _all_libs ${_opendds_libs} ${_ace_libs} ${_tao_libs})
+
+  set(OpenDDS_LIBRARIES ${_all_libs})
+
   set(OpenDDS_FOUND TRUE)
 endif()
