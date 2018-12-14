@@ -22,12 +22,6 @@ if(DEFINED ENV{DDS_ROOT})
   if(DDS_ROOT STREQUAL CMAKE_INSTALL_PREFIX)
     set(DDS_ROOT "$AMENT_CURRENT_PREFIX")
   endif()
-  file(TO_NATIVE_PATH "${DDS_ROOT}" DDS_ROOT)
-  file(TO_NATIVE_PATH "${ACE_ROOT}" ACE_ROOT)
-  file(TO_NATIVE_PATH "${TAO_ROOT}" TAO_ROOT)
-  message(STATUS "DDS_ROOT is: ${DDS_ROOT}")
-  message(STATUS "ACE_ROOT is: ${ACE_ROOT}")
-  message(STATUS "TAO_ROOT is: ${TAO_ROOT}")
 
   # Ensure existence of tao_idl compiler.
   find_program(TAO_IDL tao_idl $ENV{ACE_ROOT}/bin NO_DEFAULT_PATH)
@@ -46,7 +40,7 @@ if(DEFINED ENV{DDS_ROOT})
   endif()
 
   # Set OpenDDS library directory.
-  set(OpenDDS_INCLUDE_DIRS "${DDS_ROOT}")
+  set(OpenDDS_INCLUDE_DIRS ${DDS_ROOT} ${ACE_ROOT} ${TAO_ROOT})
   set(OpenDDS_HEADER_DIRS "${DDS_ROOT}/dds")
   set(OpenDDS_LIBRARY_DIRS "${DDS_ROOT}/lib")
 
