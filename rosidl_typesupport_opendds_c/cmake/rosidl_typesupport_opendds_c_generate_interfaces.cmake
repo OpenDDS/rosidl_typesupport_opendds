@@ -68,8 +68,23 @@ add_dependencies(
   ${rosidl_generate_interfaces_TARGET}__cpp
 )
 
+# generate header to switch between export and import for a specific package
+set(_visibility_control_file
+"${_output_path}/msg/rosidl_typesupport_opendds_c__visibility_control.h")
+string(TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
+configure_file(
+  "${rosidl_typesupport_opendds_c_TEMPLATE_DIR}/rosidl_typesupport_opendds_c__visibility_control.h.in"
+  "${_visibility_control_file}"
+  @ONLY
+)
+
+
 # Install OMG IDL target if enabled.
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
+  if(NOT _generated_files STREQUAL "")
+    ament_export_include_directories(include)
+  endif()
+
   install(
     TARGETS ${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ARCHIVE DESTINATION lib
@@ -77,8 +92,6 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
     RUNTIME DESTINATION bin
   )
 
-  rosidl_export_typesupport_libraries(
-    ${_target_suffix}
-    ${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  )
+  rosidl_export_typesupport_libraries(${_target_suffix}
+    ${rosidl_generate_interfaces_TARGET}${_target_suffix})
 endif()
