@@ -42,10 +42,10 @@ if(DEFINED ENV{DDS_ROOT})
   # Set OpenDDS library directory.
   set(OpenDDS_INCLUDE_DIRS ${DDS_ROOT} ${ACE_ROOT} ${TAO_ROOT})
   set(OpenDDS_HEADER_DIRS "${DDS_ROOT}/dds")
-  set(OpenDDS_LIBRARY_DIRS "${DDS_ROOT}/lib")
+  set(OpenDDS_LIBRARY_DIRS ${DDS_ROOT}/lib ${ACE_ROOT}/lib ${TAO_ROOT}/lib)
 
   set(_ace_libs
-    ACE_XML_Utils
+    #ACE_XML_Utils
     ACE)
 
   set(_tao_libs
@@ -70,7 +70,7 @@ if(DEFINED ENV{DDS_ROOT})
     OpenDDS_Model
     OpenDDS_monitor
     OpenDDS_Multicast
-    OpenDDS_QOS_XML_XSC_Handler
+    #OpenDDS_QOS_XML_XSC_Handler
     OpenDDS_Rtps
     OpenDDS_Rtps_Udp
     OpenDDS_Shmem
