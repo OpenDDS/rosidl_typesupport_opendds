@@ -48,7 +48,7 @@ if(BUILD_TESTING)
 endif()
 
 ament_package(
-  CONFIG_EXTRAS "rosidl_typesupport_opendds_c-extras.cmake"
+  CONFIG_EXTRAS "rosidl_typesupport_opendds_c-extras.cmake.in"
 )
 
 install(

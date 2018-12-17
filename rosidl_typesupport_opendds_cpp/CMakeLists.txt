@@ -43,7 +43,7 @@ ament_export_libraries(${PROJECT_NAME})
 ament_index_register_resource("rosidl_typesupport_cpp")
 
 ament_package(
-  CONFIG_EXTRAS "rosidl_typesupport_opendds_cpp-extras.cmake"
+  CONFIG_EXTRAS "rosidl_typesupport_opendds_cpp-extras.cmake.in"
 )
 
 if(BUILD_TESTING)
