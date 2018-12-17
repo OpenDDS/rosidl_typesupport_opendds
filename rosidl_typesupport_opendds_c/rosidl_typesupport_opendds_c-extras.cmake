@@ -9,9 +9,4 @@ else()
       "rosidl_generate_interfaces"
       "rosidl_typesupport_opendds_c"
       "rosidl_typesupport_opendds_c_generate_interfaces.cmake")
-
-  set(rosidl_typesupport_opendds_c_BIN
-    "${rosidl_typesupport_opendds_c_DIR}/../../../lib/rosidl_typesupport_opendds_c/rosidl_typesupport_opendds_c")
-  normalize_path(rosidl_typesupport_opendds_c_BIN
-    "${rosidl_typesupport_opendds_c_BIN}")
 endif()

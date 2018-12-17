@@ -78,7 +78,6 @@ configure_file(
   @ONLY
 )
 
-
 # Install OMG IDL target if enabled.
 if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT _generated_files STREQUAL "")
