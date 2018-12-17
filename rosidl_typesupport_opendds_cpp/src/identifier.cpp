@@ -17,7 +17,7 @@
 namespace rosidl_typesupport_opendds_cpp
 {
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_EXPORT
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_EXPORT
 const char * typesupport_identifier = "rosidl_typesupport_opendds_cpp";
 
 }  // namespace rosidl_typesupport_opendds_cpp
