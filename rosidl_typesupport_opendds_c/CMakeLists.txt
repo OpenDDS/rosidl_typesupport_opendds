@@ -32,7 +32,7 @@ if(NOT OpenDDS_FOUND OR OPENDDS_STATIC_DISABLE)
 endif()
 
 find_package(ament_cmake_python REQUIRED)
-#find_package(rosidl_typesupport_opendds_cpp REQUIRED)
+find_package(rosidl_typesupport_opendds_cpp REQUIRED)
 
 ament_export_dependencies(rmw)
 ament_export_dependencies(rosidl_cmake)
