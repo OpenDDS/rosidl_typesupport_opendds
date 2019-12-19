@@ -1,0 +1,28 @@
+schedules:
+- cron: "0 7 * * SUN"
+  displayName: Weekly Sunday
+  branches:
+    include:
+    - master
+  always: true
+
+jobs:
+- job: Linux
+  timeoutInMinutes: 90
+  pool:
+    vmImage: 'ubuntu-18.04'
+  container: adamsjoci/opendds_ros2_docker:latest
+  steps:
+  - script: |
+      printenv
+        echo hello
+        pwd
+        ls
+    displayName: filesystem check
+  - script: |
+        source /opt/OpenDDS/setenv.sh
+        source /opt/ros/eloquent/setup.bash
+        printenv|grep DDS
+        printenv|grep ROS
+        colcon build --symlink-install
+    displayName:  environment setup and build
