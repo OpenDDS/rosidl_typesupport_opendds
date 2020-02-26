@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(opendds_cmake_module CXX)
+project(opendds_cmake_module)
 
 find_package(ament_cmake REQUIRED)
 
@@ -17,5 +17,4 @@ endif()
 ament_package()
 
 # Install CMake utilities.
-#install(DIRECTORY cmake DESTINATION share/${PROJECT_NAME})
 install(PROGRAMS ${PROJECT_NAME}/${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})

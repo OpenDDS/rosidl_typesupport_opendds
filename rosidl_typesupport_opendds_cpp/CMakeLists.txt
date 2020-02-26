@@ -14,11 +14,7 @@ find_package(OpenDDS QUIET)
 
 if(NOT OpenDDS_FOUND)
   ament_package()
-  if(NOT OpenDDS_FOUND)
-    message(WARNING "Could not find OpenDDS - skipping '${PROJECT_NAME}'")
-  else()
-    message(STATUS "OpenDDS static rmw implementation explicitly disabled - skipping '${PROJECT_NAME}'")
-  endif()
+  message(WARNING "Could not find OpenDDS - skipping '${PROJECT_NAME}'")
   return()
 endif()
 
@@ -64,11 +60,6 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 endif()
-
-#install(
-#  DIRECTORY cmake
-#  DESTINATION share/${PROJECT_NAME}
-#)
 
 install(
   DIRECTORY include/
