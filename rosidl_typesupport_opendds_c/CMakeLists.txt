@@ -59,10 +59,10 @@ ament_package(
   CONFIG_EXTRAS "rosidl_typesupport_opendds_c-extras.cmake.in"
 )
 
-install(
-  DIRECTORY cmake
-  DESTINATION share/${PROJECT_NAME}
-)
+#install(
+#  DIRECTORY cmake
+#  DESTINATION share/${PROJECT_NAME}
+#)
 
 install(
   DIRECTORY include/

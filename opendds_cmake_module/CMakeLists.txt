@@ -17,5 +17,5 @@ endif()
 ament_package()
 
 # Install CMake utilities.
-install(DIRECTORY cmake DESTINATION share/${PROJECT_NAME})
+#install(DIRECTORY cmake DESTINATION share/${PROJECT_NAME})
 install(PROGRAMS ${PROJECT_NAME}/${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
