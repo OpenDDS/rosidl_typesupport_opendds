@@ -15,6 +15,3 @@ endif()
 
 # Make this package available to other ROS-2 packages.
 ament_package()
-
-# Install CMake utilities.
-install(PROGRAMS ${PROJECT_NAME}/${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
