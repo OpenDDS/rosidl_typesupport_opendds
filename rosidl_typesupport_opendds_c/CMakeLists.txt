@@ -14,20 +14,12 @@ endif()
 
 # Load required CMake packages.
 find_package(ament_cmake REQUIRED)
-
 find_package(opendds_cmake_module REQUIRED)
+find_package(OpenDDS QUIET)
 
-find_package(OpenDDS QUIET MODULE)
-if(OpenDDS_FOUND)
-  find_package(OpenDDS MODULE)
-endif()
-if(NOT OpenDDS_FOUND OR OPENDDS_STATIC_DISABLE)
+if(NOT OpenDDS_FOUND)
   ament_package()
-  if(NOT OpenDDS_FOUND)
-    message(WARNING "Could not find OpenDDS - skipping '${PROJECT_NAME}'")
-  else()
-    message(STATUS "OpenDDS static rmw implementation explicitly disabled - skipping '${PROJECT_NAME}'")
-  endif()
+  message(WARNING "Could not find OpenDDS - skipping '${PROJECT_NAME}'")
   return()
 endif()
 
@@ -61,11 +53,6 @@ endif()
 
 ament_package(
   CONFIG_EXTRAS "rosidl_typesupport_opendds_c-extras.cmake.in"
-)
-
-install(
-  DIRECTORY cmake
-  DESTINATION share/${PROJECT_NAME}
 )
 
 install(
