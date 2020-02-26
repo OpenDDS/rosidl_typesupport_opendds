@@ -65,10 +65,10 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-install(
-  DIRECTORY cmake
-  DESTINATION share/${PROJECT_NAME}
-)
+#install(
+#  DIRECTORY cmake
+#  DESTINATION share/${PROJECT_NAME}
+#)
 
 install(
   DIRECTORY include/
