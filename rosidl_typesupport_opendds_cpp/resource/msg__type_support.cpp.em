@@ -289,7 +289,7 @@ to_cdr_stream__@(message.structure.namespaced_type.name)(
   if (@(__dds_msg_type_prefix)_Plugin_serialize_to_cdr_buffer(
       NULL,
       &expected_length,
-      dds_message) != RTI_TRUE)
+      dds_message) != true)
   {
     fprintf(stderr, "failed to call @(__dds_msg_type_prefix)_Plugin_serialize_to_cdr_buffer()\n");
     return false;
@@ -308,7 +308,7 @@ to_cdr_stream__@(message.structure.namespaced_type.name)(
   if (@(__dds_msg_type_prefix)_Plugin_serialize_to_cdr_buffer(
       reinterpret_cast<char *>(cdr_stream->buffer),
       &buffer_length_uint,
-      dds_message) != RTI_TRUE)
+      dds_message) != true)
   {
     return false;
   }
@@ -342,7 +342,7 @@ to_message__@(message.structure.namespaced_type.name)(
   if (@(__dds_msg_type_prefix)_Plugin_deserialize_from_cdr_buffer(
       dds_message,
       reinterpret_cast<char *>(cdr_stream->buffer),
-      static_cast<unsigned int>(cdr_stream->buffer_length)) != RTI_TRUE)
+      static_cast<unsigned int>(cdr_stream->buffer_length)) != true)
   {
     fprintf(stderr, "deserialize from cdr buffer failed\n");
     return false;
@@ -384,7 +384,7 @@ namespace rosidl_typesupport_opendds_cpp
 {
 
 template<>
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_EXPORT_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_EXPORT_@(package_name)
 const rosidl_message_type_support_t *
 get_message_type_support_handle<@(__ros_msg_type)>()
 {

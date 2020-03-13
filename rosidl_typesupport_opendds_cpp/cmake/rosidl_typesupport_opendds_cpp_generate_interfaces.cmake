@@ -41,7 +41,7 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   list(APPEND _dds_idl_files "${_dds_idl_base_path}/${PROJECT_NAME}/${_parent_folder}/dds_opendds/${_idl_name}_.idl")
 endforeach()
 
-# If not on Windows, disable some warnings with Connext's generated code
+# If not on Windows, disable some warnings with OpenDDS's generated code
 if(NOT WIN32)
   set(_opendds_compile_flags)
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -108,11 +108,11 @@ rosidl_write_generator_arguments(
   ADDITIONAL_FILES ${_dds_idl_files}
 )
 
-set(_idl_pp "${Connext_DDSGEN}")
-if(NOT "${Connext_DDSGEN_SERVER}" STREQUAL "")
+set(_idl_pp "${OpenDDS_DDSGEN}")
+if(NOT "${OpenDDS_DDSGEN_SERVER}" STREQUAL "")
   # use the code generator in server mode when available
   # because it speeds up the code generation step significantly
-  set(_idl_pp "${Connext_DDSGEN_SERVER}")
+  set(_idl_pp "${OpenDDS_DDSGEN_SERVER}")
 endif()
 add_custom_command(
   OUTPUT ${_generated_files} ${_generated_external_files}
@@ -121,7 +121,7 @@ add_custom_command(
   --dds-interface-base-path "${_dds_idl_base_path}"
   --idl-pp "${_idl_pp}"
   DEPENDS ${target_dependencies} ${_dds_idl_files}
-  COMMENT "Generating C++ type support for RTI Connext (using '${_idl_pp}')"
+  COMMENT "Generating C++ type support for OpenDDS (using '${_idl_pp}')"
   VERBATIM
 )
 
@@ -137,7 +137,7 @@ configure_file(
 
 set(_target_suffix "__rosidl_typesupport_opendds_cpp")
 
-link_directories(${Connext_LIBRARY_DIRS})
+link_directories(${OpenDDS_LIBRARY_DIRS})
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED
   ${_generated_files} ${_generated_external_files})
 if(rosidl_generate_interfaces_LIBRARY_NAME)
@@ -146,13 +146,13 @@ if(rosidl_generate_interfaces_LIBRARY_NAME)
 endif()
 set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PROPERTIES CXX_STANDARD 14)
-if(Connext_GLIBCXX_USE_CXX11_ABI_ZERO)
+if(OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PRIVATE Connext_GLIBCXX_USE_CXX11_ABI_ZERO)
+    PRIVATE OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO)
 endif()
 if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PRIVATE "ROSIDL_TYPESUPPORT_CONNEXT_CPP_BUILDING_DLL_${PROJECT_NAME}")
+    PRIVATE "ROSIDL_TYPESUPPORT_OPENDDS_CPP_BUILDING_DLL_${PROJECT_NAME}")
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PRIVATE "NDDS_USER_DLL_EXPORT_${PROJECT_NAME}")
 endif()
@@ -178,7 +178,7 @@ target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_opendds_cpp
 )
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-  "Connext"
+  "OpenDDS"
   "rmw"
   "rosidl_typesupport_opendds_cpp"
   "rosidl_typesupport_interface")

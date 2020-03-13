@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_TYPESUPPORT_CONNEXT_CPP__SERVICE_TYPE_SUPPORT_H_
-#define ROSIDL_TYPESUPPORT_CONNEXT_CPP__SERVICE_TYPE_SUPPORT_H_
+#ifndef ROSIDL_TYPESUPPORT_OPENDDS_CPP__SERVICE_TYPE_SUPPORT_H_
+#define ROSIDL_TYPESUPPORT_OPENDDS_CPP__SERVICE_TYPE_SUPPORT_H_
 
 #include <stdint.h>
 #include <rmw/types.h>
@@ -67,4 +67,4 @@ typedef struct service_type_support_callbacks_t
   (*get_reply_datawriter)(void * untyped_replier);
 } service_type_support_callbacks_t;
 
-#endif  // ROSIDL_TYPESUPPORT_CONNEXT_CPP__SERVICE_TYPE_SUPPORT_H_
+#endif  // ROSIDL_TYPESUPPORT_OPENDDS_CPP__SERVICE_TYPE_SUPPORT_H_

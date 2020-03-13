@@ -24,7 +24,7 @@ dds_specific_header_files = [
     'ndds/ndds_requestreply_cpp.h'
 ]
 }@
-#ifdef Connext_GLIBCXX_USE_CXX11_ABI_ZERO
+#ifdef OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO
 #define _GLIBCXX_USE_CXX11_ABI 0
 #endif
 
@@ -483,7 +483,7 @@ namespace rosidl_typesupport_opendds_cpp
 {
 
 template<>
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_EXPORT_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_EXPORT_@(package_name)
 const rosidl_service_type_support_t *
 get_service_type_support_handle<@(__ros_srv_type)>()
 {

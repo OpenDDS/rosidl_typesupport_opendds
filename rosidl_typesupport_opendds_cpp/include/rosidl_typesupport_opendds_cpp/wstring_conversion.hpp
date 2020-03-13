@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSIDL_TYPESUPPORT_CONNEXT_CPP__WSTRING_CONVERSION_HPP_
-#define ROSIDL_TYPESUPPORT_CONNEXT_CPP__WSTRING_CONVERSION_HPP_
+#ifndef ROSIDL_TYPESUPPORT_OPENDDS_CPP__WSTRING_CONVERSION_HPP_
+#define ROSIDL_TYPESUPPORT_OPENDDS_CPP__WSTRING_CONVERSION_HPP_
 
 #include <string>
 
-#include "ndds/ndds_version.h"
+// #include "ndds/ndds_version.h"
 
 #include "rosidl_typesupport_opendds_cpp/visibility_control.h"
 
 // forward declare DDS_Wchar
-#if RTI_DDS_VERSION_MAJOR < 6
+#if OPENDDS_DDS_VERSION_MAJOR < 6
 typedef unsigned int DDS_Wchar;
 #else
 typedef unsigned short DDS_Wchar;  // NOLINT
@@ -31,14 +31,14 @@ typedef unsigned short DDS_Wchar;  // NOLINT
 namespace rosidl_typesupport_opendds_cpp
 {
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC
 DDS_Wchar * create_wstring_from_u16string(
   const std::u16string & u16str);
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC
 bool wstring_to_u16string(
   const DDS_Wchar * wstr, std::u16string & u16str);
 
 }  // namespace rosidl_typesupport_opendds_cpp
 
-#endif  // ROSIDL_TYPESUPPORT_CONNEXT_CPP__WSTRING_CONVERSION_HPP_
+#endif  // ROSIDL_TYPESUPPORT_OPENDDS_CPP__WSTRING_CONVERSION_HPP_

@@ -15,7 +15,7 @@ from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 include_parts = [package_name] + list(interface_path.parents[0].parts) + \
     [convert_camel_case_to_lower_case_underscore(interface_path.stem)]
 header_guard_variable = '__'.join([x.upper() for x in include_parts]) + \
-    '__ROSIDL_TYPESUPPORT_CONNEXT_CPP_HPP_'
+    '__ROSIDL_TYPESUPPORT_OPENDDS_CPP_HPP_'
 include_directives = set()
 }@
 

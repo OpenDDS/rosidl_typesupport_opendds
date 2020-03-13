@@ -10,7 +10,7 @@ from rosidl_typesupport_opendds_cpp import generate_dds_opendds_cpp
 
 def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(
-        description='Generate the C++ interfaces for Connext.',
+        description='Generate the C++ interfaces for OpenDDS.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '--generator-arguments-file',

@@ -42,7 +42,7 @@ namespace @(ns)
 namespace typesupport_opendds_cpp
 {
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 void *
 create_requester__@(service.namespaced_type.name)(
   void * untyped_participant,
@@ -54,19 +54,19 @@ create_requester__@(service.namespaced_type.name)(
   void ** untyped_writer,
   void * (*allocator)(size_t));
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 const char *
 destroy_requester__@(service.namespaced_type.name)(
   void * untyped_requester,
   void (* deallocator)(void *));
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 int64_t
 send_request__@(service.namespaced_type.name)(
   void * untyped_requester,
   const void * untyped_ros_request);
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 void *
 create_replier__@(service.namespaced_type.name)(
   void * untyped_participant,
@@ -78,46 +78,46 @@ create_replier__@(service.namespaced_type.name)(
   void ** untyped_writer,
   void * (*allocator)(size_t));
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 const char *
 destroy_replier__@(service.namespaced_type.name)(
   void * untyped_replier,
   void (* deallocator)(void *));
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 bool
 take_request__@(service.namespaced_type.name)(
   void * untyped_replier,
   rmw_request_id_t * request_header,
   void * untyped_ros_request);
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 bool
 take_response__@(service.namespaced_type.name)(
   void * untyped_requester,
   rmw_request_id_t * request_header,
   void * untyped_ros_response);
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 bool
 send_response__@(service.namespaced_type.name)(
   void * untyped_replier,
   const rmw_request_id_t * request_header,
   const void * untyped_ros_response);
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 void *
 get_request_datawriter__@(service.namespaced_type.name)(void * untyped_requester);
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 void *
 get_reply_datareader__@(service.namespaced_type.name)(void * untyped_requester);
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 void *
 get_request_datareader__@(service.namespaced_type.name)(void * untyped_replier);
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 void *
 get_reply_datawriter__@(service.namespaced_type.name)(void * untyped_replier);
 
@@ -131,7 +131,7 @@ extern "C"
 {
 #endif
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 const rosidl_service_type_support_t *
   ROSIDL_TYPESUPPORT_INTERFACE__SERVICE_SYMBOL_NAME(
   rosidl_typesupport_opendds_cpp,

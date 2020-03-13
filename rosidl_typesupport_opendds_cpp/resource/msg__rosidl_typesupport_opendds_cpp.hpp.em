@@ -50,7 +50,7 @@ dds_specific_header_files = [
 #endif
 
 // forward declaration of internal CDR Stream
-struct ConnextStaticCDRStream;
+struct OpenDDSStaticCDRStream;
 
 // forward declaration of DDS types
 class DDSDomainParticipant;
@@ -75,13 +75,13 @@ DDS_TypeCode *
 get_type_code__@(message.structure.namespaced_type.name)();
 
 bool
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 convert_ros_message_to_dds(
   const @(__ros_msg_type) & ros_message,
   @(__dds_msg_type) & dds_message);
 
 bool
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 convert_dds_message_to_ros(
   const @(__dds_msg_type) & dds_message,
   @(__ros_msg_type) & ros_message);
@@ -89,11 +89,11 @@ convert_dds_message_to_ros(
 bool
 to_cdr_stream__@(message.structure.namespaced_type.name)(
   const void * untyped_ros_message,
-  ConnextStaticCDRStream * cdr_stream);
+  OpenDDSStaticCDRStream * cdr_stream);
 
 bool
 to_message__@(message.structure.namespaced_type.name)(
-  const ConnextStaticCDRStream * cdr_stream,
+  const OpenDDSStaticCDRStream * cdr_stream,
   void * untyped_ros_message);
 
 }  // namespace typesupport_opendds_cpp
@@ -108,7 +108,7 @@ extern "C"
 {
 #endif
 
-ROSIDL_TYPESUPPORT_CONNEXT_CPP_PUBLIC_@(package_name)
+ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 const rosidl_message_type_support_t *
   ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(
   rosidl_typesupport_opendds_cpp,
