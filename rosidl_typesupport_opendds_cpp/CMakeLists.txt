@@ -7,7 +7,10 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
-# Load required CMake packages.
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 find_package(ament_cmake REQUIRED)
 find_package(opendds_cmake_module REQUIRED)
 find_package(OpenDDS QUIET)
@@ -39,7 +42,9 @@ endif()
 ament_python_install_package(${PROJECT_NAME})
 
 ament_export_include_directories(include)
-add_library(${PROJECT_NAME} SHARED src/identifier.cpp)
+add_library(${PROJECT_NAME} SHARED
+  src/identifier.cpp
+  src/wstring_conversion.cpp)
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE "ROSIDL_TYPESUPPORT_OPENDDS_CPP_BUILDING_DLL")
@@ -48,19 +53,30 @@ target_include_directories(${PROJECT_NAME}
   PUBLIC
   include
 )
+ament_target_dependencies(
+  ${PROJECT_NAME}
+  "OpenDDS")
 ament_export_libraries(${PROJECT_NAME})
 
 ament_index_register_resource("rosidl_typesupport_cpp")
-
-ament_package(
-  CONFIG_EXTRAS "rosidl_typesupport_opendds_cpp-extras.cmake.in"
-)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+ament_package(
+  CONFIG_EXTRAS "rosidl_typesupport_opendds_cpp-extras.cmake.in"
+)
+
+install(
+  PROGRAMS bin/rosidl_typesupport_opendds_cpp
+  DESTINATION lib/rosidl_typesupport_opendds_cpp
+)
+install(
+  DIRECTORY cmake resource
+  DESTINATION share/${PROJECT_NAME}
+)
 install(
   DIRECTORY include/
   DESTINATION include

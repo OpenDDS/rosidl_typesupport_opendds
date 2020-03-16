@@ -1,0 +1,10 @@
+#include <dds/DdsDcpsCore.idl>
+
+const long KEY_HASH_LENGTH_16 = 16;
+typedef octet OctetArray16[KEY_HASH_LENGTH_16]; 
+
+@topic struct RawData {
+	@key OctetArray16       key_hash;
+	DDS::OctetSeq  key_data;
+	DDS::OctetSeq  raw_data;
+};
