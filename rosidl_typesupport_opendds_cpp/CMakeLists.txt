@@ -10,7 +10,6 @@ else()
     CACHE BOOL "If OpenDDS Static should be disabled.")
 endif()
 
-
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
@@ -24,9 +23,13 @@ find_package(ament_cmake REQUIRED)
 find_package(opendds_cmake_module REQUIRED)
 find_package(OpenDDS QUIET MODULE)
 
-if(NOT OpenDDS_FOUND)
+if(NOT OpenDDS_FOUND OR OPENDDS_STATIC_DISABLE)
   ament_package()
-  message(WARNING "Could not find OpenDDS - skipping '${PROJECT_NAME}'")
+  if(NOT OpenDDS_FOUND)
+    message(WARNING "Could not find OpenDDS - skipping '${PROJECT_NAME}'")
+  else()
+    message(STATUS "OpenDDS static rmw implementation explicitly disabled - skipping '${PROJECT_NAME}'")
+  endif()
   return()
 endif()
 
