@@ -19,7 +19,9 @@ rosidl_generate_dds_interfaces(
   OUTPUT_SUBFOLDERS "dds_opendds"
 )
 
+# Output folder for the code generated from .em templates 
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_opendds_cpp/${PROJECT_NAME}")
+# Ouput folder for the .idl generated from rosidl_generator_dds_idl
 set(_dds_idl_base_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_dds_idl")
 
 set(_dds_idl_files "")
@@ -30,12 +32,9 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   get_filename_component(_parent_folder "${_parent_folder}" NAME)
   get_filename_component(_idl_name "${_abs_idl_file}" NAME_WE)
   string_camel_case_to_lower_case_underscore("${_idl_name}" _header_name)
-  list(APPEND _generated_external_files "${_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_.h")
-  list(APPEND _generated_external_files "${_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_.cxx")
-  list(APPEND _generated_external_files "${_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_Plugin.h")
-  list(APPEND _generated_external_files "${_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_Plugin.cxx")
-  list(APPEND _generated_external_files "${_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_Support.h")
-  list(APPEND _generated_external_files "${_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_Support.cxx")
+  list(APPEND _generated_external_files "${_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_C.h")
+  list(APPEND _generated_external_files "${_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_TypeSupportImpl.h")
+  list(APPEND _generated_external_files "${_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_TypeSupportImpl.cpp")
   list(APPEND _generated_files "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_opendds_cpp.hpp")
   list(APPEND _generated_files "${_output_path}/${_parent_folder}/dds_opendds/${_header_name}__type_support.cpp")
   list(APPEND _dds_idl_files "${_dds_idl_base_path}/${PROJECT_NAME}/${_parent_folder}/dds_opendds/${_idl_name}_.idl")
@@ -109,11 +108,11 @@ rosidl_write_generator_arguments(
 )
 
 set(_idl_pp "${OpenDDS_DDSGEN}")
-if(NOT "${OpenDDS_DDSGEN_SERVER}" STREQUAL "")
+#if(NOT "${OpenDDS_DDSGEN_SERVER}" STREQUAL "")
   # use the code generator in server mode when available
   # because it speeds up the code generation step significantly
-  set(_idl_pp "${OpenDDS_DDSGEN_SERVER}")
-endif()
+#  set(_idl_pp "${OpenDDS_DDSGEN_SERVER}")
+#endif()
 add_custom_command(
   OUTPUT ${_generated_files} ${_generated_external_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_typesupport_opendds_cpp_BIN}
@@ -146,15 +145,15 @@ if(rosidl_generate_interfaces_LIBRARY_NAME)
 endif()
 set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PROPERTIES CXX_STANDARD 14)
-if(OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO)
-  target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PRIVATE OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO)
-endif()
+#if(OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO)
+  #target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    #PRIVATE OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO)
+#endif()
 if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PRIVATE "ROSIDL_TYPESUPPORT_OPENDDS_CPP_BUILDING_DLL_${PROJECT_NAME}")
-  target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PRIVATE "NDDS_USER_DLL_EXPORT_${PROJECT_NAME}")
+  #target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
+    #PRIVATE "NDDS_USER_DLL_EXPORT_${PROJECT_NAME}")
 endif()
 if(NOT WIN32)
   set(_target_compile_flags "-Wall -Wextra -Wpedantic")
