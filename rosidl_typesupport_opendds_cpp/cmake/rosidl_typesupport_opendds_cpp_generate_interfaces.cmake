@@ -108,11 +108,6 @@ rosidl_write_generator_arguments(
 )
 
 set(_idl_pp "${OpenDDS_DDSGEN}")
-#if(NOT "${OpenDDS_DDSGEN_SERVER}" STREQUAL "")
-  # use the code generator in server mode when available
-  # because it speeds up the code generation step significantly
-#  set(_idl_pp "${OpenDDS_DDSGEN_SERVER}")
-#endif()
 add_custom_command(
   OUTPUT ${_generated_files} ${_generated_external_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_typesupport_opendds_cpp_BIN}
@@ -145,15 +140,9 @@ if(rosidl_generate_interfaces_LIBRARY_NAME)
 endif()
 set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PROPERTIES CXX_STANDARD 14)
-#if(OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO)
-  #target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    #PRIVATE OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO)
-#endif()
 if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PRIVATE "ROSIDL_TYPESUPPORT_OPENDDS_CPP_BUILDING_DLL_${PROJECT_NAME}")
-  #target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    #PRIVATE "NDDS_USER_DLL_EXPORT_${PROJECT_NAME}")
 endif()
 if(NOT WIN32)
   set(_target_compile_flags "-Wall -Wextra -Wpedantic")
