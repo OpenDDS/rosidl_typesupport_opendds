@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-project(fastrtps_cmake_module)
+project(opendds_cmake_module)
 
 find_package(ament_cmake REQUIRED)
 
@@ -24,7 +24,7 @@ if(BUILD_TESTING)
 endif()
 
 ament_package(
-  CONFIG_EXTRAS "fastrtps_cmake_module-extras.cmake"
+  CONFIG_EXTRAS "opendds_cmake_module-extras.cmake"
 )
 
 install(DIRECTORY cmake
