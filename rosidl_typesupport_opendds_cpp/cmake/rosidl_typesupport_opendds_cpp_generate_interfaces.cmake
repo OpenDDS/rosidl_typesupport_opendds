@@ -19,9 +19,7 @@ rosidl_generate_dds_interfaces(
   OUTPUT_SUBFOLDERS "dds_opendds"
 )
 
-# Output folder for the code generated from .em templates 
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_opendds_cpp/${PROJECT_NAME}")
-# Ouput folder for the .idl generated from rosidl_generator_dds_idl
 set(_dds_idl_base_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_dds_idl")
 
 set(_dds_idl_files "")

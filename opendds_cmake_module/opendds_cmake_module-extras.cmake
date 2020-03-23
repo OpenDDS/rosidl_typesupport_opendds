@@ -1,4 +1,4 @@
-# Copyright 2016-2018 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+# Copyright 2014 Open Source Robotics Foundation, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,20 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.5)
-
-project(fastrtps_cmake_module)
+# copied from connext_cmake_module/connext_cmake_module-extras.cmake
 
 find_package(ament_cmake REQUIRED)
-
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
-
-ament_package(
-  CONFIG_EXTRAS "fastrtps_cmake_module-extras.cmake"
-)
-
-install(DIRECTORY cmake
-  DESTINATION share/${PROJECT_NAME})
+list(INSERT CMAKE_MODULE_PATH 0 "${connext_cmake_module_DIR}/Modules")
