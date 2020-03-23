@@ -2,14 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(rosidl_typesupport_opendds_cpp)
 
-if (DEFINED ENV{OPENDDS_STATIC_DISABLE})
-  set(OPENDDS_STATIC_DISABLE $ENV{OPENDDS_STATIC_DISABLE}
-    CACHE BOOL "If OpenDDS Static should be disabled.")
-else()
-  set(OPENDDS_STATIC_DISABLE FALSE
-    CACHE BOOL "If OpenDDS Static should be disabled.")
-endif()
-
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
@@ -21,15 +13,11 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(opendds_cmake_module REQUIRED)
-find_package(OpenDDS QUIET MODULE)
+find_package(OpenDDS QUIET)
 
-if(NOT OpenDDS_FOUND OR OPENDDS_STATIC_DISABLE)
+if(NOT OpenDDS_FOUND)
   ament_package()
-  if(NOT OpenDDS_FOUND)
-    message(WARNING "Could not find OpenDDS - skipping '${PROJECT_NAME}'")
-  else()
-    message(STATUS "OpenDDS static rmw implementation explicitly disabled - skipping '${PROJECT_NAME}'")
-  endif()
+  message(WARNING "Could not find OpenDDS - skipping '${PROJECT_NAME}'")
   return()
 endif()
 
@@ -45,6 +33,7 @@ ament_export_dependencies(rosidl_typesupport_interface)
 
 ament_export_include_directories(include)
 
+# Make this package available to other ROS-2 packages.
 ament_python_install_package(${PROJECT_NAME})
 
 add_library(${PROJECT_NAME} SHARED
