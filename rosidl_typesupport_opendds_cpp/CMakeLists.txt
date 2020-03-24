@@ -33,15 +33,9 @@ ament_export_dependencies(rosidl_typesupport_interface)
 
 ament_export_include_directories(include)
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
-
 # Make this package available to other ROS-2 packages.
 ament_python_install_package(${PROJECT_NAME})
 
-ament_export_include_directories(include)
 add_library(${PROJECT_NAME} SHARED
   src/identifier.cpp
   src/wstring_conversion.cpp)
