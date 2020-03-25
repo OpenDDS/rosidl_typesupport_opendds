@@ -10,6 +10,7 @@ header_files = [
     package_name + '/msg/rosidl_typesupport_opendds_cpp__visibility_control.h',
     include_base + '/' + header_filename + '__struct.hpp'
 ]
+//TODO: replace with OpenDDS generated headers
 dds_specific_header_files = [
     include_base + '/dds_opendds/' + interface_path.stem + '_Support.h',
     include_base + '/dds_opendds/' + interface_path.stem + '_Plugin.h',

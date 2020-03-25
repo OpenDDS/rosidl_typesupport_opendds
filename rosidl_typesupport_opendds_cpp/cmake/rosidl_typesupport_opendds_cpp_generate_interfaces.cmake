@@ -105,7 +105,7 @@ rosidl_write_generator_arguments(
   ADDITIONAL_FILES ${_dds_idl_files}
 )
 
-set(_idl_pp "${OpenDDS_DDSGEN}")
+set(_idl_pp "opendds_idl")
 add_custom_command(
   OUTPUT ${_generated_files} ${_generated_external_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_typesupport_opendds_cpp_BIN}
