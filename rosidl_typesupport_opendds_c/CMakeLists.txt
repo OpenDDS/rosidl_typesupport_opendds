@@ -49,6 +49,7 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 ament_target_dependencies(
   ${PROJECT_NAME}
+  "OpenDDS"
   "rosidl_typesupport_opendds_cpp")
 ament_export_libraries(${PROJECT_NAME})
 

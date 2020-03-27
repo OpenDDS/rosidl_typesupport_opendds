@@ -1,5 +1,7 @@
 find_package(opendds_cmake_module QUIET)
-find_package(OpenDDS QUIET MODULE)
+if(NOT OpenDDS_FOUND)
+  find_package(OpenDDS QUIET)
+endif()
 if(NOT OpenDDS_FOUND)
   message(STATUS
     "Could not find OpenDDS - skipping rosidl_typesupport_opendds_c")

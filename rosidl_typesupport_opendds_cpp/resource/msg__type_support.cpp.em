@@ -34,7 +34,8 @@ header_files = [
 #include "@(header_file)"
 @[end for]@
 
-#include <ace/Message_Block.h>
+#include "dds/DCPS/Message_Block_Ptr.h"
+#include <iostream>
 
 // forward declaration of message dependencies and their conversion functions
 @[for member in message.structure.members]@
@@ -90,12 +91,6 @@ __dds_msg_type_prefix = __ros_msg_pkg_prefix + '::dds_::' + message.structure.na
 __dds_msg_type = __dds_msg_type_prefix + '_'
 }@
 
-DDS_TypeCode *
-get_type_code__@(message.structure.namespaced_type.name)()
-{
-  return @(__dds_msg_type_prefix)_TypeSupport::get_typecode();
-}
-
 bool
 convert_ros_message_to_dds(
   const @(__ros_msg_type) & ros_message,
@@ -133,25 +128,24 @@ convert_ros_message_to_dds(
 @[    end if]@
     for (size_t i = 0; i < size; i++) {
 @[    if isinstance(member.type.value_type, AbstractString)]@
-      DDS_String_free(dds_message.@(member.name)_[static_cast<DDS_Long>(i)]);
-      dds_message.@(member.name)_[static_cast<DDS_Long>(i)] =
-        DDS_String_dup(ros_message.@(member.name)[i].c_str());
+      dds_message.@(member.name)_[i] =
+        ros_message.@(member.name)[i].c_str();
 @[    elif isinstance(member.type.value_type, AbstractWString)]@
       DDS_Wchar * wstr = rosidl_typesupport_opendds_cpp::create_wstring_from_u16string(ros_message.@(member.name)[i]);
       if (NULL == wstr) {
         fprintf(stderr, "failed to create wstring from u16string\n");
         return false;
       }
-      DDS_Wstring_free(dds_message.@(member.name)_[static_cast<DDS_Long>(i)]);
-      dds_message.@(member.name)_[static_cast<DDS_Long>(i)] = wstr;
+      DDS_Wstring_free(dds_message.@(member.name)_[i]);
+      dds_message.@(member.name)_[i] = wstr;
 @[    elif isinstance(member.type.value_type, BasicType)]@
-      dds_message.@(member.name)_[static_cast<DDS_Long>(i)] =
+      dds_message.@(member.name)_[i] =
         ros_message.@(member.name)[i];
 @[    else]@
       if (
         !@('::'.join(member.type.value_type.namespaces))::typesupport_opendds_cpp::convert_ros_message_to_dds(
           ros_message.@(member.name)[i],
-          dds_message.@(member.name)_[static_cast<DDS_Long>(i)]))
+          dds_message.@(member.name)_[i]))
       {
         return false;
       }
@@ -159,9 +153,7 @@ convert_ros_message_to_dds(
     }
   }
 @[  elif isinstance(member.type, AbstractString)]@
-  DDS_String_free(dds_message.@(member.name)_);
-  dds_message.@(member.name)_ =
-    DDS_String_dup(ros_message.@(member.name).c_str());
+  dds_message.@(member.name)_(ros_message.@(member.name).c_str());
 @[  elif isinstance(member.type, AbstractWString)]@
   {
     DDS_Wchar * wstr = rosidl_typesupport_opendds_cpp::create_wstring_from_u16string(ros_message.@(member.name));
@@ -173,8 +165,7 @@ convert_ros_message_to_dds(
     dds_message.@(member.name)_ = wstr;
   }
 @[  elif isinstance(member.type, BasicType)]@
-  dds_message.@(member.name)_ =
-    ros_message.@(member.name);
+  dds_message.@(member.name)_(ros_message.@(member.name));
 @[  else]@
   if (
     !@('::'.join(member.type.namespaces))::typesupport_opendds_cpp::convert_ros_message_to_dds(
@@ -211,12 +202,12 @@ convert_dds_message_to_ros(
     for (size_t i = 0; i < size; i++) {
 @[    if isinstance(member.type.value_type, BasicType)]@
       ros_message.@(member.name)[i] =
-        dds_message.@(member.name)_[static_cast<DDS_Long>(i)]@(' == DDS_BOOLEAN_TRUE' if member.type.value_type.typename == 'boolean' else '');
+        dds_message.@(member.name)_[i];
 @[    elif isinstance(member.type.value_type, AbstractString)]@
       ros_message.@(member.name)[i] =
-        dds_message.@(member.name)_[static_cast<DDS_Long>(i)];
+        dds_message.@(member.name)_[i];
 @[    elif isinstance(member.type.value_type, AbstractWString)]@
-      bool succeeded = rosidl_typesupport_opendds_cpp::wstring_to_u16string(dds_message.@(member.name)_[static_cast<DDS_Long>(i)], ros_message.@(member.name)[i]);
+      bool succeeded = rosidl_typesupport_opendds_cpp::wstring_to_u16string(dds_message.@(member.name)_[i], ros_message.@(member.name)[i]);
       if (!succeeded) {
         fprintf(stderr, "failed to create wstring from u16string\n");
         return false;
@@ -224,7 +215,7 @@ convert_dds_message_to_ros(
 @[    else]@
       if (
         !@('::'.join(member.type.value_type.namespaces))::typesupport_opendds_cpp::convert_dds_message_to_ros(
-          dds_message.@(member.name)_[static_cast<DDS_Long>(i)],
+          dds_message.@(member.name)_[i],
           ros_message.@(member.name)[i]))
       {
         return false;
@@ -234,9 +225,9 @@ convert_dds_message_to_ros(
   }
 @[  elif isinstance(member.type, BasicType)]@
   ros_message.@(member.name) =
-    dds_message.@(member.name)_@(' == DDS_BOOLEAN_TRUE' if member.type.typename == 'boolean' else '');
+    dds_message.@(member.name)_();
 @[  elif isinstance(member.type, AbstractString)]@
-  ros_message.@(member.name) = dds_message.@(member.name)_;
+  ros_message.@(member.name) = dds_message.@(member.name)_();
 @[  elif isinstance(member.type, AbstractWString)]@
   {
     bool succeeded = rosidl_typesupport_opendds_cpp::wstring_to_u16string(dds_message.@(member.name)_, ros_message.@(member.name));
@@ -298,7 +289,7 @@ to_cdr_stream__@(message.structure.namespaced_type.name)(
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
   OpenDDS::DCPS::Serializer serializer(b.get(), false);
   serializer << dds_message;
-  std::memcpy(cdr_stream->buffer, data.get(), size);
+  memcpy(cdr_stream->buffer, b.get(), size);
 
   return true;
 }
@@ -338,7 +329,6 @@ to_message__@(message.structure.namespaced_type.name)(
 static message_type_support_callbacks_t _@(message.structure.namespaced_type.name)__callbacks = {
   "@('::'.join([package_name] + list(interface_path.parents[0].parts)))",
   "@(message.structure.namespaced_type.name)",
-  &get_type_code__@(message.structure.namespaced_type.name),
   nullptr,
   nullptr,
   &to_cdr_stream__@(message.structure.namespaced_type.name),

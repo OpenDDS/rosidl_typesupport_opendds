@@ -154,11 +154,6 @@ __ros_c_msg_type = '__'.join(message.structure.namespaced_type.namespaced_name()
 __dds_cpp_msg_type_prefix = '::'.join(message.structure.namespaced_type.namespaces + ['dds_', message.structure.namespaced_type.name])
 __dds_cpp_msg_type = __dds_cpp_msg_type_prefix + '_'
 }@
-static DDS_TypeCode *
-_@(message.structure.namespaced_type.name)__get_type_code()
-{
-  return @(__dds_cpp_msg_type_prefix)_TypeSupport::get_typecode();
-}
 
 static bool
 _@(message.structure.namespaced_type.name)__convert_ros_to_dds(const void * untyped_ros_message, void * untyped_dds_message)
@@ -521,7 +516,6 @@ _@(message.structure.namespaced_type.name)__to_message(
 static message_type_support_callbacks_t _@(message.structure.namespaced_type.name)__callbacks = {
   "@('::'.join([package_name] + list(interface_path.parents[0].parts)))",  // message_namespace
   "@(message.structure.namespaced_type.name)",  // message_name
-  _@(message.structure.namespaced_type.name)__get_type_code,  // get_type_code
   _@(message.structure.namespaced_type.name)__convert_ros_to_dds,  // convert_ros_to_dds
   _@(message.structure.namespaced_type.name)__convert_dds_to_ros,  // convert_dds_to_ros
   _@(message.structure.namespaced_type.name)__to_cdr_stream,  // to_cdr_stream
