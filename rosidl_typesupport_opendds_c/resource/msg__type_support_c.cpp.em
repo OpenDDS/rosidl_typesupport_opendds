@@ -30,8 +30,8 @@ header_files = [
 ]
 
 dds_specific_header_files = [
-    include_base + '/dds_opendds/' + cpp_include_prefix + '_Support.h',
-    include_base + '/dds_opendds/' + cpp_include_prefix + '_Plugin.h'
+    include_base + '/dds_opendds/' + cpp_include_prefix + '_C.h',
+    include_base + '/dds_opendds/' + cpp_include_prefix + '_TypeSupportImpl.h'
 ]
 }@
 @[for header_file in header_files]@

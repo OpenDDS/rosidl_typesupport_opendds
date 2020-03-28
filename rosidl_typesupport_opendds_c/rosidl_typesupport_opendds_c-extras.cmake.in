@@ -1,3 +1,6 @@
+# generated from
+# rosidl_typesupport_opendds_c/rosidl_typesupport_opendds_c-extras.cmake.in
+
 find_package(opendds_cmake_module QUIET)
 if(NOT OpenDDS_FOUND)
   find_package(OpenDDS QUIET)
@@ -8,7 +11,7 @@ if(NOT OpenDDS_FOUND)
 else()
   find_package(ament_cmake_core QUIET REQUIRED)
   ament_register_extension(
-      "rosidl_generate_interfaces"
+      "rosidl_generate_idl_interfaces"
       "rosidl_typesupport_opendds_c"
       "rosidl_typesupport_opendds_c_generate_interfaces.cmake")
   set(rosidl_typesupport_opendds_c_BIN
