@@ -35,7 +35,6 @@ header_files = [
 @[end for]@
 
 #include "dds/DCPS/Message_Block_Ptr.h"
-#include <iostream>
 
 // forward declaration of message dependencies and their conversion functions
 @[for member in message.structure.members]@

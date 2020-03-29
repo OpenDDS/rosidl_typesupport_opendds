@@ -44,6 +44,8 @@ dds_specific_header_files = [
 #include "@(header_file)"
 @[end for]@
 
+#include "dds/DCPS/Message_Block_Ptr.h"
+
 #ifndef _WIN32
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -273,7 +275,7 @@ if isinstance(type_, AbstractNestedType):
       fprintf(stderr, "string not null-terminated\n");
       return false;
     }
-    dds_message->@(member.name)_ = DDS_String_dup(str->data);
+    dds_message->@(member.name)_(str->data);
 @[  elif isinstance(member.type, AbstractWString)]@
     const rosidl_generator_c__U16String * str = &ros_message->@(member.name);
     if (str->capacity == 0 || str->capacity <= str->size) {
@@ -291,7 +293,7 @@ if isinstance(type_, AbstractNestedType):
     }
     dds_message->@(member.name)_ = wstr;
 @[  elif isinstance(member.type, BasicType)]@
-    dds_message->@(member.name)_ = ros_message->@(member.name);
+    dds_message->@(member.name)_(ros_message->@(member.name));
 @[  else]@
     if (!@(idl_structure_type_to_c_typename(member.type))__callbacks->convert_ros_to_dds(
         &ros_message->@(member.name), &dds_message->@(member.name)_))
@@ -396,7 +398,7 @@ if isinstance(type_, AbstractNestedType):
     }
     bool succeeded = rosidl_generator_c__String__assign(
       &ros_message->@(member.name),
-      dds_message->@(member.name)_);
+      dds_message->@(member.name)_().c_str());
     if (!succeeded) {
       fprintf(stderr, "failed to assign string into field '@(member.name)'\n");
       return false;
@@ -412,7 +414,7 @@ if isinstance(type_, AbstractNestedType):
       return false;
     }
 @[  elif isinstance(member.type, BasicType)]@
-    ros_message->@(member.name) = dds_message->@(member.name)_@(' == static_cast<DDS_Boolean>(true)' if member.type.typename == 'boolean' else '');
+    ros_message->@(member.name) = dds_message->@(member.name)_();
 @[  elif isinstance(member.type, NamespacedType)]@
     const rosidl_message_type_support_t * ts =
       ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(
@@ -449,15 +451,10 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
     return false;
   }
 
-  // call the serialize function for the first time to get the expected length of the message
-  unsigned int expected_length;
-  if (@(__dds_cpp_msg_type_prefix)_Plugin_serialize_to_cdr_buffer(
-      NULL, &expected_length, &dds_message) != true)
-  {
-    fprintf(stderr, "failed to call @(__dds_cpp_msg_type_prefix)_Plugin_serialize_to_cdr_buffer()\n");
-    return false;
-  }
-  cdr_stream->buffer_length = expected_length;
+  size_t size = 0;
+  size_t padding = 0;
+  OpenDDS::DCPS::gen_find_size(dds_message, size, padding);
+    cdr_stream->buffer_length = size;
   if (cdr_stream->buffer_length > (std::numeric_limits<unsigned int>::max)()) {
     fprintf(stderr, "cdr_stream->buffer_length, unexpectedly larger than max unsigned int\n");
     return false;
@@ -466,15 +463,10 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
     cdr_stream->allocator.deallocate(cdr_stream->buffer, cdr_stream->allocator.state);
     cdr_stream->buffer = static_cast<uint8_t *>(cdr_stream->allocator.allocate(cdr_stream->buffer_length, cdr_stream->allocator.state));
   }
-  // call the function again and fill the buffer this time
-  unsigned int buffer_length_uint = static_cast<unsigned int>(cdr_stream->buffer_length);
-  if (@(__dds_cpp_msg_type_prefix)_Plugin_serialize_to_cdr_buffer(
-      reinterpret_cast<char *>(cdr_stream->buffer),
-      &buffer_length_uint,
-      &dds_message) != true)
-  {
-    return false;
-  }
+  OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
+  OpenDDS::DCPS::Serializer serializer(b.get(), false);
+  serializer << dds_message;
+  memcpy(cdr_stream->buffer, b.get(), size);
 
   return true;
 }
@@ -491,24 +483,18 @@ _@(message.structure.namespaced_type.name)__to_message(
     return false;
   }
 
-  @(__dds_cpp_msg_type) * dds_message =
-    @(__dds_cpp_msg_type_prefix)_TypeSupport::create_data();
+  @(__dds_cpp_msg_type) dds_message;
   if (cdr_stream->buffer_length > (std::numeric_limits<unsigned int>::max)()) {
     fprintf(stderr, "cdr_stream->buffer_length, unexpectedly larger than max unsigned int\n");
     return false;
   }
-  if (@(__dds_cpp_msg_type_prefix)_Plugin_deserialize_from_cdr_buffer(
-      dds_message,
-      reinterpret_cast<char *>(cdr_stream->buffer),
-      static_cast<unsigned int>(cdr_stream->buffer_length)) != true)
-  {
-    fprintf(stderr, "deserialize from cdr buffer failed\n");
-    return false;
-  }
-  bool success = _@(message.structure.namespaced_type.name)__convert_dds_to_ros(dds_message, untyped_ros_message);
-  if (@(__dds_cpp_msg_type_prefix)_TypeSupport::delete_data(dds_message) != DDS_RETCODE_OK) {
-    return false;
-  }
+
+  OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(cdr_stream->buffer_length));
+  OpenDDS::DCPS::Serializer deserializer(b.get(), false);
+  deserializer >> dds_message;
+  
+  bool success = _@(message.structure.namespaced_type.name)__convert_dds_to_ros(&dds_message, untyped_ros_message);
+
   return success;
 }
 
