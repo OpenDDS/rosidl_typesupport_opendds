@@ -107,7 +107,7 @@ convert_ros_message_to_dds(
     size_t size = @(member.type.size);
 @[    else]@
     size_t size = ros_message.@(member.name).size();
-    if (size > (std::numeric_limits<DDS_Long>::max)()) {
+    if (size > (std::numeric_limits<int>::max)()) {
       throw std::runtime_error("array size exceeds maximum DDS sequence size");
     }
 @[      if isinstance(member.type, BoundedSequence)]@
@@ -115,19 +115,14 @@ convert_ros_message_to_dds(
       throw std::runtime_error("array size exceeds upper bound");
     }
 @[      end if]@
-    DDS_Long length = static_cast<DDS_Long>(size);
-    if (length > dds_message.@(member.name)_.maximum()) {
-      if (!dds_message.@(member.name)_.maximum(length)) {
+    if (size > dds_message.@(member.name)_().max_size()) {
         throw std::runtime_error("failed to set maximum of sequence");
-      }
     }
-    if (!dds_message.@(member.name)_.length(length)) {
-      throw std::runtime_error("failed to set length of sequence");
-    }
+    dds_message.@(member.name)_().resize(size);
 @[    end if]@
     for (size_t i = 0; i < size; i++) {
 @[    if isinstance(member.type.value_type, AbstractString)]@
-      dds_message.@(member.name)_[i] =
+      dds_message.@(member.name)_()[i] =
         ros_message.@(member.name)[i].c_str();
 @[    elif isinstance(member.type.value_type, AbstractWString)]@
       DDS_Wchar * wstr = rosidl_typesupport_opendds_cpp::create_wstring_from_u16string(ros_message.@(member.name)[i]);
@@ -135,16 +130,16 @@ convert_ros_message_to_dds(
         fprintf(stderr, "failed to create wstring from u16string\n");
         return false;
       }
-      DDS_Wstring_free(dds_message.@(member.name)_[i]);
-      dds_message.@(member.name)_[i] = wstr;
+      DDS_Wstring_free(dds_message.@(member.name)_()[i]);
+      dds_message.@(member.name)_()[i] = wstr;
 @[    elif isinstance(member.type.value_type, BasicType)]@
-      dds_message.@(member.name)_[i] =
+      dds_message.@(member.name)_()[i] =
         ros_message.@(member.name)[i];
 @[    else]@
       if (
         !@('::'.join(member.type.value_type.namespaces))::typesupport_opendds_cpp::convert_ros_message_to_dds(
           ros_message.@(member.name)[i],
-          dds_message.@(member.name)_[i]))
+          dds_message.@(member.name)_()[i]))
       {
         return false;
       }
@@ -169,7 +164,7 @@ convert_ros_message_to_dds(
   if (
     !@('::'.join(member.type.namespaces))::typesupport_opendds_cpp::convert_ros_message_to_dds(
       ros_message.@(member.name),
-      dds_message.@(member.name)_))
+      dds_message.@(member.name)_()))
   {
     return false;
   }
@@ -195,16 +190,16 @@ convert_dds_message_to_ros(
 @[    if isinstance(member.type, Array)]@
     size_t size = @(member.type.size);
 @[    else]@
-    size_t size = dds_message.@(member.name)_.length();
+    size_t size = dds_message.@(member.name)_().size();
     ros_message.@(member.name).resize(size);
 @[    end if]@
     for (size_t i = 0; i < size; i++) {
 @[    if isinstance(member.type.value_type, BasicType)]@
       ros_message.@(member.name)[i] =
-        dds_message.@(member.name)_[i];
+        dds_message.@(member.name)_()[i];
 @[    elif isinstance(member.type.value_type, AbstractString)]@
       ros_message.@(member.name)[i] =
-        dds_message.@(member.name)_[i];
+        dds_message.@(member.name)_()[i];
 @[    elif isinstance(member.type.value_type, AbstractWString)]@
       bool succeeded = rosidl_typesupport_opendds_cpp::wstring_to_u16string(dds_message.@(member.name)_[i], ros_message.@(member.name)[i]);
       if (!succeeded) {
@@ -214,7 +209,7 @@ convert_dds_message_to_ros(
 @[    else]@
       if (
         !@('::'.join(member.type.value_type.namespaces))::typesupport_opendds_cpp::convert_dds_message_to_ros(
-          dds_message.@(member.name)_[i],
+          dds_message.@(member.name)_()[i],
           ros_message.@(member.name)[i]))
       {
         return false;
@@ -238,7 +233,7 @@ convert_dds_message_to_ros(
 @[  else]@
   if (
     !@('::'.join(member.type.namespaces))::typesupport_opendds_cpp::convert_dds_message_to_ros(
-      dds_message.@(member.name)_,
+      dds_message.@(member.name)_(),
       ros_message.@(member.name)))
   {
     return false;
@@ -287,7 +282,10 @@ to_cdr_stream__@(message.structure.namespaced_type.name)(
   }
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
   OpenDDS::DCPS::Serializer serializer(b.get(), false);
-  serializer << dds_message;
+  if (!serializer << dds_message) {
+    fprintf(stderr, "OpenDDS serializer failed\n");
+    return false;
+  }
   memcpy(cdr_stream->buffer, b.get(), size);
 
   return true;
@@ -316,7 +314,10 @@ to_message__@(message.structure.namespaced_type.name)(
 
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(cdr_stream->buffer_length));
   OpenDDS::DCPS::Serializer deserializer(b.get(), false);
-  deserializer >> dds_message;
+  if (!deserializer >> dds_message) {
+    fprintf(stderr, "OpenDDS deserializer failed\n");
+    retuthn false;
+  }
   
   @(__ros_msg_type) & ros_message =
     *(@(__ros_msg_type) *)untyped_ros_message;

@@ -196,7 +196,7 @@ if isinstance(type_, AbstractNestedType):
     size_t size = @(member.type.size);
 @[    else]@
     size_t size = ros_message->@(member.name).size;
-    if (size > (std::numeric_limits<DDS_Long>::max)()) {
+    if (size > (std::numeric_limits<int>::max)()) {
       fprintf(stderr, "array size exceeds maximum DDS sequence size\n");
       return false;
     }
@@ -206,19 +206,12 @@ if isinstance(type_, AbstractNestedType):
       return false;
     }
 @[      end if]@
-    DDS_Long length = static_cast<DDS_Long>(size);
-    if (length > dds_message->@(member.name)_.maximum()) {
-      if (!dds_message->@(member.name)_.maximum(length)) {
-        fprintf(stderr, "failed to set maximum of sequence\n");
-        return false;
-      }
+    if (size > dds_message->@(member.name)_().max_size()) {
+        throw std::runtime_error("failed to set maximum of sequence");
     }
-    if (!dds_message->@(member.name)_.length(length)) {
-      fprintf(stderr, "failed to set length of sequence\n");
-      return false;
-    }
+    dds_message->@(member.name)_().resize(size);
 @[    end if]@
-    for (DDS_Long i = 0; i < static_cast<DDS_Long>(size); ++i) {
+    for (int i = 0; i < static_cast<int>(size); ++i) {
 @[    if isinstance(member.type, Array)]@
       auto & ros_i = ros_message->@(member.name)[i];
 @[    else]@
@@ -234,7 +227,7 @@ if isinstance(type_, AbstractNestedType):
         fprintf(stderr, "string not null-terminated\n");
         return false;
       }
-      dds_message->@(member.name)_[static_cast<DDS_Long>(i)] = DDS_String_dup(str->data);
+      dds_message->@(member.name)_()[static_cast<int>(i)] = DDS_String_dup(str->data);
 @[    elif isinstance(type_, AbstractWString)]@
       const rosidl_generator_c__U16String * str = &ros_i;
       if (str->capacity == 0 || str->capacity <= str->size) {
@@ -250,16 +243,16 @@ if isinstance(type_, AbstractNestedType):
         fprintf(stderr, "failed to create wstring from u16string\n");
         return false;
       }
-      dds_message->@(member.name)_[static_cast<DDS_Long>(i)] = wstr;
+      dds_message->@(member.name)_[static_cast<int>(i)] = wstr;
 @[    elif isinstance(type_, BasicType)]@
 @[      if type_.typename == 'boolean']@
-      dds_message->@(member.name)_[i] = 1 ? ros_i : 0;
+      dds_message->@(member.name)_()[i] = 1 ? ros_i : 0;
 @[      else]@
-      dds_message->@(member.name)_[i] = ros_i;
+      dds_message->@(member.name)_()[i] = ros_i;
 @[      end if]@
 @[    else]@
       if (!@(idl_structure_type_to_c_typename(type_))__callbacks->convert_ros_to_dds(
-          &ros_i, &dds_message->@(member.name)_[i]))
+          &ros_i, &dds_message->@(member.name)_()[i]))
       {
         return false;
       }
@@ -291,12 +284,12 @@ if isinstance(type_, AbstractNestedType):
       fprintf(stderr, "failed to create wstring from u16string\n");
       return false;
     }
-    dds_message->@(member.name)_ = wstr;
+    dds_message->@(member.name)_(wstr);
 @[  elif isinstance(member.type, BasicType)]@
     dds_message->@(member.name)_(ros_message->@(member.name));
 @[  else]@
     if (!@(idl_structure_type_to_c_typename(member.type))__callbacks->convert_ros_to_dds(
-        &ros_message->@(member.name), &dds_message->@(member.name)_))
+        &ros_message->@(member.name), &dds_message->@(member.name)_()))
     {
       return false;
     }
@@ -336,9 +329,9 @@ if isinstance(type_, AbstractNestedType):
 }@
 @[  if isinstance(member.type, AbstractNestedType)]@
 @[    if isinstance(member.type, Array)]@
-    DDS_Long size = @(member.type.size);
+    int size = @(member.type.size);
 @[    else]@
-    DDS_Long size = dds_message->@(member.name)_.length();
+    int size = dds_message->@(member.name)_().size();
     if (ros_message->@(member.name).data) {
       @(idl_type_to_c(member.type) + '__fini')(&ros_message->@(member.name));
     }
@@ -346,7 +339,7 @@ if isinstance(type_, AbstractNestedType):
       return "failed to create array for field '@(member.name)'";
     }
 @[    end if]@
-    for (DDS_Long i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++) {
 @[    if isinstance(member.type, Array)]@
       auto & ros_i = ros_message->@(member.name)[i];
 @[    else]@
@@ -354,9 +347,9 @@ if isinstance(type_, AbstractNestedType):
 @[    end if]@
 @[    if isinstance(type_, BasicType)]@
 @[      if type_.typename == 'boolean']@
-      ros_i = (dds_message->@(member.name)_[i] != 0);
+      ros_i = (dds_message->@(member.name)_()[i] != 0);
 @[      else]@
-      ros_i = dds_message->@(member.name)_[i];
+      ros_i = dds_message->@(member.name)_()[i];
 @[      end if]@
 @[    elif isinstance(type_, AbstractString)]@
       if (!ros_i.data) {
@@ -387,7 +380,7 @@ if isinstance(type_, AbstractNestedType):
         @(type_.name))();
       const message_type_support_callbacks_t * callbacks =
         static_cast<const message_type_support_callbacks_t *>(ts->data);
-      callbacks->convert_dds_to_ros(&dds_message->@(member.name)_[i], &ros_i);
+      callbacks->convert_dds_to_ros(&dds_message->@(member.name)_()[i], &ros_i);
 @[    else]@
 @{      assert False, 'Unknown member base type'}@
 @[    end if]@
@@ -423,7 +416,7 @@ if isinstance(type_, AbstractNestedType):
       @(member.type.name))();
     const message_type_support_callbacks_t * callbacks =
       static_cast<const message_type_support_callbacks_t *>(ts->data);
-    callbacks->convert_dds_to_ros(&dds_message->@(member.name)_, &ros_message->@(member.name));
+    callbacks->convert_dds_to_ros(&dds_message->@(member.name)_(), &ros_message->@(member.name));
 @[  else]@
 @{    assert False, 'Unknown member type'}@
 @[  end if]@
@@ -465,7 +458,10 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
   }
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
   OpenDDS::DCPS::Serializer serializer(b.get(), false);
-  serializer << dds_message;
+  if (!serializer << dds_message) {
+    fprintf(stderr, "OpenDDS serializer failed\n");
+    return false;
+  }
   memcpy(cdr_stream->buffer, b.get(), size);
 
   return true;
@@ -491,7 +487,10 @@ _@(message.structure.namespaced_type.name)__to_message(
 
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(cdr_stream->buffer_length));
   OpenDDS::DCPS::Serializer deserializer(b.get(), false);
-  deserializer >> dds_message;
+  if (!deserializer >> dds_message) {
+    fprintf(stderr, "OpenDDS deserializer failed\n");
+    retuthn false;
+  }
   
   bool success = _@(message.structure.namespaced_type.name)__convert_dds_to_ros(&dds_message, untyped_ros_message);
 
