@@ -282,7 +282,7 @@ to_cdr_stream__@(message.structure.namespaced_type.name)(
   }
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
   OpenDDS::DCPS::Serializer serializer(b.get(), false);
-  if (!serializer << dds_message) {
+  if (!(serializer << dds_message)) {
     fprintf(stderr, "OpenDDS serializer failed\n");
     return false;
   }
@@ -314,9 +314,9 @@ to_message__@(message.structure.namespaced_type.name)(
 
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(cdr_stream->buffer_length));
   OpenDDS::DCPS::Serializer deserializer(b.get(), false);
-  if (!deserializer >> dds_message) {
+  if (!(deserializer >> dds_message)) {
     fprintf(stderr, "OpenDDS deserializer failed\n");
-    retuthn false;
+    return false;
   }
   
   @(__ros_msg_type) & ros_message =
