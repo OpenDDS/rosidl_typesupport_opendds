@@ -19,15 +19,10 @@
 
 #include "rosidl_generator_c/message_type_support_struct.h"
 
-// forward declare DDS_TypeCode
-struct DDS_TypeCode;
-
 typedef struct message_type_support_callbacks_t
 {
   const char * message_namespace;
   const char * message_name;
-  // Function to register type with given dds_participant
-  DDS_TypeCode * (*get_type_code)(void);
   bool (* convert_ros_to_dds)(
     const void * untyped_ros_message,
     void * untyped_data_message);

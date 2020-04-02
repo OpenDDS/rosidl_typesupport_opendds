@@ -26,12 +26,9 @@ foreach(_abs_idl_file ${rosidl_generate_interfaces_ABS_IDL_FILES})
   get_filename_component(_idl_name "${_abs_idl_file}" NAME_WE)
   # Turn idl name into file names
   string_camel_case_to_lower_case_underscore("${_idl_name}" _header_name)
-  list(APPEND _generated_external_files "${_dds_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_.h")
-  list(APPEND _generated_external_files "${_dds_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_.cxx")
-  list(APPEND _generated_external_files "${_dds_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_Plugin.h")
-  list(APPEND _generated_external_files "${_dds_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_Plugin.cxx")
-  list(APPEND _generated_external_files "${_dds_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_Support.h")
-  list(APPEND _generated_external_files "${_dds_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_Support.cxx")
+  list(APPEND _generated_external_files "${_dds_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_C.h")
+  list(APPEND _generated_external_files "${_dds_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_TypeSupportImpl.h")
+  list(APPEND _generated_external_files "${_dds_output_path}/${_parent_folder}/dds_opendds/${_idl_name}_TypeSupportImpl.cpp")
   list(APPEND _generated_files "${_output_path}/${_parent_folder}/dds_opendds/${_header_name}__type_support_c.cpp")
   list(APPEND _generated_files "${_output_path}/${_parent_folder}/${_header_name}__rosidl_typesupport_opendds_c.h")
   list(APPEND _dds_idl_files "${_dds_idl_base_path}/${PROJECT_NAME}/${_parent_folder}/dds_opendds/${_idl_name}_.idl")
@@ -137,10 +134,6 @@ if(rosidl_generate_interfaces_LIBRARY_NAME)
 endif()
 set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PROPERTIES CXX_STANDARD 14)
-if(OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO)
-  target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PRIVATE OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO)
-endif()
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "rmw"
   "rosidl_typesupport_opendds_cpp"
@@ -149,8 +142,6 @@ ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
 if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PRIVATE "ROSIDL_TYPESUPPORT_OPENDDS_C_BUILDING_DLL_${PROJECT_NAME}")
-  target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
-    PRIVATE "NDDS_USER_DLL_EXPORT_${PROJECT_NAME}")
 endif()
 
 if(NOT WIN32)

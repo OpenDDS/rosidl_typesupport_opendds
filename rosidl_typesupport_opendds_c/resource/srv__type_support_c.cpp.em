@@ -15,7 +15,7 @@ header_files = [
     'rosidl_typesupport_cpp/service_type_support.hpp',
     'rosidl_typesupport_opendds_c/identifier.h',
     package_name + '/msg/rosidl_typesupport_opendds_c__visibility_control.h',
-    include_base + '/dds_opendds/' + cpp_include_prefix + '_Support.h',
+    include_base + '/dds_opendds/' + cpp_include_prefix + '_TypeSupportImpl.h',
     include_base + '/' + c_include_prefix + '.h',
 # Re-use most of the functions from C++ typesupport
     include_base + '/' + c_include_prefix + '__rosidl_typesupport_opendds_cpp.hpp',

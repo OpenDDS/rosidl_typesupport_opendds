@@ -11,9 +11,8 @@ header_files = [
     include_base + '/' + header_filename + '__struct.hpp'
 ]
 dds_specific_header_files = [
-    include_base + '/dds_opendds/' + interface_path.stem + '_Support.h',
-    include_base + '/dds_opendds/' + interface_path.stem + '_Plugin.h',
-    'ndds/ndds_cpp.h'
+    include_base + '/dds_opendds/' + interface_path.stem + '_C.h',
+    include_base + '/dds_opendds/' + interface_path.stem + '_TypeSupportImpl.h'
 ]
 }@
 @[for header_file in header_files]@
@@ -70,9 +69,6 @@ __dds_msg_type = __dds_msg_type_prefix + '_'
 }@
 namespace typesupport_opendds_cpp
 {
-
-DDS_TypeCode *
-get_type_code__@(message.structure.namespaced_type.name)();
 
 bool
 ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)

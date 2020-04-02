@@ -7,6 +7,7 @@ cpp_include_prefix = interface_path.stem
 
 c_include_prefix = convert_camel_case_to_lower_case_underscore(cpp_include_prefix)
 
+//TODO: replace Plugin and Support(?) with OpenDDS generated headers
 header_files = [
     include_base + '/' + c_include_prefix + '__rosidl_typesupport_opendds_cpp.hpp',
     'rmw/error_handling.h',
