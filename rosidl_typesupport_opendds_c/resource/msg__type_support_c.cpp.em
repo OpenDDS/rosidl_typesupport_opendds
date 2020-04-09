@@ -227,7 +227,7 @@ if isinstance(type_, AbstractNestedType):
         fprintf(stderr, "string not null-terminated\n");
         return false;
       }
-      dds_message->@(member.name)_()[static_cast<int>(i)] = DDS_String_dup(str->data);
+      dds_message->@(member.name)_()[static_cast<int>(i)] = str->data;
 @[    elif isinstance(type_, AbstractWString)]@
       const rosidl_generator_c__U16String * str = &ros_i;
       if (str->capacity == 0 || str->capacity <= str->size) {
@@ -357,7 +357,7 @@ if isinstance(type_, AbstractNestedType):
       }
       bool succeeded = rosidl_generator_c__String__assign(
         &ros_i,
-        dds_message->@(member.name)_[i]);
+        dds_message->@(member.name)_()[i].c_str());
       if (!succeeded) {
         fprintf(stderr, "failed to assign string into field '@(member.name)'\n");
         return false;
