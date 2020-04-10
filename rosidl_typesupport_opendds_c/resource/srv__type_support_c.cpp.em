@@ -22,9 +22,8 @@ header_files = [
 ]
 
 dds_specific_header_files = [
-    'ndds/opendds_cpp/opendds_cpp_requester_details.h',
-    'ndds/ndds_cpp.h',
-    'ndds/ndds_requestreply_cpp.h'
+    include_base + '/dds_opendds/' + interface_path.stem + '_C.h',
+    include_base + '/dds_opendds/' + interface_path.stem + '_TypeSupportImpl.h'
 ]
 }@
 #ifdef OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO
@@ -108,53 +107,22 @@ static void * create_requester__@(service.namespaced_type.name)(
   void ** untyped_writer,
   void * (*allocator)(size_t))
 {
-  return @('::'.join(service.namespaced_type.namespaces))::typesupport_opendds_cpp::create_requester__@(service.namespaced_type.name)(
-    untyped_participant,
-    request_topic_str,
-    response_topic_str,
-    untyped_datareader_qos,
-    untyped_datawriter_qos,
-    untyped_reader,
-    untyped_writer,
-    allocator);
+  return NULL;
 }
 static const char * destroy_requester__@(service.namespaced_type.name)(
   void * untyped_requester,
   void (* deallocator)(void *))
 {
-  return @('::'.join(service.namespaced_type.namespaces))::typesupport_opendds_cpp::destroy_requester__@(service.namespaced_type.name)(
-    untyped_requester, deallocator);
+@# TODO: Implement
+  return NULL;
 }
 
 static int64_t send_request__@(service.namespaced_type.name)(
   void * untyped_requester,
   const void * untyped_ros_request)
 {
-  using RequesterType = opendds::Requester<
-    @(__dds_request_msg_type),
-    @(__dds_response_msg_type)
-  >;
-  opendds::WriteSample<@(__dds_request_msg_type)> request;
-  const rosidl_message_type_support_t * ts =
-    ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(
-    rosidl_typesupport_opendds_c,
-    @(', '.join(service.request_message.structure.namespaced_type.namespaces)),
-    @(service.request_message.structure.namespaced_type.name))();
-  const message_type_support_callbacks_t * callbacks =
-    static_cast<const message_type_support_callbacks_t *>(ts->data);
-  bool converted = callbacks->convert_ros_to_dds(
-    untyped_ros_request, static_cast<void *>(&request.data()));
-  if (!converted) {
-    fprintf(stderr, "Unable to convert request!\n");
-    return -1;
-  }
-
-  RequesterType * requester = reinterpret_cast<RequesterType *>(untyped_requester);
-
-  requester->send_request(request);
-  int64_t sequence_number = ((int64_t)request.identity().sequence_number.high) << 32 |
-    request.identity().sequence_number.low;
-  return sequence_number;
+@# TODO: Implement
+  return 1;
 }
 
 static void * create_replier__@(service.namespaced_type.name)(
@@ -167,23 +135,16 @@ static void * create_replier__@(service.namespaced_type.name)(
   void ** untyped_writer,
   void * (*allocator)(size_t))
 {
-  return @('::'.join(service.namespaced_type.namespaces))::typesupport_opendds_cpp::create_replier__@(service.namespaced_type.name)(
-    untyped_participant,
-    request_topic_str,
-    response_topic_str,
-    untyped_datareader_qos,
-    untyped_datawriter_qos,
-    untyped_reader,
-    untyped_writer,
-    allocator);
+@# TODO: Implement, considering original code in ffe10f9 or earlier
+  return NULL;
 }
 
 static const char * destroy_replier__@(service.namespaced_type.name)(
   void * untyped_replier,
   void (* deallocator)(void *))
 {
-  return @('::'.join(service.namespaced_type.namespaces))::typesupport_opendds_cpp::destroy_replier__@(service.namespaced_type.name)(
-    untyped_replier, deallocator);
+@# TODO: Implement, considering original code in ffe10f9 or earlier
+  return NULL;
 }
 
 static bool take_request__@(service.namespaced_type.name)(
@@ -191,42 +152,7 @@ static bool take_request__@(service.namespaced_type.name)(
   rmw_request_id_t * request_header,
   void * untyped_ros_request)
 {
-  using ReplierType = opendds::Replier<
-    @(__dds_request_msg_type),
-    @(__dds_response_msg_type)
-  >;
-  if (!untyped_replier || !request_header || !untyped_ros_request) {
-    return false;
-  }
-
-  ReplierType * replier = reinterpret_cast<ReplierType *>(untyped_replier);
-
-  opendds::Sample<@(__dds_request_msg_type)> request;
-  bool taken = replier->take_request(request);
-  if (!taken) {
-    return false;
-  }
-  if (!request.info().valid_data) {
-    return false;
-  }
-
-  const rosidl_message_type_support_t * ts =
-    ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(
-    rosidl_typesupport_opendds_c,
-    @(', '.join(service.request_message.structure.namespaced_type.namespaces)),
-    @(service.request_message.structure.namespaced_type.name))();
-  const message_type_support_callbacks_t * callbacks =
-    static_cast<const message_type_support_callbacks_t *>(ts->data);
-  bool converted = callbacks->convert_dds_to_ros(
-    static_cast<const void *>(&request.data()), untyped_ros_request);
-  if (!converted) {
-    return false;
-  }
-
-  size_t SAMPLE_IDENTITY_SIZE = 16;
-  memcpy(&(request_header->writer_guid[0]), request.identity().writer_guid.value, SAMPLE_IDENTITY_SIZE);
-
-  request_header->sequence_number = ((int64_t)request.identity().sequence_number.high) << 32 | request.identity().sequence_number.low;
+@# TODO: Implement, considering original code in ffe10f9 or earlier
   return true;
 }
 
@@ -235,40 +161,8 @@ static bool take_response__@(service.namespaced_type.name)(
   rmw_request_id_t * request_header,
   void * untyped_ros_response)
 {
-  using RequesterType = opendds::Requester<
-    @(__dds_request_msg_type),
-    @(__dds_response_msg_type)
-  >;
-  if (!untyped_requester || !request_header || !untyped_ros_response) {
-    return false;
-  }
-
-  RequesterType * requester = reinterpret_cast<RequesterType *>(untyped_requester);
-
-  opendds::Sample<@(__dds_response_msg_type)> response;
-  bool received = requester->take_reply(response);
-  if (!received) {
-    return false;
-  }
-  if (!response.info().valid_data) {
-    return false;
-  }
-
-  int64_t sequence_number =
-    (((int64_t)response.related_identity().sequence_number.high) << 32) |
-    response.related_identity().sequence_number.low;
-  request_header->sequence_number = sequence_number;
-
-  const rosidl_message_type_support_t * ts =
-    ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(
-    rosidl_typesupport_opendds_c,
-    @(', '.join(service.response_message.structure.namespaced_type.namespaces)),
-    @(service.response_message.structure.namespaced_type.name))();
-  const message_type_support_callbacks_t * callbacks =
-    static_cast<const message_type_support_callbacks_t *>(ts->data);
-  bool converted = callbacks->convert_dds_to_ros(
-    static_cast<const void *>(&response.data()), untyped_ros_response);
-  return converted;
+@# TODO: Implement, considering original code in ffe10f9 or earlier
+  return true;
 }
 
 bool send_response__@(service.namespaced_type.name)(
@@ -276,68 +170,36 @@ bool send_response__@(service.namespaced_type.name)(
   const rmw_request_id_t * request_header,
   const void * untyped_ros_response)
 {
-  using ReplierType = opendds::Replier<
-    @(__dds_request_msg_type),
-    @(__dds_response_msg_type)
-  >;
-  if (!untyped_replier || !request_header || !untyped_ros_response) {
-    return false;
-  }
-
-  opendds::WriteSample<@(__dds_response_msg_type)> response;
-  const rosidl_message_type_support_t * ts =
-    ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(
-    rosidl_typesupport_opendds_c,
-    @(', '.join(service.response_message.structure.namespaced_type.namespaces)),
-    @(service.response_message.structure.namespaced_type.name))();
-  const message_type_support_callbacks_t * callbacks =
-    static_cast<const message_type_support_callbacks_t *>(ts->data);
-  bool converted = callbacks->convert_ros_to_dds(
-    untyped_ros_response, static_cast<void *>(&response.data()));
-  if (!converted) {
-    return false;
-  }
-
-  DDS_SampleIdentity_t request_identity;
-
-  size_t SAMPLE_IDENTITY_SIZE = 16;
-  memcpy(request_identity.writer_guid.value, &request_header->writer_guid[0], SAMPLE_IDENTITY_SIZE);
-
-  request_identity.sequence_number.high = (int32_t)((request_header->sequence_number & 0xFFFFFFFF00000000) >> 32);
-  request_identity.sequence_number.low = (uint32_t)(request_header->sequence_number & 0xFFFFFFFF);
-
-  ReplierType * replier = reinterpret_cast<ReplierType *>(untyped_replier);
-
-  replier->send_reply(response, request_identity);
+@# TODO: Implement, considering original code in ffe10f9 or earlier
   return true;
 }
 
 static void *
 get_request_datawriter__@(service.namespaced_type.name)(void * untyped_requester)
 {
-  return @('::'.join(service.namespaced_type.namespaces))::typesupport_opendds_cpp::get_request_datawriter__@(service.namespaced_type.name)(
-    untyped_requester);
+@# TODO: Implement, considering original code in ffe10f9 or earlier
+  return NULL;
 }
 
 static void *
 get_reply_datareader__@(service.namespaced_type.name)(void * untyped_requester)
 {
-  return @('::'.join(service.namespaced_type.namespaces))::typesupport_opendds_cpp::get_reply_datareader__@(service.namespaced_type.name)(
-    untyped_requester);
+@# TODO: Implement, considering original code in ffe10f9 or earlier
+  return NULL;
 }
 
 static void *
 get_request_datareader__@(service.namespaced_type.name)(void * untyped_replier)
 {
-  return @('::'.join(service.namespaced_type.namespaces))::typesupport_opendds_cpp::get_request_datareader__@(service.namespaced_type.name)(
-    untyped_replier);
+@# TODO: Implement, considering original code in ffe10f9 or earlier
+  return NULL;
 }
 
 static void *
 get_reply_datawriter__@(service.namespaced_type.name)(void * untyped_replier)
 {
-  return @('::'.join(service.namespaced_type.namespaces))::typesupport_opendds_cpp::get_reply_datawriter__@(service.namespaced_type.name)(
-    untyped_replier);
+@# TODO: Implement, considering original code in ffe10f9 or earlier
+  return NULL;
 }
 
 static service_type_support_callbacks_t _@(service.namespaced_type.name)__callbacks = {
