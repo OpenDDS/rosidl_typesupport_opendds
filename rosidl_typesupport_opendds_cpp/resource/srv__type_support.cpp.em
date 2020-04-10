@@ -106,7 +106,7 @@ void * create_requester__@(service.namespaced_type.name)(
   void ** untyped_writer,
   void * (*allocator)(size_t))
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
     return NULL;
 }
 
@@ -114,7 +114,7 @@ const char * destroy_requester__@(service.namespaced_type.name)(
   void * untyped_requester,
   void (* deallocator)(void *))
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
   return nullptr;
 }
 
@@ -122,7 +122,7 @@ int64_t send_request__@(service.namespaced_type.name)(
   void * untyped_requester,
   const void * untyped_ros_request)
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
   return 1;
 }
 
@@ -136,7 +136,7 @@ void * create_replier__@(service.namespaced_type.name)(
   void ** untyped_writer,
   void * (*allocator)(size_t))
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
     return NULL;
 }
 
@@ -144,7 +144,7 @@ const char * destroy_replier__@(service.namespaced_type.name)(
   void * untyped_replier,
   void (* deallocator)(void *))
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
   return nullptr;
 }
 
@@ -153,7 +153,7 @@ bool take_request__@(service.namespaced_type.name)(
   rmw_request_id_t * request_header,
   void * untyped_ros_request)
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
   return true;
 }
 
@@ -162,7 +162,7 @@ bool take_response__@(service.namespaced_type.name)(
   rmw_request_id_t * request_header,
   void * untyped_ros_response)
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
   return true;
 }
 
@@ -171,35 +171,35 @@ bool send_response__@(service.namespaced_type.name)(
   const rmw_request_id_t * request_header,
   const void * untyped_ros_response)
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
   return true;
 }
 
 void *
 get_request_datawriter__@(service.namespaced_type.name)(void * untyped_requester)
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
     return NULL;
 }
 
 void *
 get_reply_datareader__@(service.namespaced_type.name)(void * untyped_requester)
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
     return NULL;
 }
 
 void *
 get_request_datareader__@(service.namespaced_type.name)(void * untyped_replier)
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
     return NULL;
 }
 
 void *
 get_reply_datawriter__@(service.namespaced_type.name)(void * untyped_replier)
 {
-@# TODO: Implement
+@# TODO: Implement, considering original code in ffe10f9 or earlier
     return NULL;
 }
 
