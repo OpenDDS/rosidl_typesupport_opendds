@@ -7,6 +7,18 @@ from rosidl_cmake import read_generator_arguments
 from rosidl_typesupport_opendds_cpp import generate_cpp
 from rosidl_typesupport_opendds_cpp import generate_dds_opendds_cpp
 
+import glob, os, shutil
+
+def copy_idls(source_rel_path, dest_rel_path, cwd=os.getcwd()):
+    updated_idls_path=os.path.abspath(os.path.join(cwd, source_rel_path))
+    original_idls_path=os.path.abspath(os.path.join(cwd,dest_rel_path))
+    if os.path.isdir(updated_idls_path) and os.path.isdir(original_idls_path):
+        files = glob.iglob(os.path.join(updated_idls_path, "*_.idl"))
+        print('copying from ', updated_idls_path, ' to ', original_idls_path)
+        for file in files:
+            if os.path.isfile(file):
+                print('coping file ', file)
+                shutil.copy2(file, original_idls_path)
 
 def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(
@@ -31,6 +43,11 @@ def main(argv=sys.argv[1:]):
     rc = generate_cpp(args.generator_arguments_file)
     if rc:
         return rc
+
+    copy_idls('../../rmw_build/no_anon_type_idls/std_msgs','rosidl_generator_dds_idl/std_msgs/msg/dds_opendds/')
+    copy_idls('../../rmw_build/no_anon_type_idls/rcl_interfaces/msg','rosidl_generator_dds_idl/rcl_interfaces/msg/dds_opendds')
+    copy_idls('../../rmw_build/no_anon_type_idls/rcl_interfaces/srv','rosidl_generator_dds_idl/rcl_interfaces/srv/dds_opendds/')
+
     return generate_dds_opendds_cpp(
         generator_args['package_name'],
         generator_args.get('additional_files', []),
