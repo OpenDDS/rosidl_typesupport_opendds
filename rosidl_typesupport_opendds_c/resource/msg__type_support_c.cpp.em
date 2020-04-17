@@ -461,8 +461,7 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
   OpenDDS::DCPS::Serializer serializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
 
-  unsigned char header[header_size];
-  memset(header, 0, header_size);
+  unsigned char header[header_size] = { 0 };
   header[1] = ACE_CDR_BYTE_ORDER;
   if (!serializer.write_octet_array(header, header_size)) {
     fprintf(stderr, "OpenDDS serializer failed to write header\n");
@@ -505,7 +504,7 @@ _@(message.structure.namespaced_type.name)__to_message(
   OpenDDS::DCPS::Serializer deserializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
 
   const size_t header_size = 4;
-  unsigned char header[header_size];
+  unsigned char header[header_size] = { 0 };
   if (!deserializer.read_octet_array(header, header_size)) {
     fprintf(stderr, "OpenDDS deserializer failed to read header\n");
     return false;
