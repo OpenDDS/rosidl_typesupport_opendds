@@ -444,9 +444,11 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
     return false;
   }
 
+  const size_t header_size = 4;
   size_t size = 0;
   size_t padding = 0;
   OpenDDS::DCPS::gen_find_size(dds_message, size, padding);
+  size += (padding + header_size);
     cdr_stream->buffer_length = size;
   if (cdr_stream->buffer_length > (std::numeric_limits<unsigned int>::max)()) {
     fprintf(stderr, "cdr_stream->buffer_length, unexpectedly larger than max unsigned int\n");
@@ -457,12 +459,22 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
     cdr_stream->buffer = static_cast<uint8_t *>(cdr_stream->allocator.allocate(cdr_stream->buffer_length, cdr_stream->allocator.state));
   }
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
-  OpenDDS::DCPS::Serializer serializer(b.get(), false);
+  OpenDDS::DCPS::Serializer serializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
+
+  unsigned char header[header_size] = { 0 };
+  header[1] = ACE_CDR_BYTE_ORDER;
+  if (!serializer.write_octet_array(header, header_size)) {
+    fprintf(stderr, "OpenDDS serializer failed to write header\n");
+    return false;
+  }
+
+  serializer.reset_alignment();
+
   if (!(serializer << dds_message)) {
     fprintf(stderr, "OpenDDS serializer failed\n");
     return false;
   }
-  memcpy(cdr_stream->buffer, b.get(), size);
+  memcpy(cdr_stream->buffer, b->rd_ptr(), size);
 
   return true;
 }
@@ -486,7 +498,24 @@ _@(message.structure.namespaced_type.name)__to_message(
   }
 
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(cdr_stream->buffer_length));
-  OpenDDS::DCPS::Serializer deserializer(b.get(), false);
+  memcpy(b->wr_ptr(), cdr_stream->buffer, cdr_stream->buffer_length);
+  b->wr_ptr(cdr_stream->buffer_length);
+
+  OpenDDS::DCPS::Serializer deserializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
+
+  const size_t header_size = 4;
+  unsigned char header[header_size] = { 0 };
+  if (!deserializer.read_octet_array(header, header_size)) {
+    fprintf(stderr, "OpenDDS deserializer failed to read header\n");
+    return false;
+  }
+
+  deserializer.reset_alignment();
+
+  if (header[1] != ACE_CDR_BYTE_ORDER) {
+    deserializer.swap_bytes(true);
+  }
+
   if (!(deserializer >> dds_message)) {
     fprintf(stderr, "OpenDDS deserializer failed\n");
     return false;
