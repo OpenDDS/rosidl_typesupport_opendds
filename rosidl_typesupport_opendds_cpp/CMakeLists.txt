@@ -37,8 +37,7 @@ ament_export_include_directories(include)
 ament_python_install_package(${PROJECT_NAME})
 
 add_library(${PROJECT_NAME} SHARED
-  src/identifier.cpp
-  src/wstring_conversion.cpp)
+  src/identifier.cpp)
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE "ROSIDL_TYPESUPPORT_OPENDDS_CPP_BUILDING_DLL")

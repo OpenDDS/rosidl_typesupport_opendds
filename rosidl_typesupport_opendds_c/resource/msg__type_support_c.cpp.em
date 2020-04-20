@@ -7,7 +7,6 @@ from rosidl_generator_c import idl_type_to_c
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString
-from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
@@ -22,7 +21,6 @@ header_files = [
     include_base + '/' + c_include_prefix + '__rosidl_typesupport_opendds_c.h',
     'rcutils/types/uint8_array.h',
     'rosidl_typesupport_opendds_c/identifier.h',
-    'rosidl_typesupport_opendds_c/wstring_conversion.hpp',
     'rosidl_typesupport_opendds_cpp/message_type_support.h',
     package_name + '/msg/rosidl_typesupport_opendds_c__visibility_control.h',
     include_base + '/' + c_include_prefix + '__struct.h',
@@ -90,9 +88,6 @@ for member in message.structure.members:
     if isinstance(type_, AbstractString):
         includes.setdefault('rosidl_generator_c/string.h', []).append(member.name)
         includes.setdefault('rosidl_generator_c/string_functions.h', []).append(member.name)
-    if isinstance(type_, AbstractWString):
-        includes.setdefault('rosidl_generator_c/u16string.h', []).append(member.name)
-        includes.setdefault('rosidl_generator_c/u16string_functions.h', []).append(member.name)
     if isinstance(type_, NamespacedType):
         include_prefix = idl_structure_type_to_c_include_prefix(type_)
         if include_prefix.endswith('__request'):
@@ -228,22 +223,6 @@ if isinstance(type_, AbstractNestedType):
         return false;
       }
       dds_message->@(member.name)_()[static_cast<int>(i)] = str->data;
-@[    elif isinstance(type_, AbstractWString)]@
-      const rosidl_generator_c__U16String * str = &ros_i;
-      if (str->capacity == 0 || str->capacity <= str->size) {
-        fprintf(stderr, "string capacity not greater than size\n");
-        return false;
-      }
-      if (str->data[str->size] != u'\0') {
-        fprintf(stderr, "string not null-terminated\n");
-        return false;
-      }
-      DDS_Wchar * wstr = rosidl_typesupport_opendds_c::create_wstring_from_u16string(*str);
-      if (NULL == wstr) {
-        fprintf(stderr, "failed to create wstring from u16string\n");
-        return false;
-      }
-      dds_message->@(member.name)_[static_cast<int>(i)] = wstr;
 @[    elif isinstance(type_, BasicType)]@
 @[      if type_.typename == 'boolean']@
       dds_message->@(member.name)_()[i] = 1 ? ros_i : 0;
@@ -269,22 +248,6 @@ if isinstance(type_, AbstractNestedType):
       return false;
     }
     dds_message->@(member.name)_(str->data);
-@[  elif isinstance(member.type, AbstractWString)]@
-    const rosidl_generator_c__U16String * str = &ros_message->@(member.name);
-    if (str->capacity == 0 || str->capacity <= str->size) {
-      fprintf(stderr, "string capacity not greater than size\n");
-      return false;
-    }
-    if (str->data[str->size] != u'\0') {
-      fprintf(stderr, "string not null-terminated\n");
-      return false;
-    }
-    DDS_Wchar * wstr = rosidl_typesupport_opendds_c::create_wstring_from_u16string(*str);
-    if (NULL == wstr) {
-      fprintf(stderr, "failed to create wstring from u16string\n");
-      return false;
-    }
-    dds_message->@(member.name)_(wstr);
 @[  elif isinstance(member.type, BasicType)]@
     dds_message->@(member.name)_(ros_message->@(member.name));
 @[  else]@
@@ -362,16 +325,6 @@ if isinstance(type_, AbstractNestedType):
         fprintf(stderr, "failed to assign string into field '@(member.name)'\n");
         return false;
       }
-@[    elif isinstance(type_, AbstractWString)]@
-      if (!ros_i.data) {
-        rosidl_generator_c__U16String__init(&ros_i);
-      }
-      bool succeeded = rosidl_typesupport_opendds_c::wstring_to_u16string(dds_message->@(member.name)_[i], ros_i);
-      if (!succeeded) {
-        fprintf(stderr, "failed to create wstring from u16string\n");
-        rosidl_generator_c__U16String__fini(&ros_i);
-        return false;
-      }
 @[    elif isinstance(type_, NamespacedType)]@
       const rosidl_message_type_support_t * ts =
         ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(
@@ -394,16 +347,6 @@ if isinstance(type_, AbstractNestedType):
       dds_message->@(member.name)_().c_str());
     if (!succeeded) {
       fprintf(stderr, "failed to assign string into field '@(member.name)'\n");
-      return false;
-    }
-@[  elif isinstance(member.type, AbstractWString)]@
-    if (!ros_message->@(member.name).data) {
-      rosidl_generator_c__U16String__init(&ros_message->@(member.name));
-    }
-    bool succeeded = rosidl_typesupport_opendds_c::wstring_to_u16string(dds_message->@(member.name)_, ros_message->@(member.name));
-    if (!succeeded) {
-      fprintf(stderr, "failed to create wstring from u16string\n");
-      rosidl_generator_c__U16String__fini(&ros_message->@(member.name));
       return false;
     }
 @[  elif isinstance(member.type, BasicType)]@
