@@ -4,6 +4,7 @@ from rosidl_cmake import convert_camel_case_to_lower_case_underscore
 from rosidl_parser.definition import AbstractGenericString
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractString
+from rosidl_parser.definition import AbstractWString
 from rosidl_parser.definition import Array
 from rosidl_parser.definition import BasicType
 from rosidl_parser.definition import BoundedSequence
@@ -20,6 +21,7 @@ header_files = [
     'rosidl_typesupport_opendds_cpp/identifier.hpp',
     'rosidl_typesupport_opendds_cpp/message_type_support.h',
     'rosidl_typesupport_opendds_cpp/message_type_support_decl.hpp',
+    'rosidl_typesupport_opendds_cpp/wstring_conversion.hpp',
 ]
 }@
 @[for header_file in header_files]@
@@ -122,6 +124,10 @@ convert_ros_message_to_dds(
 @[    if isinstance(member.type.value_type, AbstractString)]@
       dds_message.@(member.name)_()[i] =
         ros_message.@(member.name)[i].c_str();
+@[    elif isinstance(member.type.value_type, AbstractWString)]@
+      std::wstring wstr;
+      rosidl_typesupport_opendds_cpp::u16string_to_wstring(ros_message.@(member.name)[i], wstr);
+      dds_message.@(member.name)_()[i] = wstr;
 @[    elif isinstance(member.type.value_type, BasicType)]@
       dds_message.@(member.name)_()[i] =
         ros_message.@(member.name)[i];
@@ -138,6 +144,12 @@ convert_ros_message_to_dds(
   }
 @[  elif isinstance(member.type, AbstractString)]@
   dds_message.@(member.name)_(ros_message.@(member.name).c_str());
+@[  elif isinstance(member.type, AbstractWString)]@
+  {
+    std::wstring wstr;
+    rosidl_typesupport_opendds_cpp::u16string_to_wstring(ros_message.@(member.name), wstr);
+    dds_message.@(member.name)_(wstr);
+  }
 @[  elif isinstance(member.type, BasicType)]@
   dds_message.@(member.name)_(ros_message.@(member.name));
 @[  else]@
@@ -180,6 +192,12 @@ convert_dds_message_to_ros(
 @[    elif isinstance(member.type.value_type, AbstractString)]@
       ros_message.@(member.name)[i] =
         dds_message.@(member.name)_()[i];
+@[    elif isinstance(member.type.value_type, AbstractWString)]@
+      bool succeeded = rosidl_typesupport_opendds_cpp::wstring_to_u16string(dds_message.@(member.name)_()[i], ros_message.@(member.name)[i]);
+      if (!succeeded) {
+        fprintf(stderr, "failed to create wstring from u16string\n");
+        return false;
+      }
 @[    else]@
       if (
         !@('::'.join(member.type.value_type.namespaces))::typesupport_opendds_cpp::convert_dds_message_to_ros(
@@ -196,6 +214,14 @@ convert_dds_message_to_ros(
     dds_message.@(member.name)_();
 @[  elif isinstance(member.type, AbstractString)]@
   ros_message.@(member.name) = dds_message.@(member.name)_();
+@[  elif isinstance(member.type, AbstractWString)]@
+  {
+    bool succeeded = rosidl_typesupport_opendds_cpp::wstring_to_u16string(dds_message.@(member.name)_(), ros_message.@(member.name));
+    if (!succeeded) {
+      fprintf(stderr, "failed to create wstring from u16string\n");
+      return false;
+    }
+  }
 @[  else]@
   if (
     !@('::'.join(member.type.namespaces))::typesupport_opendds_cpp::convert_dds_message_to_ros(
