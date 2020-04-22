@@ -15,28 +15,21 @@
 #ifndef ROSIDL_TYPESUPPORT_OPENDDS_C__WSTRING_CONVERSION_HPP_
 #define ROSIDL_TYPESUPPORT_OPENDDS_C__WSTRING_CONVERSION_HPP_
 
-// #include "ndds/ndds_version.h"
+#include <string>
 
 #include "rosidl_generator_c/u16string.h"
 #include "rosidl_typesupport_opendds_c/visibility_control.h"
 
-// forward declare DDS_Wchar
-#if OPENDDS_DDS_VERSION_MAJOR < 6
-typedef unsigned int DDS_Wchar;
-#else
-typedef unsigned short DDS_Wchar;  // NOLINT
-#endif
-
 namespace rosidl_typesupport_opendds_c
 {
 
-ROSIDL_TYPESUPPORT_OPENDDS_C_PUBLIC
-DDS_Wchar * create_wstring_from_u16string(
-  const rosidl_generator_c__U16String & u16str);
+  ROSIDL_TYPESUPPORT_OPENDDS_C_PUBLIC
+    void u16string_to_wstring(
+      const rosidl_generator_c__U16String& u16str, std::wstring& wstr);
 
-ROSIDL_TYPESUPPORT_OPENDDS_C_PUBLIC
-bool wstring_to_u16string(
-  const DDS_Wchar * wstr, rosidl_generator_c__U16String & u16str);
+  ROSIDL_TYPESUPPORT_OPENDDS_C_PUBLIC
+    bool wstring_to_u16string(
+      const std::wstring& wstr, rosidl_generator_c__U16String& u16str);
 
 }  // namespace rosidl_typesupport_opendds_c
 

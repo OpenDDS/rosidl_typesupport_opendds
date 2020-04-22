@@ -14,49 +14,29 @@
 
 #include <rosidl_typesupport_opendds_cpp/wstring_conversion.hpp>
 
-#ifndef _WIN32
-# pragma GCC diagnostic push
-# pragma GCC diagnostic ignored "-Wpedantic"
-# ifdef __clang__
-#  pragma clang diagnostic ignored "-Wdeprecated-register"
-#  pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
-# endif
-#endif
-// #include "ndds/ndds_cpp.h"
-#ifndef _WIN32
-# pragma GCC diagnostic pop
-#endif
-
 namespace rosidl_typesupport_opendds_cpp
 {
 
-//TODO: add wchar support if needed
-// DDS_Wchar * create_wstring_from_u16string(const std::u16string & u16str)
-// {
-//   DDS_Wchar * wstr = DDS_Wstring_alloc(static_cast<DDS_Long>(u16str.size()));
-//   if (NULL == wstr) {
-//     return wstr;
-//   }
-//   for (size_t i = 0; i < u16str.size(); ++i) {
-//     wstr[i] = static_cast<DDS_Wchar>(u16str[i]);
-//   }
-//   wstr[u16str.size()] = static_cast<DDS_Wchar>(u'\0');
-//   return wstr;
-// }
+  void u16string_to_wstring(const std::u16string& u16str, std::wstring& wstr)
+  {
+    wstr.resize(u16str.size());
+    for (size_t i = 0; i < u16str.size(); ++i) {
+      wstr[i] = static_cast<wchar_t>(u16str[i]);
+    }
+  }
 
-// bool wstring_to_u16string(const DDS_Wchar * wstr, std::u16string & u16str)
-// {
-//   size_t size = static_cast<size_t>(DDS_Wstring_length(wstr));
-//   try {
-//     u16str.resize(size);
-//   } catch (...) {
-//     return false;
-//   }
-//   for (size_t i = 0; i < size; ++i) {
-//     u16str[i] = static_cast<char16_t>(wstr[i]);
-//   }
-//   u16str[size] = u'\0';
-//   return true;
-// }
+  bool wstring_to_u16string(const std::wstring& wstr, std::u16string& u16str)
+  {
+    try {
+      u16str.resize(wstr.size());
+    }
+    catch (...) {
+      return false;
+    }
+    for (size_t i = 0; i < wstr.size(); ++i) {
+      u16str[i] = static_cast<char16_t>(wstr[i]);
+    }
+    return true;
+  }
 
 }  // namespace rosidl_typesupport_opendds_cpp
