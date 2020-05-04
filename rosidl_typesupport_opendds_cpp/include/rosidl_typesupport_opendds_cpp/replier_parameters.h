@@ -1,5 +1,5 @@
-#ifndef ROSIDL_TYPESUPPORT_OPENDDS_CPP__REQUESTER_PARAMETERS_H_
-#define ROSIDL_TYPESUPPORT_OPENDDS_CPP__REQUESTER_PARAMETERS_H_
+#ifndef ROSIDL_TYPESUPPORT_OPENDDS_CPP__REPLIER_PARAMETERS_H_
+#define ROSIDL_TYPESUPPORT_OPENDDS_CPP__REPLIER_PARAMETERS_H_
 
 #include <string>
 #include "dds/DCPS/Service_Participant.h"
@@ -7,57 +7,57 @@
 
 namespace rosidl_typesupport_opendds_cpp
 {
-
-  class RequesterParams {
+// TODO: may need to be templated, if it needs a listener: http://community.rti.com/rti-doc/510/ndds/doc/html/api_cpp/classconnext_1_1ReplierParams.html
+  class ReplierParams {
   public:
-    RequesterParams()
+    explicit ReplierParams()
       : participant_(nullptr) {
     }
 
-    explicit RequesterParams(DDS::DomainParticipant* participant) {
+    ReplierParams(DDS::DomainParticipant* participant) {
       participant_ = participant;
-      // TODO(?): Create a RequesterParams with the parameters a Requester always needs
+      // TODO(?): Create a ReplierParams with the parameters a Replier always needs
     };
 
     /*
     SET
     */
-    RequesterParams& domain_participant(DDS::DomainParticipant* participant) {
+    ReplierParams& domain_participant(DDS::DomainParticipant* participant) {
       participant_ = participant;
       return *this;
     };
 
-    RequesterParams& publisher(DDS::Publisher_var publisher) {
+    ReplierParams& publisher(DDS::Publisher_var publisher) {
       dds_publisher_ = publisher;
       return *this;
     };
 
-    RequesterParams& subscriber(DDS::Subscriber_var subscriber) {
+    ReplierParams& subscriber(DDS::Subscriber_var subscriber) {
       dds_subscriber_ = subscriber;
       return *this;
     };
 
-    RequesterParams& datawriter_qos(DDS::DataWriterQos qos) {
+    ReplierParams& datawriter_qos(DDS::DataWriterQos qos) {
       dw_qos_ = qos;
       return *this;
     };
 
-    RequesterParams& datareader_qos(DDS::DataReaderQos qos) {
+    ReplierParams& datareader_qos(DDS::DataReaderQos qos) {
       dr_qos_ = qos;
       return *this;
     };
 
-    RequesterParams& service_name(const std::string& name) {
+    ReplierParams& service_name(const std::string& name) {
       service_name_ = name;
       return *this;
     };
 
-    RequesterParams& request_topic_name(const std::string& name) {
+    ReplierParams& request_topic_name(const std::string& name) {
       request_topic_name_ = name;
       return *this;
     };
 
-    RequesterParams& reply_topic_name(const std::string& name) {
+    ReplierParams& reply_topic_name(const std::string& name) {
       reply_topic_name_ = name;
       return *this;
     };
