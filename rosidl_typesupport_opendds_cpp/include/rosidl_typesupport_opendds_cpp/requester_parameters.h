@@ -14,7 +14,7 @@ public:
     : participant_(nullptr) {
   }
 
-  explicit RequesterParams(DDS::DomainParticipant* participant) {
+  explicit RequesterParams(DDS::DomainParticipant_var participant) {
     participant_ = participant;
     // TODO(?): Create a RequesterParams with the parameters a Requester always needs
   }
@@ -22,7 +22,7 @@ public:
   /*
   SET
   */
-  RequesterParams& domain_participant(DDS::DomainParticipant* participant) {
+  RequesterParams& domain_participant(DDS::DomainParticipant_var participant) {
     participant_ = participant;
     return *this;
   }
@@ -65,7 +65,7 @@ public:
   /*
   GET
   */
-  DDS::DomainParticipant* domain_participant() const {
+  DDS::DomainParticipant_var domain_participant() const {
     return participant_;
   }
 
@@ -98,7 +98,7 @@ public:
   }
 
 private:
-  DDS::DomainParticipant* participant_;
+  DDS::DomainParticipant_var participant_;
   DDS::Publisher_var dds_publisher_;
   DDS::Subscriber_var dds_subscriber_;
   DDS::DataWriterQos dw_qos_;

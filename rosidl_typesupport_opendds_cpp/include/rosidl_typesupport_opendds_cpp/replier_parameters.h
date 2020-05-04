@@ -10,11 +10,11 @@ namespace rosidl_typesupport_opendds_cpp
 // TODO: may need to be templated, if it needs a listener: http://community.rti.com/rti-doc/510/ndds/doc/html/api_cpp/classconnext_1_1ReplierParams.html
 class ReplierParams {
 public:
-  explicit ReplierParams()
+  ReplierParams()
     : participant_(nullptr) {
   }
 
-  ReplierParams(DDS::DomainParticipant* participant) {
+  explicit ReplierParams(DDS::DomainParticipant_var participant) {
     participant_ = participant;
     // TODO(?): Create a ReplierParams with the parameters a Replier always needs
   }
@@ -22,7 +22,7 @@ public:
   /*
   SET
   */
-  ReplierParams& domain_participant(DDS::DomainParticipant* participant) {
+  ReplierParams& domain_participant(DDS::DomainParticipant_var participant) {
     participant_ = participant;
     return *this;
   }
@@ -65,7 +65,7 @@ public:
   /*
   GET
   */
-  DDS::DomainParticipant* domain_participant() const {
+  DDS::DomainParticipant_var domain_participant() const {
     return participant_;
   }
 
@@ -98,7 +98,7 @@ public:
   }
 
 private:
-  DDS::DomainParticipant* participant_;
+  DDS::DomainParticipant_var participant_;
   DDS::Publisher_var dds_publisher_;
   DDS::Subscriber_var dds_subscriber_;
   DDS::DataWriterQos dw_qos_;
