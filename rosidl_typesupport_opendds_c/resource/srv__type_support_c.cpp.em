@@ -98,20 +98,18 @@ __dds_request_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.request_mes
 __dds_response_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.response_message.structure.namespaced_type.name + '_'
 }@
 static void * create_requester__@(service.namespaced_type.name)(
-  void * untyped_participant,
-  const char * request_topic_str,
-  const char * response_topic_str,
-  const void * untyped_datareader_qos,
-  const void * untyped_datawriter_qos,
-  void ** untyped_reader,
-  void ** untyped_writer,
-  void * (*allocator)(size_t))
+    DDS::DomainParticipant_var dds_participant,
+    const char * request_topic_str,
+    const char * response_topic_str,
+    DDS::Publisher_var dds_publisher,
+    DDS::Subscriber_var dds_subscriber,
+    allocator_t allocator)
 {
   return NULL;
 }
 static const char * destroy_requester__@(service.namespaced_type.name)(
   void * untyped_requester,
-  void (* deallocator)(void *))
+  deallocator_t deallocator)
 {
 @# TODO: Implement
   return NULL;
@@ -126,14 +124,12 @@ static int64_t send_request__@(service.namespaced_type.name)(
 }
 
 static void * create_replier__@(service.namespaced_type.name)(
-  void * untyped_participant,
-  const char * request_topic_str,
-  const char * response_topic_str,
-  const void * untyped_datareader_qos,
-  const void * untyped_datawriter_qos,
-  void ** untyped_reader,
-  void ** untyped_writer,
-  void * (*allocator)(size_t))
+    DDS::DomainParticipant_var dds_participant,
+    const char* request_topic_str,
+    const char* response_topic_str,
+    DDS::Publisher_var dds_publisher,
+    DDS::Subscriber_var dds_subscriber,
+    allocator_t allocator)
 {
 @# TODO: Implement, considering original code in ffe10f9 or earlier
   return NULL;
@@ -141,7 +137,7 @@ static void * create_replier__@(service.namespaced_type.name)(
 
 static const char * destroy_replier__@(service.namespaced_type.name)(
   void * untyped_replier,
-  void (* deallocator)(void *))
+  deallocator_t deallocator)
 {
 @# TODO: Implement, considering original code in ffe10f9 or earlier
   return NULL;
