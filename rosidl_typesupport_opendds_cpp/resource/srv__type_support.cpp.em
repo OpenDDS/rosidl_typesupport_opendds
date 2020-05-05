@@ -105,7 +105,7 @@ void * create_requester__@(service.namespaced_type.name)(
     allocator_t allocator)
 {
 @# TODO: Implement, considering original code in ffe10f9 or earlier
-    return NULL;
+    return nullptr;
 }
 
 const char * destroy_requester__@(service.namespaced_type.name)(
@@ -126,14 +126,14 @@ int64_t send_request__@(service.namespaced_type.name)(
 
 void * create_replier__@(service.namespaced_type.name)(
     DDS::DomainParticipant_var dds_participant,
-    const char* request_topic_str,
-    const char* response_topic_str,
+    const char * request_topic_str,
+    const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
     allocator_t allocator)
 {
 @# TODO: Implement, considering original code in ffe10f9 or earlier
-    return NULL;
+    return nullptr;
 }
 
 const char * destroy_replier__@(service.namespaced_type.name)(

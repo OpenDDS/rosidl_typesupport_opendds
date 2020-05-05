@@ -29,8 +29,7 @@ typedef struct service_type_support_callbacks_t
   const char * service_name;
   //! Function to create a requester
   /*!
-  Set pub/sub default writer/reader qos to the ros converted qos, before calling this function
-  TODO: add 'const' to parameters, when determined they stay unchanged by the Requestor
+  Default Reader / Writer QoS of the passed Publisher / Subscriber must be set to desired values prior to calling this function 
   */
   void * (*create_requester)(
     DDS::DomainParticipant_var dds_participant,
@@ -44,13 +43,12 @@ typedef struct service_type_support_callbacks_t
     void * untyped_requester, deallocator_t deallocator);
   //! Function to create a replier
   /*!
-  Set pub/sub default writer/reader qos to the ros converted qos, before calling this function
-  TODO: add 'const' to parameters, when determined they stay unchanged by the Requestor
+  Default Reader / Writer QoS of the passed Publisher / Subscriber must be set to desired values prior to calling this function
   */
   void * (*create_replier)(
     DDS::DomainParticipant_var dds_participant,
-    const char* request_topic_str,
-    const char* response_topic_str,
+    const char * request_topic_str,
+    const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
     allocator_t allocator);

@@ -125,8 +125,8 @@ static int64_t send_request__@(service.namespaced_type.name)(
 
 static void * create_replier__@(service.namespaced_type.name)(
     DDS::DomainParticipant_var dds_participant,
-    const char* request_topic_str,
-    const char* response_topic_str,
+    const char * request_topic_str,
+    const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
     allocator_t allocator)
