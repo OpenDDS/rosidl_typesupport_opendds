@@ -14,13 +14,13 @@ jobs:
     vmImage: 'ubuntu-18.04'
   container: objectcomputing/opendds_ros2:latest
   steps:
-    - script: |
-      printenv
-      pwd
-      ls
-      echo "agend build directory"
-      echo $(Agent.BuildDirectory)
-    displayName: filesystem check
+  - script: |
+    printenv
+    pwd
+    ls
+    echo "agend build directory"
+    echo $(Agent.BuildDirectory)
+  displayName: filesystem check
   - script: |
       cd $(Agent.BuildDirectory)/s
       git clone https://github.com/oci-labs/rmw_opendds.git
