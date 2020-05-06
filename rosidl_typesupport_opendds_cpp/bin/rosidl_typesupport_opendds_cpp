@@ -44,9 +44,15 @@ def main(argv=sys.argv[1:]):
     if rc:
         return rc
 
-    copy_idls('../../rmw_build/no_anon_type_idls/std_msgs','rosidl_generator_dds_idl/std_msgs/msg/dds_opendds/')
+    copy_idls('../../rmw_build/no_anon_type_idls/action_msgs/msg','rosidl_generator_dds_idl/action_msgs/msg/dds_opendds/')
+    copy_idls('../../rmw_build/no_anon_type_idls/action_msgs/srv','rosidl_generator_dds_idl/action_msgs/srv/dds_opendds/')
     copy_idls('../../rmw_build/no_anon_type_idls/rcl_interfaces/msg','rosidl_generator_dds_idl/rcl_interfaces/msg/dds_opendds')
     copy_idls('../../rmw_build/no_anon_type_idls/rcl_interfaces/srv','rosidl_generator_dds_idl/rcl_interfaces/srv/dds_opendds/')
+    copy_idls('../../rmw_build/no_anon_type_idls/std_msgs','rosidl_generator_dds_idl/std_msgs/msg/dds_opendds/')
+    copy_idls('../../rmw_build/no_anon_type_idls/test_msgs/action','rosidl_generator_dds_idl/test_msgs/action/dds_opendds/')
+    copy_idls('../../rmw_build/no_anon_type_idls/test_msgs/msg','rosidl_generator_dds_idl/test_msgs/msg/dds_opendds/')
+    copy_idls('../../rmw_build/no_anon_type_idls/test_msgs/srv','rosidl_generator_dds_idl/test_msgs/srv/dds_opendds/')
+    copy_idls('../../rmw_build/no_anon_type_idls/unique_identifier_msgs','rosidl_generator_dds_idl/unique_identifier_msgs/msg/dds_opendds/')
 
     return generate_dds_opendds_cpp(
         generator_args['package_name'],

@@ -56,7 +56,7 @@ def generate_dds_opendds_cpp(
         #msg_name is idl_file name without extension
         msg_name = os.path.splitext(os.path.basename(idl_file))[0]
         try:
-            cmd = [idl_pp, idl_file, "-Lc++11", "-o", output_path]
+            cmd = [idl_pp, idl_file, "-Lc++11", "-o", output_path, "-Cw"]
             for include_dir in include_dirs:
                 cmd += ['-I', include_dir]
             subprocess.check_call(cmd)
