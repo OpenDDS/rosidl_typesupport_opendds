@@ -46,6 +46,7 @@ def main(argv=sys.argv[1:]):
 
     copy_idls('../../rmw_build/no_anon_type_idls/action_msgs/msg','rosidl_generator_dds_idl/action_msgs/msg/dds_opendds/')
     copy_idls('../../rmw_build/no_anon_type_idls/action_msgs/srv','rosidl_generator_dds_idl/action_msgs/srv/dds_opendds/')
+    copy_idls('../../rmw_build/no_anon_type_idls/example_interfaces/action','rosidl_generator_dds_idl/example_interfaces/action/dds_opendds/')
     copy_idls('../../rmw_build/no_anon_type_idls/rcl_interfaces/msg','rosidl_generator_dds_idl/rcl_interfaces/msg/dds_opendds')
     copy_idls('../../rmw_build/no_anon_type_idls/rcl_interfaces/srv','rosidl_generator_dds_idl/rcl_interfaces/srv/dds_opendds/')
     copy_idls('../../rmw_build/no_anon_type_idls/std_msgs','rosidl_generator_dds_idl/std_msgs/msg/dds_opendds/')
