@@ -18,31 +18,43 @@
 #include <stdint.h>
 #include <rmw/types.h>
 #include "rosidl_generator_c/service_type_support_struct.h"
+#include "dds/DCPS/Service_Participant.h"
+
+typedef void* (*allocator_t)(size_t);
+typedef void (*deallocator_t)(void*);
 
 typedef struct service_type_support_callbacks_t
 {
   const char * service_namespace;
   const char * service_name;
-  // Function to create a requester
+  //! Function to create a requester
+  /*!
+  Default Reader / Writer QoS of the passed Publisher / Subscriber must be set to desired values prior to calling this function 
+  */
   void * (*create_requester)(
-    void * participant,
+    DDS::DomainParticipant_var dds_participant,
     const char * request_topic_str,
     const char * response_topic_str,
-    const void * datareader_qos, const void * datawriter_qos,
-    void ** reader, void ** writer, void * (*allocator)(size_t));
-  // Function to destroy a requester
+    DDS::Publisher_var dds_publisher,
+    DDS::Subscriber_var dds_subscriber,
+    allocator_t allocator);
+  //! Function to destroy a requester
   const char * (*destroy_requester)(
-    void * untyped_requester, void (* deallocator)(void *));
-  // Function to create a replier
+    void * untyped_requester, deallocator_t deallocator);
+  //! Function to create a replier
+  /*!
+  Default Reader / Writer QoS of the passed Publisher / Subscriber must be set to desired values prior to calling this function
+  */
   void * (*create_replier)(
-    void * participant,
+    DDS::DomainParticipant_var dds_participant,
     const char * request_topic_str,
     const char * response_topic_str,
-    const void * datareader_qos, const void * datawriter_qos,
-    void ** reader, void ** writer, void * (*allocator)(size_t));
-  // Function to destroy a replier
+    DDS::Publisher_var dds_publisher,
+    DDS::Subscriber_var dds_subscriber,
+    allocator_t allocator);
+  //! Function to destroy a replier
   const char * (*destroy_replier)(
-    void * untyped_replier, void (* deallocator)(void *));
+    void * untyped_replier, deallocator_t deallocator);
   // Function to send ROS requests
   int64_t (* send_request)(void * requester, const void * ros_request);
   // Function to read a ROS request from the wire

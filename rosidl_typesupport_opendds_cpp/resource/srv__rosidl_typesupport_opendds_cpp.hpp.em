@@ -22,7 +22,8 @@ header_files = [
     'rmw/types.h',
     'rosidl_typesupport_cpp/service_type_support.hpp',
     'rosidl_typesupport_interface/macros.h',
-    package_name + '/msg/rosidl_typesupport_opendds_cpp__visibility_control.h'
+    package_name + '/msg/rosidl_typesupport_opendds_cpp__visibility_control.h',
+    'dds/DCPS/Service_Participant.h'
 ]
 }@
 @[for header_file in header_files]@
@@ -35,6 +36,9 @@ header_files = [
 #include "@(header_file)"
 @[end for]@
 
+typedef void* (*allocator_t)(size_t);
+typedef void (*deallocator_t)(void*);
+
 @[for ns in service.namespaced_type.namespaces]@
 namespace @(ns)
 {
@@ -45,20 +49,18 @@ namespace typesupport_opendds_cpp
 ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 void *
 create_requester__@(service.namespaced_type.name)(
-  void * untyped_participant,
-  const char * request_topic_str,
-  const char * response_topic_str,
-  const void * untyped_datareader_qos,
-  const void * untyped_datawriter_qos,
-  void ** untyped_reader,
-  void ** untyped_writer,
-  void * (*allocator)(size_t));
+    DDS::DomainParticipant_var dds_participant,
+    const char * request_topic_str,
+    const char * response_topic_str,
+    DDS::Publisher_var dds_publisher,
+    DDS::Subscriber_var dds_subscriber,
+    allocator_t allocator);
 
 ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 const char *
 destroy_requester__@(service.namespaced_type.name)(
   void * untyped_requester,
-  void (* deallocator)(void *));
+  deallocator_t deallocator);
 
 ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 int64_t
@@ -69,20 +71,18 @@ send_request__@(service.namespaced_type.name)(
 ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 void *
 create_replier__@(service.namespaced_type.name)(
-  void * untyped_participant,
-  const char * request_topic_str,
-  const char * response_topic_str,
-  const void * untyped_datareader_qos,
-  const void * untyped_datawriter_qos,
-  void ** untyped_reader,
-  void ** untyped_writer,
-  void * (*allocator)(size_t));
+    DDS::DomainParticipant_var dds_participant,
+    const char * request_topic_str,
+    const char * response_topic_str,
+    DDS::Publisher_var dds_publisher,
+    DDS::Subscriber_var dds_subscriber,
+    allocator_t allocator);
 
 ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 const char *
 destroy_replier__@(service.namespaced_type.name)(
   void * untyped_replier,
-  void (* deallocator)(void *));
+  deallocator_t deallocator);
 
 ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 bool
