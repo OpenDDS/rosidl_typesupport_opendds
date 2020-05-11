@@ -22,8 +22,10 @@ header_files = [
 ]
 
 dds_specific_header_files = [
-    include_base + '/dds_opendds/' + interface_path.stem + '_C.h',
-    include_base + '/dds_opendds/' + interface_path.stem + '_TypeSupportImpl.h'
+    include_base + '/dds_opendds/' + cpp_include_prefix + '_C.h',
+    include_base + '/dds_opendds/' + cpp_include_prefix + '_TypeSupportImpl.h'
+    include_base + '/dds_opendds/' + cpp_include_prefix + '__RequestResponseC.h',
+    include_base + '/dds_opendds/' + cpp_include_prefix + '__RequestResponseTypeSupportImpl.h',
 ]
 }@
 #ifdef OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO

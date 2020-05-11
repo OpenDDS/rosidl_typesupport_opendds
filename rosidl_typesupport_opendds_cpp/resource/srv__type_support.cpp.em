@@ -13,12 +13,17 @@ header_files = [
     'rosidl_typesupport_opendds_cpp/identifier.hpp',
     'rosidl_typesupport_opendds_cpp/service_type_support.h',
     'rosidl_typesupport_opendds_cpp/service_type_support_decl.hpp',
-    include_base + '/' + c_include_prefix + '__struct.hpp'
+    'rosidl_typesupport_opendds_cpp/requester_parameters.h',
+    'rosidl_typesupport_opendds_cpp/replier_parameters.h',
+    'rosidl_typesupport_opendds_cpp/requester.h',
+    include_base + '/' + c_include_prefix + '__struct.hpp',
 ]
 
 dds_specific_header_files = [
-    include_base + '/dds_opendds/' + interface_path.stem + '_C.h',
-    include_base + '/dds_opendds/' + interface_path.stem + '_TypeSupportImpl.h'
+    include_base + '/dds_opendds/' + cpp_include_prefix + '_C.h',
+    include_base + '/dds_opendds/' + cpp_include_prefix + '_TypeSupportImpl.h',
+    include_base + '/dds_opendds/' + cpp_include_prefix + '__RequestResponseC.h',
+    include_base + '/dds_opendds/' + cpp_include_prefix + '__RequestResponseTypeSupportImpl.h',
 ]
 }@
 #ifdef OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO
@@ -87,6 +92,7 @@ namespace @(ns)
 @[end for]@
 namespace typesupport_opendds_cpp
 {
+@#__dds_response_msg_typesupport_type = __ros_srv_pkg_prefix + '::dds_::' +  service.namespaced_type.name + 'ResponseWrapperTypeSupport'
 @{
 __ros_srv_pkg_prefix = '::'.join(service.namespaced_type.namespaces)
 __ros_srv_type = __ros_srv_pkg_prefix + '::' + service.namespaced_type.name
@@ -94,6 +100,7 @@ __ros_request_msg_type = __ros_srv_pkg_prefix + '::' + service.request_message.s
 __ros_response_msg_type = __ros_srv_pkg_prefix + '::' + service.response_message.structure.namespaced_type.name
 __dds_request_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.request_message.structure.namespaced_type.name + '_'
 __dds_response_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.response_message.structure.namespaced_type.name + '_'
+__dds_msg_typesupport_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name
 }@
 
 void * create_requester__@(service.namespaced_type.name)(
@@ -104,15 +111,62 @@ void * create_requester__@(service.namespaced_type.name)(
     DDS::Subscriber_var dds_subscriber,
     allocator_t allocator)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
-    return nullptr;
+  using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
+    @(__dds_request_msg_type),
+    @(__dds_response_msg_type)
+  >;
+
+  @# Register TypeSupports
+  @(__dds_msg_typesupport_type)RequestWrapperTypeSupport_var tsRequest =
+    new @(__dds_msg_typesupport_type)RequestWrapperTypeSupportImpl;
+
+  if (tsRequest->register_type(dds_participant, "") != DDS::RETCODE_OK) {
+    RMW_SET_ERROR_MSG("C++ exception during registering of request message type");
+    return NULL;
+  }
+
+  @(__dds_msg_typesupport_type)ResponseWrapperTypeSupport_var tsResponse =
+    new @(__dds_msg_typesupport_type)ResponseWrapperTypeSupportImpl;
+
+  if (tsResponse->register_type(dds_participant, "") != DDS::RETCODE_OK) {
+    RMW_SET_ERROR_MSG("C++ exception during registering of response message type");
+    return NULL;
+  }
+
+  auto _allocator = allocator ? allocator : &malloc;
+  rosidl_typesupport_opendds_cpp::RequesterParams requester_params(dds_participant);
+
+  requester_params.publisher(dds_publisher);
+  requester_params.subscriber(dds_subscriber);
+  requester_params.request_topic_name(request_topic_str);
+  requester_params.reply_topic_name(response_topic_str);
+  @# requester_params.datareader_qos(*datareader_qos);
+  @# requester_params.datawriter_qos(*datawriter_qos);
+
+  RequesterType * requester = static_cast<RequesterType *>(_allocator(sizeof(RequesterType)));
+  try {
+    new (requester) RequesterType(requester_params);
+  } catch (...) {
+    RMW_SET_ERROR_MSG("C++ exception during construction of Requester");
+    return NULL;
+  }
+
+  return requester;
 }
 
 const char * destroy_requester__@(service.namespaced_type.name)(
   void * untyped_requester,
   deallocator_t deallocator)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
+  using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
+    @(__dds_request_msg_type),
+    @(__dds_response_msg_type)
+  >;
+  auto requester = static_cast<RequesterType *>(untyped_requester);
+
+  requester->~RequesterType();
+  auto _deallocator = deallocator ? deallocator : &free;
+  _deallocator(requester);
   return nullptr;
 }
 

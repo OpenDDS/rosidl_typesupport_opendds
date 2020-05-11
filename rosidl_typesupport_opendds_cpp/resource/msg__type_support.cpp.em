@@ -22,6 +22,8 @@ header_files = [
     'rosidl_typesupport_opendds_cpp/message_type_support.h',
     'rosidl_typesupport_opendds_cpp/message_type_support_decl.hpp',
     'rosidl_typesupport_opendds_cpp/wstring_conversion.hpp',
+    'rosidl_typesupport_opendds_cpp/requester_parameters.h',
+    'rosidl_typesupport_opendds_cpp/replier_parameters.h',
 ]
 }@
 @[for header_file in header_files]@

@@ -15,6 +15,7 @@
 import os
 import subprocess
 import sys
+import shutil
 
 from rosidl_cmake import generate_files
 
@@ -55,6 +56,7 @@ def generate_dds_opendds_cpp(
 
         #msg_name is idl_file name without extension
         msg_name = os.path.splitext(os.path.basename(idl_file))[0]
+
         try:
             cmd = [idl_pp, idl_file, "-Lc++11", "-o", output_path]
             for include_dir in include_dirs:
@@ -73,6 +75,42 @@ def generate_dds_opendds_cpp(
             print("'%s' failed to generate the expected files for '%s/%s'" %
                   (idl_pp, pkg_name, msg_name), file=sys.stderr)
 
+        if "/srv/" in idl_file:
+            generated_idl_file = output_path + "/" + msg_name + "_RequestResponse.idl"
+            input_idl_path = os.path.dirname(idl_file)
+
+            try:
+                #cmd = [idl_pp, generated_idl_file, "-Lc++11", "-o", output_path]
+                cmd = [idl_pp, generated_idl_file, "-Lc++11", "-o", output_path, "-Sa", "-St", "--no-dcps-data-type-warnings"]
+                for include_dir in include_dirs:
+                    cmd += ['-I', include_dir]
+                cmd += ['-I', input_idl_path]
+                subprocess.check_call(cmd)
+            except subprocess.CalledProcessError as e:
+                raise RuntimeError('OpenDDS compiler failed to generate the expected service files')
+            
+            any_missing = False
+            for suffix in ['_RequestResponseC.h', '_RequestResponseTypeSupportImpl.cpp', '_RequestResponseTypeSupportImpl.h', '_RequestResponseTypeSupport.idl']:
+                filename = os.path.join(output_path, msg_name + suffix)
+                if not os.path.exists(filename):
+                    any_missing = True
+                    break
+            if any_missing:
+                print("'%s' failed to generate the expected files for '%s/%s'" %
+                      (idl_pp, pkg_name, msg_name), file=sys.stderr)
+
+            try:
+                generated_idl_file = output_path + "/" + msg_name + "_RequestResponseTypeSupport.idl"
+                cmd = ["tao_idl", generated_idl_file, "-o", output_path, "-I$TAO_ROOT", "-I$DDS_ROOT", "--idl-version",  "4", "-SS", "-Sa", "-St", "-Wb,pre_include=ace/pre.h", "-Wb,post_include=ace/post.h", "--unknown-annotations", "ignore"]
+                for include_dir in include_dirs:
+                    cmd += ['-I', include_dir]
+                cmd += ['-I', input_idl_path]
+                cmd += ['-I', output_path]
+                subprocess.check_call(cmd)
+                print("COMMAND: '%s'", cmd, file=sys.stderr)
+            except subprocess.CalledProcessError as e:
+                raise RuntimeError('TAO IDL compiler failed to generate the expected service files')
+
     return 0
 
 
@@ -82,6 +120,15 @@ def generate_cpp(arguments_file):
         '%s__rosidl_typesupport_opendds_cpp.hpp',
         'idl__dds_opendds__type_support.cpp.em':
         'dds_opendds/%s__type_support.cpp'
-    }
+}
     generate_files(arguments_file, mapping)
     return 0
+
+def generate_idl(arguments_file):
+    mapping = {
+        'idl__rosidl_typesupport_opendds_cpp.idl.em':
+        'dds_opendds/%s__RequestResponse.idl'
+}
+    generate_files(arguments_file, mapping, None, True)
+    return 0
+
