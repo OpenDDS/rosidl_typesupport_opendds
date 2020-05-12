@@ -49,7 +49,7 @@ jobs:
         source install/local_setup.bash
         printenv|grep DDS
         printenv|grep ROS
-        colcon build --symlink-install --packages-up-to rcl_interfaces examples_rclcpp_minimal_publisher examples_rclcpp_minimal_subscriber
+        colcon build --symlink-install --packages-up-to rcl_interfaces examples_rclcpp_minimal_publisher examples_rclcpp_minimal_subscriber examples_rclcpp_minimal_service examples_rclcpp_minimal_client
     displayName:  build simple tests
   - script: |
         cd $(Agent.BuildDirectory)
