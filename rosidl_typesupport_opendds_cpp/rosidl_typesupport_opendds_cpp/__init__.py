@@ -107,7 +107,6 @@ def generate_dds_opendds_cpp(
                 cmd += ['-I', input_idl_path]
                 cmd += ['-I', output_path]
                 subprocess.check_call(cmd)
-                print("COMMAND: '%s'", cmd, file=sys.stderr)
             except subprocess.CalledProcessError as e:
                 raise RuntimeError('TAO IDL compiler failed to generate the expected service files')
 

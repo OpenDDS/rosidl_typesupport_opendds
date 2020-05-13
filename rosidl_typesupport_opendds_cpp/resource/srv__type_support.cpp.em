@@ -133,6 +133,63 @@ void * create_requester__@(service.namespaced_type.name)(
     return NULL;
   }
 
+  @# Create Topics
+  CORBA::String_var type_name = tsRequest->get_type_name();
+  DDS::Topic_var request_topic = dds_participant->create_topic(request_topic_str,
+                                                      type_name.in(),
+                                                      TOPIC_QOS_DEFAULT,
+                                                      DDS::TopicListener::_nil(),
+                                                      OpenDDS::DCPS::DEFAULT_STATUS_MASK);
+
+  if (CORBA::is_nil(request_topic.in())) {
+    RMW_SET_ERROR_MSG("Request create_topic failed");
+    return NULL;
+  }
+
+  type_name = tsResponse->get_type_name();
+  DDS::Topic_var response_topic = dds_participant->create_topic(response_topic_str,
+                                        type_name.in(),
+                                        TOPIC_QOS_DEFAULT,
+                                        DDS::TopicListener::_nil(),
+                                        OpenDDS::DCPS::DEFAULT_STATUS_MASK);
+
+  if (CORBA::is_nil(response_topic.in())) {
+    RMW_SET_ERROR_MSG("Response create_topic failed");
+    return NULL;
+  }
+
+  @# Get QoS
+  DDS::DataWriterQos dw_qos;
+  dds_publisher->get_default_datawriter_qos(dw_qos);
+
+  DDS::DataReaderQos dr_qos;
+  dds_subscriber->get_default_datareader_qos(dr_qos);
+
+  @# Create DataWriter
+  DDS::DataWriter_var dw = dds_publisher->create_datawriter(request_topic.in(),
+                                                            dw_qos,
+                                                            DDS::DataWriterListener::_nil(),
+                                                            OpenDDS::DCPS::DEFAULT_STATUS_MASK);
+
+  if (CORBA::is_nil(dw.in())) {
+    RMW_SET_ERROR_MSG("Request create_datawriter failed");
+    return NULL;
+  }
+
+  @# Create DataReader
+  @#DDS::DataReaderListener_var listener(new DataReaderListenerImpl);
+
+  DDS::DataReader_var dr = dds_subscriber->create_datareader(response_topic.in(),
+                                                            dr_qos,
+  @#                                                          listener.in(),
+                                                            DDS::DataReaderListener::_nil(),
+                                                            OpenDDS::DCPS::DEFAULT_STATUS_MASK);
+
+  if (CORBA::is_nil(dr.in())) {
+    RMW_SET_ERROR_MSG("Response create_datareader failed");
+    return NULL;
+  }
+
   auto _allocator = allocator ? allocator : &malloc;
   rosidl_typesupport_opendds_cpp::RequesterParams requester_params(dds_participant);
 
