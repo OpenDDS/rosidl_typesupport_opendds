@@ -111,6 +111,9 @@ void * create_requester__@(service.namespaced_type.name)(
     DDS::Subscriber_var dds_subscriber,
     allocator_t allocator)
 {
+  @# TODO: remove next line when ready
+  return nullptr;
+
   using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
     @(__dds_request_msg_type),
     @(__dds_response_msg_type)
@@ -143,7 +146,7 @@ void * create_requester__@(service.namespaced_type.name)(
 
   if (CORBA::is_nil(request_topic.in())) {
     RMW_SET_ERROR_MSG("Request create_topic failed");
-    return NULL;
+    return nullptr;
   }
 
   type_name = tsResponse->get_type_name();
@@ -155,7 +158,7 @@ void * create_requester__@(service.namespaced_type.name)(
 
   if (CORBA::is_nil(response_topic.in())) {
     RMW_SET_ERROR_MSG("Response create_topic failed");
-    return NULL;
+    return nullptr;
   }
 
   @# Get QoS
@@ -173,21 +176,18 @@ void * create_requester__@(service.namespaced_type.name)(
 
   if (CORBA::is_nil(dw.in())) {
     RMW_SET_ERROR_MSG("Request create_datawriter failed");
-    return NULL;
+    return nullptr;
   }
 
   @# Create DataReader
-  @#DDS::DataReaderListener_var listener(new DataReaderListenerImpl);
-
   DDS::DataReader_var dr = dds_subscriber->create_datareader(response_topic.in(),
                                                             dr_qos,
-  @#                                                          listener.in(),
                                                             DDS::DataReaderListener::_nil(),
                                                             OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
   if (CORBA::is_nil(dr.in())) {
     RMW_SET_ERROR_MSG("Response create_datareader failed");
-    return NULL;
+    return nullptr;
   }
 
   auto _allocator = allocator ? allocator : &malloc;
@@ -205,7 +205,7 @@ void * create_requester__@(service.namespaced_type.name)(
     new (requester) RequesterType(requester_params);
   } catch (...) {
     RMW_SET_ERROR_MSG("C++ exception during construction of Requester");
-    return NULL;
+    return nullptr;
   }
 
   return requester;
@@ -215,6 +215,8 @@ const char * destroy_requester__@(service.namespaced_type.name)(
   void * untyped_requester,
   deallocator_t deallocator)
 {
+  return nullptr;
+
   using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
     @(__dds_request_msg_type),
     @(__dds_response_msg_type)
