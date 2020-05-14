@@ -34,11 +34,17 @@ namespace rosidl_typesupport_opendds_cpp
     if (dw == nullptr) {
       return DDS::RETCODE_ERROR;
     }
-    DDS::ReturnCode_t return_code = requester_params->writer().write(request, DDS::HANDLE_NIL);
 
-    if (return_code == DDS::RETCODE_OK) {
-      ++sequence_number;
+    // Set GUID and sequence_number
+    OpenDDS::DCPS::DataWriterImpl* dwImpl = dynamic_cast<OpenDDS::DCPS::DataWriterImpl*>(dw);
+    if (!dwImpl) {
+      return DDS::RETCODE_ERROR;
     }
+    OpenDDS::DCPS::RepoId id = dw->get_publication_id();
+    request.header.request_id().writer_guid(writer_guid);
+    request.header.request_id().sequence_number(++sequence_number);
+    
+    DDS::ReturnCode_t return_code = requester_params->writer().write(request, DDS::HANDLE_NIL);
 
     return return_code;
   }

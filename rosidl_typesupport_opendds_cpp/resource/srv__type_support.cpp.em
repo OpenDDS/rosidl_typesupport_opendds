@@ -251,12 +251,6 @@ int64_t send_request__@(service.namespaced_type.name)(
   request_wrapper.request(dds_request);
 
   RequesterType * requester = static_cast<RequesterType *>(untyped_requester);
-  @(__rpc_header_prefix)RequestHeader header;
-  OpenDDS::DCPS::GUID_t writer_guid;
-  header.request_id().writer_guid(writer_guid);
-  header.instance_name("Test");
-  request_wrapper.header(header);
-
   if (DDS::RETCODE_OK != requester->send_request(request_wrapper)) {
     RMW_SET_ERROR_MSG("send_request failed");
     return -1;

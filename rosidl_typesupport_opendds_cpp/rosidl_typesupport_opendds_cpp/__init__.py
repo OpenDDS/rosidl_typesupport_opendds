@@ -80,8 +80,7 @@ def generate_dds_opendds_cpp(
             input_idl_path = os.path.dirname(idl_file)
 
             try:
-                #cmd = [idl_pp, generated_idl_file, "-Lc++11", "-o", output_path]
-                cmd = [idl_pp, generated_idl_file, "-Lc++11", "-o", output_path, "-Sa", "-St", "--no-dcps-data-type-warnings"]
+                cmd = [idl_pp, generated_idl_file, "-Lc++11", "-o", output_path, "-Sa", "-St", "-Cw", "--no-dcps-data-type-warnings"]
                 for include_dir in include_dirs:
                     cmd += ['-I', include_dir]
                 cmd += ['-I', input_idl_path]
