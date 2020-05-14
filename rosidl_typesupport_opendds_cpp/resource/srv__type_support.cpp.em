@@ -101,6 +101,8 @@ __ros_response_msg_type = __ros_srv_pkg_prefix + '::' + service.response_message
 __dds_request_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.request_message.structure.namespaced_type.name + '_'
 __dds_response_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.response_message.structure.namespaced_type.name + '_'
 __dds_msg_typesupport_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name
+__dds_header_prefix =  __ros_srv_pkg_prefix + '::dds_::'
+__rpc_header_prefix =  __ros_srv_pkg_prefix + '::dds_::rpc::'
 }@
 
 void * create_requester__@(service.namespaced_type.name)(
@@ -197,8 +199,6 @@ void * create_requester__@(service.namespaced_type.name)(
   requester_params.subscriber(dds_subscriber);
   requester_params.request_topic_name(request_topic_str);
   requester_params.reply_topic_name(response_topic_str);
-  @# requester_params.datareader_qos(*datareader_qos);
-  @# requester_params.datawriter_qos(*datawriter_qos);
 
   RequesterType * requester = static_cast<RequesterType *>(_allocator(sizeof(RequesterType)));
   try {
@@ -215,6 +215,7 @@ const char * destroy_requester__@(service.namespaced_type.name)(
   void * untyped_requester,
   deallocator_t deallocator)
 {
+  @# TODO: remove next line when ready
   return nullptr;
 
   using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
@@ -233,8 +234,37 @@ int64_t send_request__@(service.namespaced_type.name)(
   void * untyped_requester,
   const void * untyped_ros_request)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
-  return 1;
+  using ROSRequestType = @(__ros_request_msg_type);
+  using DDSRequestType = @(__dds_request_msg_type);
+  using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
+    @(__dds_msg_typesupport_type)RequestWrapper,
+    @(__dds_msg_typesupport_type)ResponseWrapper
+  >;
+
+  const ROSRequestType & ros_request = *(static_cast<const ROSRequestType *>(untyped_ros_request));
+  DDSRequestType dds_request;
+
+  @(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_ros_message_to_dds(
+    ros_request, dds_request);
+
+  @(__dds_msg_typesupport_type)RequestWrapper request_wrapper;
+  request_wrapper.request(dds_request);
+
+  RequesterType * requester = static_cast<RequesterType *>(untyped_requester);
+  @(__rpc_header_prefix)RequestHeader header;
+  OpenDDS::DCPS::GUID_t writer_guid;
+  header.request_id().writer_guid(writer_guid);
+  header.instance_name("Test");
+  request_wrapper.header(header);
+
+  if (DDS::RETCODE_OK != requester->send_request(request_wrapper)) {
+    RMW_SET_ERROR_MSG("send_request failed");
+    return -1;
+  }
+
+  int64_t sequence_number = ((int64_t)requester->get_sequence_number().high) << 32 |
+    requester->get_sequence_number().low;
+  return sequence_number;
 }
 
 void * create_replier__@(service.namespaced_type.name)(

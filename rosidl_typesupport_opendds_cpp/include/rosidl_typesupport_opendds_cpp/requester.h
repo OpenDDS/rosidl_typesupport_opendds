@@ -4,6 +4,7 @@
 #include <string>
 #include "dds/DCPS/Service_Participant.h"
 #include "dds/DCPS/Marked_Default_Qos.h"
+#include "dds/DdsDcpsC.h"
 
 #include "requester_parameters.h"
 
@@ -41,11 +42,16 @@ namespace rosidl_typesupport_opendds_cpp
 
     //ReplyDataReader get_reply_datareader() const;
 
+    OpenDDS::RTPS::SequenceNumber_t get_sequence_number() const;
+
+    DDS::ReturnCode_t send_request(const TReq&);
 
     virtual ~Requester();
 
   private:
     RequesterParams* requester_params;
+
+    OpenDDS::RTPS::SequenceNumber_t sequence_number;
 
     //RequestDataWriter* request_datawriter;
 
