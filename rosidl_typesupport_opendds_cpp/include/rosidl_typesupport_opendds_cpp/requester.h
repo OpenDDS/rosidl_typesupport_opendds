@@ -18,9 +18,8 @@ namespace rosidl_typesupport_opendds_cpp
 
     typedef TRep ReplyType;
 
-    //typedef typename dds::dds_type_traits<TReq>::DataWriter RequestDataWriter;
-
-    //typedef typename dds::dds_type_traits<TRep>::DataReader ReplyDataReader;
+    typedef typename OpenDDS::DCPS::DDSTraits<TReq>::DataWriterType RequestDataWriter;
+    typedef typename OpenDDS::DCPS::DDSTraits<TReq>::DataReaderType RequestDataReader;
 
     typedef RequesterParams Params;
 
@@ -45,6 +44,9 @@ namespace rosidl_typesupport_opendds_cpp
     OpenDDS::RTPS::SequenceNumber_t get_sequence_number() const;
 
     DDS::ReturnCode_t send_request(const TReq&);
+
+    DDS::ReturnCode_t take_reply(TRep& reply,
+      const typesupport_opendds_cpp::SampleIdentity& related_request_id);
 
     virtual ~Requester();
 

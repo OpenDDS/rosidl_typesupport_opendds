@@ -28,16 +28,18 @@ include_directives = set()
 #include "dds/DdsDcpsGuid.idl"
 #include "dds/DCPS/RTPS/RtpsCore.idl"
 
+module typesupport_opendds_cpp {
+struct SampleIdentity {
+  OpenDDS::DCPS::GUID_t writer_guid;
+  OpenDDS::RTPS::SequenceNumber_t sequence_number;
+}; 
+}; // module typesupport_opendds_cpp
+
 module @(package_name) {
 
 module srv {
 
 module dds_ {
-
-struct SampleIdentity {
-  OpenDDS::DCPS::GUID_t writer_guid;
-  OpenDDS::RTPS::SequenceNumber_t sequence_number;
-}; 
 
 module rpc {
 typedef string<255> InstanceName;
@@ -52,11 +54,11 @@ enum RemoteExceptionCode_t
 };
 
 struct RequestHeader {
-  SampleIdentity request_id;
+  typesupport_opendds_cpp::SampleIdentity request_id;
   InstanceName instance_name;
 };
-struct ReplyHeader {
-  SampleIdentity related_request_id;
+struct ResponseHeader {
+  typesupport_opendds_cpp::SampleIdentity related_request_id;
   RemoteExceptionCode_t remote_ex;
 };
 };
@@ -68,7 +70,7 @@ struct @(service.namespaced_type.name)RequestWrapper {
 };
 @@topic
 struct @(service.namespaced_type.name)ResponseWrapper {
-  rpc::ReplyHeader header;
+  rpc::ResponseHeader header;
   @(service.namespaced_type.name)_Response_ response;
 };
 

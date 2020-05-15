@@ -81,10 +81,6 @@ TEMPLATE(
 )
 }@
 
-class DDSDomainParticipant;
-class DDSDataReader;
-struct DDS_SampleIdentity_t;
-
 @[for ns in service.namespaced_type.namespaces]@
 
 namespace @(ns)
@@ -100,6 +96,8 @@ __ros_request_msg_type = __ros_srv_pkg_prefix + '::' + service.request_message.s
 __ros_response_msg_type = __ros_srv_pkg_prefix + '::' + service.response_message.structure.namespaced_type.name
 __dds_request_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.request_message.structure.namespaced_type.name + '_'
 __dds_response_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.response_message.structure.namespaced_type.name + '_'
+__dds_request_wrapper_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name + 'RequestWrapper'
+__dds_response_wrapper_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name + 'ResponseWrapper'
 __dds_msg_typesupport_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name
 __dds_header_prefix =  __ros_srv_pkg_prefix + '::dds_::'
 __rpc_header_prefix =  __ros_srv_pkg_prefix + '::dds_::rpc::'
@@ -117,8 +115,8 @@ void * create_requester__@(service.namespaced_type.name)(
   return nullptr;
 
   using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
-    @(__dds_request_msg_type),
-    @(__dds_response_msg_type)
+    @(__dds_request_wrapper_msg_type),
+    @(__dds_response_wrapper_msg_type)
   >;
 
   @# Register TypeSupports
@@ -163,16 +161,9 @@ void * create_requester__@(service.namespaced_type.name)(
     return nullptr;
   }
 
-  @# Get QoS
-  DDS::DataWriterQos dw_qos;
-  dds_publisher->get_default_datawriter_qos(dw_qos);
-
-  DDS::DataReaderQos dr_qos;
-  dds_subscriber->get_default_datareader_qos(dr_qos);
-
   @# Create DataWriter
   DDS::DataWriter_var dw = dds_publisher->create_datawriter(request_topic.in(),
-                                                            dw_qos,
+                                                            DATAWRITER_QOS_DEFAULT,
                                                             DDS::DataWriterListener::_nil(),
                                                             OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
@@ -183,7 +174,7 @@ void * create_requester__@(service.namespaced_type.name)(
 
   @# Create DataReader
   DDS::DataReader_var dr = dds_subscriber->create_datareader(response_topic.in(),
-                                                            dr_qos,
+                                                            DATAREADER_QOS_DEFAULT,
                                                             DDS::DataReaderListener::_nil(),
                                                             OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
@@ -219,8 +210,8 @@ const char * destroy_requester__@(service.namespaced_type.name)(
   return nullptr;
 
   using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
-    @(__dds_request_msg_type),
-    @(__dds_response_msg_type)
+    @(__dds_request_wrapper_msg_type),
+    @(__dds_response_wrapper_msg_type)
   >;
   auto requester = static_cast<RequesterType *>(untyped_requester);
 
@@ -295,7 +286,35 @@ bool take_response__@(service.namespaced_type.name)(
   rmw_request_id_t * request_header,
   void * untyped_ros_response)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
+  using ROSResponseType = @(__ros_response_msg_type);
+  using DDSResponseType = @(__dds_response_msg_type);
+  using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
+    @(__dds_msg_typesupport_type)RequestWrapper,
+    @(__dds_msg_typesupport_type)ResponseWrapper
+  >;
+
+  RequesterType * requester = static_cast<RequesterType *>(untyped_requester);
+  @(__dds_msg_typesupport_type)ResponseWrapper dds_response_wrapper;
+
+  @# Convert request_header to related_request_id
+  ::typesupport_opendds_cpp::SampleIdentity related_request_id;
+  @# TODO: can we do this conversion???
+  related_request_id.writer_guid(*reinterpret_cast<OpenDDS::DCPS::GUID_t *>(&request_header->writer_guid));
+  OpenDDS::RTPS::SequenceNumber_t sn;
+  sn.high = (::CORBA::Long)(request_header->sequence_number >> 32);
+  sn.low = (::CORBA::ULong)(request_header->sequence_number & 0xFFFFFFFF);
+  related_request_id.sequence_number(sn);
+
+  if (DDS::RETCODE_OK != requester->take_reply(dds_response_wrapper,
+                                               related_request_id)) {
+    RMW_SET_ERROR_MSG("take_reply failed");
+    return -1;
+  }
+
+  ROSResponseType* ros_response = static_cast<ROSResponseType *>(untyped_ros_response);
+  @(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_dds_message_to_ros(
+    dds_response_wrapper.response(), *ros_response);
+
   return true;
 }
 
@@ -312,28 +331,28 @@ void *
 get_request_datawriter__@(service.namespaced_type.name)(void * untyped_requester)
 {
 @# TODO: Implement, considering original code in ffe10f9 or earlier
-    return NULL;
+    return nullptr;
 }
 
 void *
 get_reply_datareader__@(service.namespaced_type.name)(void * untyped_requester)
 {
 @# TODO: Implement, considering original code in ffe10f9 or earlier
-    return NULL;
+    return nullptr;
 }
 
 void *
 get_request_datareader__@(service.namespaced_type.name)(void * untyped_replier)
 {
 @# TODO: Implement, considering original code in ffe10f9 or earlier
-    return NULL;
+    return nullptr;
 }
 
 void *
 get_reply_datawriter__@(service.namespaced_type.name)(void * untyped_replier)
 {
 @# TODO: Implement, considering original code in ffe10f9 or earlier
-    return NULL;
+    return nullptr;
 }
 
 static service_type_support_callbacks_t _@(service.namespaced_type.name)__callbacks = {
