@@ -61,7 +61,7 @@ struct ResponseHeader {
   typesupport_opendds_cpp::SampleIdentity related_request_id;
   RemoteExceptionCode_t remote_ex;
 };
-};
+}; // module rpc
 
 @@topic
 struct @(service.namespaced_type.name)RequestWrapper {

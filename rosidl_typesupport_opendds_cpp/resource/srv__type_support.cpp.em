@@ -298,7 +298,7 @@ bool take_response__@(service.namespaced_type.name)(
 
   @# Convert request_header to related_request_id
   ::typesupport_opendds_cpp::SampleIdentity related_request_id;
-  @# TODO: can we do this conversion???
+  @# TODO: can we do this cast???
   related_request_id.writer_guid(*reinterpret_cast<OpenDDS::DCPS::GUID_t *>(&request_header->writer_guid));
   OpenDDS::RTPS::SequenceNumber_t sn;
   sn.high = (::CORBA::Long)(request_header->sequence_number >> 32);
@@ -330,15 +330,23 @@ bool send_response__@(service.namespaced_type.name)(
 void *
 get_request_datawriter__@(service.namespaced_type.name)(void * untyped_requester)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
-    return nullptr;
+  using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
+    @(__dds_msg_typesupport_type)RequestWrapper,
+    @(__dds_msg_typesupport_type)ResponseWrapper
+  >;
+  RequesterType * requester = static_cast<RequesterType *>(untyped_requester);
+  return requester->get_request_datawriter();
 }
 
 void *
 get_reply_datareader__@(service.namespaced_type.name)(void * untyped_requester)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
-    return nullptr;
+  using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
+    @(__dds_msg_typesupport_type)RequestWrapper,
+    @(__dds_msg_typesupport_type)ResponseWrapper
+  >;
+  RequesterType * requester = static_cast<RequesterType *>(untyped_requester);
+  return requester->get_reply_datareader();
 }
 
 void *

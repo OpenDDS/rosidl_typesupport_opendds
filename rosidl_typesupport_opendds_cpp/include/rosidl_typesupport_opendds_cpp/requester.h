@@ -1,25 +1,16 @@
 #ifndef ROSIDL_TYPESUPPORT_OPENDDS_CPP__REQUESTER_H_
 #define ROSIDL_TYPESUPPORT_OPENDDS_CPP__REQUESTER_H_
 
-#include <string>
-#include "dds/DCPS/Service_Participant.h"
-#include "dds/DCPS/Marked_Default_Qos.h"
-#include "dds/DdsDcpsC.h"
-
 #include "requester_parameters.h"
 
 namespace rosidl_typesupport_opendds_cpp
 {
 
-  template <typename TReq, typename TRep>
+  template <typename TRequest, typename TReply>
   class Requester {
   public:
-    typedef TReq RequestType;
-
-    typedef TRep ReplyType;
-
-    typedef typename OpenDDS::DCPS::DDSTraits<TReq>::DataWriterType RequestDataWriter;
-    typedef typename OpenDDS::DCPS::DDSTraits<TReq>::DataReaderType RequestDataReader;
+    typedef typename OpenDDS::DCPS::DDSTraits<TRequest>::DataWriterType RequestDataWriter;
+    typedef typename OpenDDS::DCPS::DDSTraits<TReply>::DataReaderType ReplyDataReader;
 
     typedef RequesterParams Params;
 
@@ -37,15 +28,15 @@ namespace rosidl_typesupport_opendds_cpp
 
     RequesterParams get_requester_params() const;
 
-    //RequestDataWriter get_request_datawriter() const;
+    DDS::DataWriter* get_request_datawriter() const;
 
-    //ReplyDataReader get_reply_datareader() const;
+    DDS::DataReader* get_reply_datareader() const;
 
     OpenDDS::RTPS::SequenceNumber_t get_sequence_number() const;
 
-    DDS::ReturnCode_t send_request(const TReq&);
+    DDS::ReturnCode_t send_request(const TRequest&);
 
-    DDS::ReturnCode_t take_reply(TRep& reply,
+    DDS::ReturnCode_t take_reply(TReply& reply,
       const typesupport_opendds_cpp::SampleIdentity& related_request_id);
 
     virtual ~Requester();
@@ -55,9 +46,13 @@ namespace rosidl_typesupport_opendds_cpp
 
     OpenDDS::RTPS::SequenceNumber_t sequence_number;
 
-    //RequestDataWriter* request_datawriter;
+    RequestDataWriter* request_datawriter;
 
-    //ReplyDataReader* reply_datareader;
+    ReplyDataReader* reply_datareader;
+
+    OpenDDS::DCPS::DataWriterImpl* dw_impl;
+
+    OpenDDS::DCPS::RepoId pub_id;
 
   };
 
