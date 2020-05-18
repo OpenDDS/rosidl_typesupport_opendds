@@ -1,9 +1,13 @@
-#include <string>
+#include "requester_parameters.h"
+#include "requester.h"
+
+#include "rmw/error_handling.h"
+
 #include "dds/DCPS/Service_Participant.h"
 #include "dds/DCPS/Marked_Default_Qos.h"
 #include "dds/DdsDcpsC.h"
-#include "requester.h"
-#include "rmw/error_handling.h"
+
+#include <string>
 
 namespace rosidl_typesupport_opendds_cpp
 {
@@ -23,10 +27,13 @@ namespace rosidl_typesupport_opendds_cpp
     requester_params = &params;
     sequence_number = 0;
 
-    // TODO: is this a 'correct' way to get the datawriter?
-    DDS::DataWriter_var dw = requester_params->publisher()->lookup_datawriter(requester_params->request_topic_name());
-    if (dw == nullptr) {
-      RMW_SET_ERROR_MSG("Requester failed to get DataWriter_var");
+    DDS::DataWriter_var dw = requester_params->publisher()->create_datawriter(requester_params->request_topic_name(),
+                                                                              DATAWRITER_QOS_DEFAULT,
+                                                                              DDS::DataWriterListener::_nil(),
+                                                                              OpenDDS::DCPS::DEFAULT_STATUS_MASK);
+
+    if (CORBA::is_nil(dw.in())) {
+      RMW_SET_ERROR_MSG("Request create_datawriter failed");
       return;
     }
 
@@ -39,10 +46,13 @@ namespace rosidl_typesupport_opendds_cpp
 
     request_datawriter = RequestDataWriter::_narrow(dw);
 
-    // TODO: is this a 'correct' way to get the datareader?
-    DDS::DataReader_var dr = requester_params->subscriber()->lookup_datareader(requester_params->reply_topic_name());
-    if (dr == nullptr) {
-      RMW_SET_ERROR_MSG("Requester failed to get DataReader_var");
+    DDS::DataReader_var dr = requester_params->subscriber()->create_datareader(requester_params->reply_topic_name(),
+                                                                              DATAREADER_QOS_DEFAULT,
+                                                                              DDS::DataReaderListener::_nil(),
+                                                                              OpenDDS::DCPS::DEFAULT_STATUS_MASK);
+
+    if (CORBA::is_nil(dr.in())) {
+      RMW_SET_ERROR_MSG("Response create_datareader failed");
       return;
     }
 

@@ -1,8 +1,6 @@
 #ifndef ROSIDL_TYPESUPPORT_OPENDDS_CPP__REQUESTER_H_
 #define ROSIDL_TYPESUPPORT_OPENDDS_CPP__REQUESTER_H_
 
-#include "requester_parameters.h"
-
 namespace rosidl_typesupport_opendds_cpp
 {
 
@@ -14,7 +12,11 @@ namespace rosidl_typesupport_opendds_cpp
 
     typedef RequesterParams Params;
 
-    //typedef typename details::vendor_dependent<Requester<TReq, TRep>>::type VendorDependent;
+    // TODO: remove unused commented out lines
+    //typedef typename details::vendor_dependent<Requester<TRequest, TReply>>::type VendorDependent;
+
+    //typedef TRequest RequestType;
+    //typedef TReply ReplyType;
 
     Requester();
 

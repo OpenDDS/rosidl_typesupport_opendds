@@ -161,28 +161,6 @@ void * create_requester__@(service.namespaced_type.name)(
     return nullptr;
   }
 
-  @# Create DataWriter
-  DDS::DataWriter_var dw = dds_publisher->create_datawriter(request_topic.in(),
-                                                            DATAWRITER_QOS_DEFAULT,
-                                                            DDS::DataWriterListener::_nil(),
-                                                            OpenDDS::DCPS::DEFAULT_STATUS_MASK);
-
-  if (CORBA::is_nil(dw.in())) {
-    RMW_SET_ERROR_MSG("Request create_datawriter failed");
-    return nullptr;
-  }
-
-  @# Create DataReader
-  DDS::DataReader_var dr = dds_subscriber->create_datareader(response_topic.in(),
-                                                            DATAREADER_QOS_DEFAULT,
-                                                            DDS::DataReaderListener::_nil(),
-                                                            OpenDDS::DCPS::DEFAULT_STATUS_MASK);
-
-  if (CORBA::is_nil(dr.in())) {
-    RMW_SET_ERROR_MSG("Response create_datareader failed");
-    return nullptr;
-  }
-
   auto _allocator = allocator ? allocator : &malloc;
   rosidl_typesupport_opendds_cpp::RequesterParams requester_params(dds_participant);
 
