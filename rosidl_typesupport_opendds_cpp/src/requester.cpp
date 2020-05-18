@@ -95,25 +95,35 @@ namespace rosidl_typesupport_opendds_cpp
   DDS::ReturnCode_t Requester::take_reply(TReply& reply,
     const typesupport_opendds_cpp::SampleIdentity& related_request_id)
   {
-    DDS::SampleInfo si;
-    DDS::ReturnCode_t status = reply_datareader->take_next_sample(reply, si);
+    sequence<TReply> replies(max_samples);
+    DDS::SampleInfoSeq sample_info(max_samples);
+
+    DDS::ReturnCode_t status =
+      message_dr->read(replies,
+        sample_info,
+        max_samples,
+        DDS::ANY_SAMPLE_STATE,
+        DDS::ANY_VIEW_STATE,
+        DDS::ANY_INSTANCE_STATE);
 
     if (status != DDS::RETCODE_OK) {
-      RMW_SET_ERROR_MSG("take_next_sample failed in take_reply");
+      RMW_SET_ERROR_MSG("requestor writer failed to read sample");
       return DDS::RETCODE_ERROR;
     }
 
-    if (si.valid_data != 1) {
-      RMW_SET_ERROR_MSG("invalid received data in take_reply");
-      return DDS::RETCODE_ERROR;
+    for (auto zi : zip(replies, sample_info)) {
+      auto [sample, si] = zi;
+
+      if (si.valid_data = 1) {
+        if (sample.header == related_request_id) {
+          reply = sample;
+          return DDS::RETCODE_OK;
+        }
+      }
     }
 
-    if (reply.header != related_request_id) {
-      RMW_SET_ERROR_MSG("related_request_id mismatch in take_reply");
-      return DDS::RETCODE_ERROR;
-    }
-
-    return DDS::RETCODE_OK;
+    RMW_SET_ERROR_MSG("no valid matching samples found by requester");
+    return DDS::RETCODE_ERROR;
   }
 
 
