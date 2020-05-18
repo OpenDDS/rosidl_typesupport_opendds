@@ -115,9 +115,15 @@ namespace rosidl_typesupport_opendds_cpp
       auto [sample, si] = zi;
 
       if (si.valid_data = 1) {
-        if (sample.header == related_request_id) {
-          reply = sample;
-          return DDS::RETCODE_OK;
+        if (sample.header.related_request_id == related_request_id) {
+          if (sample.header.remote_ex = REMOTE_EX_OK) {
+            reply = sample;
+            return DDS::RETCODE_OK;
+          }
+          else {
+            RMW_SET_ERROR_MSG("error code returned from the server");
+            return DDS::RETCODE_ERROR;
+          }
         }
       }
     }
