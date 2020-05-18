@@ -15,17 +15,18 @@ namespace rosidl_typesupport_opendds_cpp
     requester_params(nullptr),
     request_datawriter(nullptr),
     reply_datareader(nullptr),
-    dw_impl(nullptr)
+    dw_impl(nullptr),
+    sequence_number(0)
   {
   }
 
   Requester::Requester(const RequesterParams& params) :
     request_datawriter(nullptr),
     reply_datareader(nullptr),
-    dw_impl(nullptr)
+    dw_impl(nullptr),
+    sequence_number(0)
   {
     requester_params = &params;
-    sequence_number = 0;
 
     DDS::DataWriter_var dw = requester_params->publisher()->create_datawriter(requester_params->request_topic_name(),
                                                                               DATAWRITER_QOS_DEFAULT,
@@ -61,7 +62,6 @@ namespace rosidl_typesupport_opendds_cpp
 
   Requester::~Requester()
   {
-    sequence_number = 0;
   }
 
   RequesterParams Requester::get_requester_params() const
@@ -81,8 +81,8 @@ namespace rosidl_typesupport_opendds_cpp
       return DDS::RETCODE_ERROR;
     }
 
-    request.header.request_id().writer_guid(pib_id);
-    request.header.request_id().sequence_number(++sequence_number);
+    request.header().request_id().writer_guid(pib_id);
+    request.header().request_id().sequence_number(++sequence_number);
     
     if (request_datawriter->write(request, DDS::HANDLE_NIL) != DDS::RETCODE_OK) {
       RMW_SET_ERROR_MSG("write() failed in send_request");
@@ -92,55 +92,38 @@ namespace rosidl_typesupport_opendds_cpp
     return DDS::RETCODE_OK;
   }
 
-  DDS::ReturnCode_t Requester::take_reply(TReply& reply,
-    const typesupport_opendds_cpp::SampleIdentity& related_request_id)
+  DDS::ReturnCode_t Requester::take_reply(TReply& reply)
   {
-    sequence<TReply> replies(max_samples);
-    DDS::SampleInfoSeq sample_info(max_samples);
-
-    DDS::ReturnCode_t status =
-      message_dr->read(replies,
-        sample_info,
-        max_samples,
-        DDS::ANY_SAMPLE_STATE,
-        DDS::ANY_VIEW_STATE,
-        DDS::ANY_INSTANCE_STATE);
+    DDS::SampleInfo si;
+    DDS::ReturnCode_t status = reply_datareader->take_next_sample(reply, si);
 
     if (status != DDS::RETCODE_OK) {
       RMW_SET_ERROR_MSG("requestor writer failed to read sample");
       return DDS::RETCODE_ERROR;
     }
 
-    for (auto zi : zip(replies, sample_info)) {
-      auto [sample, si] = zi;
-
-      if (si.valid_data = 1) {
-        if (sample.header.related_request_id == related_request_id) {
-          if (sample.header.remote_ex = REMOTE_EX_OK) {
-            reply = sample;
-            return DDS::RETCODE_OK;
-          }
-          else {
-            RMW_SET_ERROR_MSG("error code returned from the server");
-            return DDS::RETCODE_ERROR;
-          }
-        }
-      }
+    if (si.valid_data != 1) {
+      RMW_SET_ERROR_MSG("invalid data in requester take_reply");
+      return DDS::RETCODE_ERROR;
     }
 
-    RMW_SET_ERROR_MSG("no valid matching samples found by requester");
-    return DDS::RETCODE_ERROR;
+    if (reply.header().remote_ex != REMOTE_EX_OK) {
+      RMW_SET_ERROR_MSG("error code returned from the server");
+      return DDS::RETCODE_ERROR;
+    }
+
+    return DDS::RETCODE_OK;
   }
 
 
   DDS::DataWriter* Requester::get_request_datawriter() const
   {
-    return requester_params->publisher()->lookup_datawriter(requester_params->request_topic_name());
+    return request_datawriter;
   }
 
   DDS::DataReader* Requester::get_reply_datareader() const
   {
-    return requester_params->subscriber()->lookup_dataraeder(requester_params->reply_topic_name());
+    return reply_datareader;
   }
 
 }

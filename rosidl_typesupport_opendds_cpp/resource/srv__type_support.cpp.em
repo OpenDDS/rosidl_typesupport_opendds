@@ -30,6 +30,8 @@ dds_specific_header_files = [
 #define _GLIBCXX_USE_CXX11_ABI 0
 #endif
 
+#include <dds/DCPS/Marked_Default_Qos.h>
+
 #ifndef _WIN32
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -265,11 +267,13 @@ bool take_response__@(service.namespaced_type.name)(
   void * untyped_ros_response)
 {
   using ROSResponseType = @(__ros_response_msg_type);
-  using DDSResponseType = @(__dds_response_msg_type);
   using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
     @(__dds_msg_typesupport_type)RequestWrapper,
     @(__dds_msg_typesupport_type)ResponseWrapper
   >;
+  if (!untyped_requester || !request_header || !untyped_ros_response) {
+    return false;
+  }
 
   RequesterType * requester = static_cast<RequesterType *>(untyped_requester);
   @(__dds_msg_typesupport_type)ResponseWrapper dds_response_wrapper;
@@ -283,17 +287,21 @@ bool take_response__@(service.namespaced_type.name)(
   sn.low = (::CORBA::ULong)(request_header->sequence_number & 0xFFFFFFFF);
   related_request_id.sequence_number(sn);
 
-  if (DDS::RETCODE_OK != requester->take_reply(dds_response_wrapper,
-                                               related_request_id)) {
+  if (DDS::RETCODE_OK != requester->take_reply(dds_response_wrapper)) {
     RMW_SET_ERROR_MSG("take_reply failed");
-    return -1;
+    return false;
   }
 
+  int64_t sequence_number =
+    (((int64_t)dds_response_wrapper.header().related_request_id().sequence_number().high) << 32) |
+    dds_response_wrapper.header().related_request_id().sequence_number().low;
+  request_header->sequence_number = sequence_number;
+
   ROSResponseType* ros_response = static_cast<ROSResponseType *>(untyped_ros_response);
-  @(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_dds_message_to_ros(
+  bool converted = @(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_dds_message_to_ros(
     dds_response_wrapper.response(), *ros_response);
 
-  return true;
+  return converted;
 }
 
 bool send_response__@(service.namespaced_type.name)(

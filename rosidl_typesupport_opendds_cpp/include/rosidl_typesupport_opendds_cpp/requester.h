@@ -38,8 +38,7 @@ namespace rosidl_typesupport_opendds_cpp
 
     DDS::ReturnCode_t send_request(const TRequest&);
 
-    DDS::ReturnCode_t take_reply(TReply& reply,
-      const typesupport_opendds_cpp::SampleIdentity& related_request_id);
+    DDS::ReturnCode_t take_reply(TReply& reply);
 
     virtual ~Requester();
 
