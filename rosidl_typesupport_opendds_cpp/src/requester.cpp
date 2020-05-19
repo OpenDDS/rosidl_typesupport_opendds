@@ -81,7 +81,7 @@ namespace rosidl_typesupport_opendds_cpp
       return DDS::RETCODE_ERROR;
     }
 
-    request.header().request_id().writer_guid(pib_id);
+    request.header().request_id().writer_guid(pub_id);
     request.header().request_id().sequence_number(++sequence_number);
     
     if (request_datawriter->write(request, DDS::HANDLE_NIL) != DDS::RETCODE_OK) {

@@ -215,8 +215,11 @@ int64_t send_request__@(service.namespaced_type.name)(
   const ROSRequestType & ros_request = *(static_cast<const ROSRequestType *>(untyped_ros_request));
   DDSRequestType dds_request;
 
-  @(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_ros_message_to_dds(
-    ros_request, dds_request);
+  if (!@(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_ros_message_to_dds(
+    ros_request, dds_request)) {
+      RMW_SET_ERROR_MSG("failed to convert ROS request to DDS");
+      return -1;
+    }
 
   @(__dds_msg_typesupport_type)RequestWrapper request_wrapper;
   request_wrapper.request(dds_request);
@@ -277,15 +280,6 @@ bool take_response__@(service.namespaced_type.name)(
 
   RequesterType * requester = static_cast<RequesterType *>(untyped_requester);
   @(__dds_msg_typesupport_type)ResponseWrapper dds_response_wrapper;
-
-  @# Convert request_header to related_request_id
-  ::typesupport_opendds_cpp::SampleIdentity related_request_id;
-  @# TODO: can we do this cast???
-  related_request_id.writer_guid(*reinterpret_cast<OpenDDS::DCPS::GUID_t *>(&request_header->writer_guid));
-  OpenDDS::RTPS::SequenceNumber_t sn;
-  sn.high = (::CORBA::Long)(request_header->sequence_number >> 32);
-  sn.low = (::CORBA::ULong)(request_header->sequence_number & 0xFFFFFFFF);
-  related_request_id.sequence_number(sn);
 
   if (DDS::RETCODE_OK != requester->take_reply(dds_response_wrapper)) {
     RMW_SET_ERROR_MSG("take_reply failed");
