@@ -1,3 +1,7 @@
+#ifndef TYPESUPPORT_OPENDDS_RPC_IDL
+#define TYPESUPPORT_OPENDDS_RPC_IDL
+
+
 #include "dds/DdsDcpsGuid.idl"
 #include "dds/DCPS/RTPS/RtpsCore.idl"
 
@@ -32,3 +36,4 @@ struct ResponseHeader {
 }; // module rpc
 }; // module typesupport_opendds_cpp
 
+#endif /* TYPESUPPORT_OPENDDS_RPC_IDL */
