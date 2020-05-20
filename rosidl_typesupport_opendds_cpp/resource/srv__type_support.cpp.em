@@ -125,7 +125,7 @@ void * create_requester__@(service.namespaced_type.name)(
   @(__dds_msg_typesupport_type)RequestWrapperTypeSupport_var tsRequest =
     new @(__dds_msg_typesupport_type)RequestWrapperTypeSupportImpl;
 
-  if (tsRequest->register_type(dds_participant, "") != DDS::RETCODE_OK) {
+  if (tsRequest->register_type(dds_participant, "@(__dds_request_wrapper_msg_type)_") != DDS::RETCODE_OK) {
     RMW_SET_ERROR_MSG("C++ exception during registering of request message type");
     return NULL;
   }
@@ -133,7 +133,7 @@ void * create_requester__@(service.namespaced_type.name)(
   @(__dds_msg_typesupport_type)ResponseWrapperTypeSupport_var tsResponse =
     new @(__dds_msg_typesupport_type)ResponseWrapperTypeSupportImpl;
 
-  if (tsResponse->register_type(dds_participant, "") != DDS::RETCODE_OK) {
+  if (tsResponse->register_type(dds_participant, "@(__dds_response_wrapper_msg_type)_") != DDS::RETCODE_OK) {
     RMW_SET_ERROR_MSG("C++ exception during registering of response message type");
     return NULL;
   }
