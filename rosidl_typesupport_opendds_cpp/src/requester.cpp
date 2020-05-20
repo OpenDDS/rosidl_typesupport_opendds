@@ -98,7 +98,7 @@ namespace rosidl_typesupport_opendds_cpp
     DDS::ReturnCode_t status = reply_datareader->take_next_sample(reply, si);
 
     if (status != DDS::RETCODE_OK) {
-      RMW_SET_ERROR_MSG("requestor writer failed to read sample");
+      RMW_SET_ERROR_MSG("requestor reader failed to read sample");
       return DDS::RETCODE_ERROR;
     }
 

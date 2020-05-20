@@ -102,7 +102,7 @@ __dds_request_wrapper_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.nam
 __dds_response_wrapper_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name + 'ResponseWrapper'
 __dds_msg_typesupport_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name
 __dds_header_prefix =  __ros_srv_pkg_prefix + '::dds_::'
-__rpc_header_prefix =  __ros_srv_pkg_prefix + '::dds_::rpc::'
+__rpc_header_prefix =  '::typesupport_opendds_cpp::rpc::'
 }@
 
 void * create_requester__@(service.namespaced_type.name)(

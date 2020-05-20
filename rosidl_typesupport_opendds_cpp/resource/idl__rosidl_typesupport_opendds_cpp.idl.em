@@ -27,13 +27,7 @@ include_directives = set()
 #include "@(service.namespaced_type.name)_.idl"
 #include "dds/DdsDcpsGuid.idl"
 #include "dds/DCPS/RTPS/RtpsCore.idl"
-
-module typesupport_opendds_cpp {
-struct SampleIdentity {
-  OpenDDS::DCPS::GUID_t writer_guid;
-  OpenDDS::RTPS::SequenceNumber_t sequence_number;
-}; 
-}; // module typesupport_opendds_cpp
+#include "RPC.idl"
 
 module @(package_name) {
 
@@ -41,36 +35,14 @@ module srv {
 
 module dds_ {
 
-module rpc {
-typedef string<255> InstanceName;
-enum RemoteExceptionCode_t
-{
-  REMOTE_EX_OK,
-  REMOTE_EX_UNSUPPORTED,
-  REMOTE_EX_INVALID_ARGUMENT,
-  REMOTE_EX_OUT_OF_RESOURCES,
-  REMOTE_EX_UNKNOWN_OPERATION,
-  REMOTE_EX_UNKNOWN_EXCEPTION
-};
-
-struct RequestHeader {
-  typesupport_opendds_cpp::SampleIdentity request_id;
-  InstanceName instance_name;
-};
-struct ResponseHeader {
-  typesupport_opendds_cpp::SampleIdentity related_request_id;
-  RemoteExceptionCode_t remote_ex;
-};
-}; // module rpc
-
 @@topic
 struct @(service.namespaced_type.name)RequestWrapper {
-  rpc::RequestHeader header;
+  typesupport_opendds_cpp::rpc::RequestHeader header;
   @(service.namespaced_type.name)_Request_ request;
 };
 @@topic
 struct @(service.namespaced_type.name)ResponseWrapper {
-  rpc::ResponseHeader header;
+  typesupport_opendds_cpp::rpc::ResponseHeader header;
   @(service.namespaced_type.name)_Response_ response;
 };
 

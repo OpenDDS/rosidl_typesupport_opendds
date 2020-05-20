@@ -18,7 +18,7 @@ import sys
 import shutil
 
 from rosidl_cmake import generate_files
-
+from pathlib import Path
 
 def generate_dds_opendds_cpp(
         pkg_name, dds_interface_files, dds_interface_base_path, deps,
@@ -39,6 +39,7 @@ def generate_dds_opendds_cpp(
         if idl_base_path not in include_dirs:
             include_dirs.append(idl_base_path)
 
+    RPC_compiled = False
     for idl_file in dds_interface_files:
         assert os.path.exists(idl_file), 'Could not find IDL file: ' + idl_file
 
@@ -54,6 +55,21 @@ def generate_dds_opendds_cpp(
         except FileExistsError:
             pass
 
+        rpc_file_path = str(Path(output_basepath).parents[3]) + '/src/rosidl_typesupport_opendds/rosidl_typesupport_opendds_cpp/include/rosidl_typesupport_opendds_cpp'
+        rpc_file = str(rpc_file_path) + '/RPC.idl'
+
+        # Compile RPC.idl
+        if not RPC_compiled :
+          try:
+              cmd = [idl_pp, rpc_file, "-Lc++11", "-o", output_path, "-Cw"]
+              for include_dir in include_dirs:
+                  cmd += ['-I', include_dir]
+              cmd += ['-I', rpc_file_path]
+              subprocess.check_call(cmd)
+              RPC_compiled = True
+          except subprocess.CalledProcessError as e:
+              raise RuntimeError('failed to compile RPC.idl')
+
         #msg_name is idl_file name without extension
         msg_name = os.path.splitext(os.path.basename(idl_file))[0]
 
@@ -61,6 +77,7 @@ def generate_dds_opendds_cpp(
             cmd = [idl_pp, idl_file, "-Lc++11", "-o", output_path, "-Cw"]
             for include_dir in include_dirs:
                 cmd += ['-I', include_dir]
+            cmd += ['-I', rpc_file_path]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as e:
             raise RuntimeError('failed to generate the expected files')
@@ -84,6 +101,7 @@ def generate_dds_opendds_cpp(
                 for include_dir in include_dirs:
                     cmd += ['-I', include_dir]
                 cmd += ['-I', input_idl_path]
+                cmd += ['-I', rpc_file_path]
                 subprocess.check_call(cmd)
             except subprocess.CalledProcessError as e:
                 raise RuntimeError('OpenDDS compiler failed to generate the expected service files')
@@ -105,6 +123,7 @@ def generate_dds_opendds_cpp(
                     cmd += ['-I', include_dir]
                 cmd += ['-I', input_idl_path]
                 cmd += ['-I', output_path]
+                cmd += ['-I', rpc_file_path]
                 subprocess.check_call(cmd)
             except subprocess.CalledProcessError as e:
                 raise RuntimeError('TAO IDL compiler failed to generate the expected service files')
