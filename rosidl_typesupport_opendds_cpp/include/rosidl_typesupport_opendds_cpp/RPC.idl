@@ -5,7 +5,7 @@
 #include "dds/DdsDcpsGuid.idl"
 #include "dds/DCPS/RTPS/RtpsCore.idl"
 
-module typesupport_opendds_cpp{
+module typesupport_opendds_cpp {
 
 module rpc {
 struct SampleIdentity {
@@ -25,11 +25,11 @@ enum RemoteExceptionCode_t
 };
 
 struct RequestHeader {
-  typesupport_opendds_cpp::rpc::SampleIdentity request_id;
+  SampleIdentity request_id;
   InstanceName instance_name;
 };
 struct ResponseHeader {
-  typesupport_opendds_cpp::rpc::SampleIdentity related_request_id;
+  SampleIdentity related_request_id;
   RemoteExceptionCode_t remote_ex;
 };
 

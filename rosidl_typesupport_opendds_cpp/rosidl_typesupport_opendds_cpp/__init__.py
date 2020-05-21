@@ -19,6 +19,8 @@ import shutil
 
 from rosidl_cmake import generate_files
 from pathlib import Path
+from ament_index_python.packages import get_package_share_directory
+from ament_index_python.packages import get_package_prefix
 
 def generate_dds_opendds_cpp(
         pkg_name, dds_interface_files, dds_interface_base_path, deps,
@@ -55,9 +57,11 @@ def generate_dds_opendds_cpp(
         except FileExistsError:
             pass
 
-        rpc_file_path = str(Path(output_basepath).parents[3]) + '/src/rosidl_typesupport_opendds/rosidl_typesupport_opendds_cpp/include/rosidl_typesupport_opendds_cpp'
+        package_prefix = get_package_prefix('rosidl_typesupport_opendds_cpp')
+        rpc_file_path = package_prefix + '/include/rosidl_typesupport_opendds_cpp'
         rpc_file = str(rpc_file_path) + '/RPC.idl'
 
+        # TODO: move to the CMake build process.
         # Compile RPC.idl
         if not RPC_compiled :
           try:

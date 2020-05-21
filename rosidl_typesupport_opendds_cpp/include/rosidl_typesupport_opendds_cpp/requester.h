@@ -9,14 +9,16 @@ namespace rosidl_typesupport_opendds_cpp
   public:
     typedef typename OpenDDS::DCPS::DDSTraits<TRequest>::DataWriterType RequestDataWriter;
     typedef typename OpenDDS::DCPS::DDSTraits<TReply>::DataReaderType ReplyDataReader;
+    typedef typename RequestDataWriter::_var_type RequestDataWriter_var;
+    typedef typename ReplyDataReader::_var_type ReplyDataReader_var;
 
     typedef RequesterParams Params;
 
     // TODO: remove unused commented out lines
     //typedef typename details::vendor_dependent<Requester<TRequest, TReply>>::type VendorDependent;
 
-    //typedef TRequest RequestType;
-    //typedef TReply ReplyType;
+    typedef TRequest RequestType;
+    typedef TReply ReplyType;
 
     Requester();
 
@@ -30,9 +32,9 @@ namespace rosidl_typesupport_opendds_cpp
 
     RequesterParams get_requester_params() const;
 
-    DDS::DataWriter* get_request_datawriter() const;
+    RequestDataWriter_var get_request_datawriter() const;
 
-    DDS::DataReader* get_reply_datareader() const;
+    ReplyDataReader_var get_reply_datareader() const;
 
     OpenDDS::RTPS::SequenceNumber_t get_sequence_number() const;
 
@@ -43,15 +45,13 @@ namespace rosidl_typesupport_opendds_cpp
     virtual ~Requester();
 
   private:
-    RequesterParams* requester_params;
+    RequesterParams requester_params;
 
     OpenDDS::RTPS::SequenceNumber_t sequence_number;
 
-    RequestDataWriter* request_datawriter;
+    RequestDataWriter_var request_datawriter;
 
-    ReplyDataReader* reply_datareader;
-
-    OpenDDS::DCPS::DataWriterImpl* dw_impl;
+    ReplyDataReader_var reply_datareader;
 
     OpenDDS::DCPS::RepoId pub_id;
 

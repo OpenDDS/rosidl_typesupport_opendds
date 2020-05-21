@@ -12,10 +12,8 @@
 namespace rosidl_typesupport_opendds_cpp
 {
   Requester::Requester() :
-    requester_params(nullptr),
     request_datawriter(nullptr),
     reply_datareader(nullptr),
-    dw_impl(nullptr),
     sequence_number(0)
   {
   }
@@ -23,12 +21,11 @@ namespace rosidl_typesupport_opendds_cpp
   Requester::Requester(const RequesterParams& params) :
     request_datawriter(nullptr),
     reply_datareader(nullptr),
-    dw_impl(nullptr),
     sequence_number(0)
   {
-    requester_params = &params;
+    requester_params = params;
 
-    DDS::DataWriter_var dw = requester_params->publisher()->create_datawriter(requester_params->request_topic_name(),
+    DDS::DataWriter_var dw = requester_params.publisher()->create_datawriter(requester_params->request_topic_name(),
                                                                               DATAWRITER_QOS_DEFAULT,
                                                                               DDS::DataWriterListener::_nil(),
                                                                               OpenDDS::DCPS::DEFAULT_STATUS_MASK);
@@ -38,7 +35,7 @@ namespace rosidl_typesupport_opendds_cpp
       return;
     }
 
-    dw_impl = dynamic_cast<OpenDDS::DCPS::DataWriterImpl*>(dw);
+    OpenDDS::DCPS::DataWriterImpl* dw_impl = dynamic_cast<OpenDDS::DCPS::DataWriterImpl*>(dw);
     if (dw_impl == nullptr) {
       RMW_SET_ERROR_MSG("Requester failed to get DataWriterImpl");
       return;
@@ -47,7 +44,7 @@ namespace rosidl_typesupport_opendds_cpp
 
     request_datawriter = RequestDataWriter::_narrow(dw);
 
-    DDS::DataReader_var dr = requester_params->subscriber()->create_datareader(requester_params->reply_topic_name(),
+    DDS::DataReader_var dr = requester_params.subscriber()->create_datareader(requester_params->reply_topic_name(),
                                                                               DATAREADER_QOS_DEFAULT,
                                                                               DDS::DataReaderListener::_nil(),
                                                                               OpenDDS::DCPS::DEFAULT_STATUS_MASK);
@@ -66,7 +63,7 @@ namespace rosidl_typesupport_opendds_cpp
 
   RequesterParams Requester::get_requester_params() const
   {
-    return *requester_params;
+    return requester_params;
   }
 
   OpenDDS::RTPS::SequenceNumber_t Requester::get_sequence_number() const
@@ -102,7 +99,7 @@ namespace rosidl_typesupport_opendds_cpp
       return DDS::RETCODE_ERROR;
     }
 
-    if (si.valid_data != 1) {
+    if (!si.valid_data) {
       RMW_SET_ERROR_MSG("invalid data in requester take_reply");
       return DDS::RETCODE_ERROR;
     }
@@ -116,12 +113,12 @@ namespace rosidl_typesupport_opendds_cpp
   }
 
 
-  DDS::DataWriter* Requester::get_request_datawriter() const
+  RequestDataWriter_var Requester::get_request_datawriter() const
   {
     return request_datawriter;
   }
 
-  DDS::DataReader* Requester::get_reply_datareader() const
+  ReplyDataReader_var Requester::get_reply_datareader() const
   {
     return reply_datareader;
   }

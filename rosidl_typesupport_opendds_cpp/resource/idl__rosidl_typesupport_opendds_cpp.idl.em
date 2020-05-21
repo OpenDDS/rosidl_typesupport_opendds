@@ -25,8 +25,6 @@ include_directives = set()
 @{from rosidl_parser.definition import Service}
 @[for service in content.get_elements_of_type(Service)]
 #include "@(service.namespaced_type.name)_.idl"
-#include "dds/DdsDcpsGuid.idl"
-#include "dds/DCPS/RTPS/RtpsCore.idl"
 #include "RPC.idl"
 
 module @(package_name) {
@@ -50,7 +48,7 @@ struct @(service.namespaced_type.name)ResponseWrapper {
 
 };  // module srv
 
-};  // module 'package_name'
+};  // module @(package_name)
 
 @[end for]
 

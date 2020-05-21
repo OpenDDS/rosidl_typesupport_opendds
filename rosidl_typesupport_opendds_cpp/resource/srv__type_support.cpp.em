@@ -101,8 +101,8 @@ __dds_response_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.response_m
 __dds_request_wrapper_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name + 'RequestWrapper'
 __dds_response_wrapper_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name + 'ResponseWrapper'
 __dds_msg_typesupport_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name
-__dds_header_prefix =  __ros_srv_pkg_prefix + '::dds_::'
-__rpc_header_prefix =  '::typesupport_opendds_cpp::rpc::'
+__dds_header_prefix = __ros_srv_pkg_prefix + '::dds_::'
+__rpc_header_prefix = '::typesupport_opendds_cpp::rpc::'
 }@
 
 void * create_requester__@(service.namespaced_type.name)(
@@ -126,7 +126,7 @@ void * create_requester__@(service.namespaced_type.name)(
     new @(__dds_msg_typesupport_type)RequestWrapperTypeSupportImpl;
 
   if (tsRequest->register_type(dds_participant, "@(__dds_request_wrapper_msg_type)_") != DDS::RETCODE_OK) {
-    RMW_SET_ERROR_MSG("C++ exception during registering of request message type");
+    RMW_SET_ERROR_MSG("request register_type for requester failed");
     return NULL;
   }
 
@@ -134,28 +134,28 @@ void * create_requester__@(service.namespaced_type.name)(
     new @(__dds_msg_typesupport_type)ResponseWrapperTypeSupportImpl;
 
   if (tsResponse->register_type(dds_participant, "@(__dds_response_wrapper_msg_type)_") != DDS::RETCODE_OK) {
-    RMW_SET_ERROR_MSG("C++ exception during registering of response message type");
+    RMW_SET_ERROR_MSG("response register_type for requester failed");
     return NULL;
   }
 
   @# Create Topics
   CORBA::String_var type_name = tsRequest->get_type_name();
   DDS::Topic_var request_topic = dds_participant->create_topic(request_topic_str,
-                                                      type_name.in(),
+                                                      type_name,
                                                       TOPIC_QOS_DEFAULT,
-                                                      DDS::TopicListener::_nil(),
+                                                      nullptr,
                                                       OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
-  if (CORBA::is_nil(request_topic.in())) {
+  if (!request_topic) {
     RMW_SET_ERROR_MSG("Request create_topic failed");
     return nullptr;
   }
 
   type_name = tsResponse->get_type_name();
   DDS::Topic_var response_topic = dds_participant->create_topic(response_topic_str,
-                                        type_name.in(),
+                                        type_name,
                                         TOPIC_QOS_DEFAULT,
-                                        DDS::TopicListener::_nil(),
+                                        nullptr,
                                         OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
   if (CORBA::is_nil(response_topic.in())) {
