@@ -100,7 +100,7 @@ namespace rosidl_typesupport_opendds_cpp
     }
 
     if (!si.valid_data) {
-      RMW_SET_ERROR_MSG("invalid data in requester take_reply");
+      // add checking si.instance_state if need more details
       return DDS::RETCODE_ERROR;
     }
 
