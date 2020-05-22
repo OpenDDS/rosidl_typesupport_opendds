@@ -42,3 +42,12 @@ jobs:
         cd $(Agent.BuildDirectory)
         ./rmw_build/run_ci_test.sh
     displayName:  run tests (run_ci_test.sh)
+  - script: |
+        cd $(Agent.BuildDirectory)
+        rm -rf build
+        rm -rf install
+    displayName:  remove previous build artifacts (only do this short term)
+  - script: |
+        cd $(Agent.BuildDirectory)
+        ./rmw_build/build_system_test.sh
+    displayName:  build system tests
