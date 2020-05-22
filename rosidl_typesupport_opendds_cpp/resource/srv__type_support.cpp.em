@@ -16,7 +16,6 @@ header_files = [
     'rosidl_typesupport_opendds_cpp/requester_parameters.h',
     'rosidl_typesupport_opendds_cpp/replier_parameters.h',
     'rosidl_typesupport_opendds_cpp/requester.hpp',
-    'rosidl_typesupport_opendds_cpp/replier.hpp',
     include_base + '/' + c_include_prefix + '__struct.hpp',
 ]
 
