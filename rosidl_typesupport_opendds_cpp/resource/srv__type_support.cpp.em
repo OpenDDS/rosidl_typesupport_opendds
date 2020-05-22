@@ -15,7 +15,8 @@ header_files = [
     'rosidl_typesupport_opendds_cpp/service_type_support_decl.hpp',
     'rosidl_typesupport_opendds_cpp/requester_parameters.h',
     'rosidl_typesupport_opendds_cpp/replier_parameters.h',
-    'rosidl_typesupport_opendds_cpp/requester.h',
+    'rosidl_typesupport_opendds_cpp/requester.hpp',
+    'rosidl_typesupport_opendds_cpp/replier.hpp',
     include_base + '/' + c_include_prefix + '__struct.hpp',
 ]
 
@@ -158,7 +159,7 @@ void * create_requester__@(service.namespaced_type.name)(
                                         nullptr,
                                         OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
-  if (CORBA::is_nil(response_topic.in())) {
+  if (!response_topic) {
     RMW_SET_ERROR_MSG("Response create_topic failed");
     return nullptr;
   }
@@ -170,6 +171,8 @@ void * create_requester__@(service.namespaced_type.name)(
   requester_params.subscriber(dds_subscriber);
   requester_params.request_topic_name(request_topic_str);
   requester_params.reply_topic_name(response_topic_str);
+  requester_params.request_topic(request_topic);
+  requester_params.reply_topic(response_topic);
 
   RequesterType * requester = static_cast<RequesterType *>(_allocator(sizeof(RequesterType)));
   try {
