@@ -6,6 +6,7 @@
 #include "dds/DCPS/Marked_Default_Qos.h"
 #include "dds/DdsDcpsC.h"
 #include "dds/DCPS/DataWriterImpl.h"
+#include "dds/DCPS/SequenceNumber.h"
 
 #include <string>
 
@@ -22,33 +23,23 @@ namespace rosidl_typesupport_opendds_cpp
 
     typedef RequesterParams Params;
 
-    // TODO: remove unused commented out lines
-    //typedef typename details::vendor_dependent<Requester<TRequest, TReply>>::type VendorDependent;
-
-    //Requester(const Requester&);
-
-    //void swap(Requester& other);
-
-    //Requester& operator = (const Requester&);
-
-
     typedef TRequest RequestType;
     typedef TReply ReplyType;
 
     Requester() :
       request_datawriter(nullptr),
-      reply_datareader(nullptr)
+      reply_datareader(nullptr),
+      sequence_number(0)
     {
-      sequence_number = { 0, 0 };
     }
 
 
     explicit Requester(const RequesterParams& params) :
       request_datawriter(nullptr),
-      reply_datareader(nullptr)
+      reply_datareader(nullptr),
+      sequence_number(0)
     {
       requester_params = params;
-      sequence_number = { 0, 0 };
 
       DDS::DataWriter_var dw = requester_params.publisher()->create_datawriter(requester_params.request_topic(),
                                                                                DATAWRITER_QOS_DEFAULT,
@@ -101,7 +92,7 @@ namespace rosidl_typesupport_opendds_cpp
     }
 
 
-    OpenDDS::RTPS::SequenceNumber_t get_sequence_number() const
+    OpenDDS::DCPS::SequenceNumber get_sequence_number() const
     {
       return sequence_number;
     }
@@ -116,22 +107,10 @@ namespace rosidl_typesupport_opendds_cpp
 
       request.header().request_id().writer_guid(pub_id);
 
-      if (sequence_number.low == ACE_UINT32_MAX) {
-        if (sequence_number.high == ACE_INT32_MAX) {
-          // this code is here, despite the RTPS spec statement:
-          // "sequence numbers never wrap"
-          sequence_number.high = 0;
-          sequence_number.low = 1;
-        }
-        else {
-          ++sequence_number.high;
-          sequence_number.low = 0;
-        }
-      }
-      else {
-        ++sequence_number.low;
-      }
-      request.header().request_id().sequence_number(sequence_number);
+      ++sequence_number;
+
+      request.header().request_id().sequence_number().high = sequence_number.getHigh();
+      request.header().request_id().sequence_number().low = sequence_number.getLow();
 
       if (request_datawriter->write(request, DDS::HANDLE_NIL) != DDS::RETCODE_OK) {
         RMW_SET_ERROR_MSG("write() failed in send_request");
@@ -148,13 +127,12 @@ namespace rosidl_typesupport_opendds_cpp
       DDS::ReturnCode_t status = reply_datareader->take_next_sample(reply, si);
 
       if (status != DDS::RETCODE_OK) {
-        RMW_SET_ERROR_MSG("requestor reader failed to read sample");
-        return DDS::RETCODE_ERROR;
+        RMW_SET_ERROR_MSG("requester reader failed to read sample");
+        return status;
       }
 
       if (!si.valid_data) {
-        // add checking si.instance_state if need more details
-        return DDS::RETCODE_ERROR;
+        return this->take_reply(reply);
       }
 
       if (reply.header().remote_ex() != ::typesupport_opendds_cpp::rpc::RemoteExceptionCode_t::REMOTE_EX_OK) {
@@ -174,7 +152,7 @@ namespace rosidl_typesupport_opendds_cpp
   private:
     RequesterParams requester_params;
 
-    OpenDDS::RTPS::SequenceNumber_t sequence_number;
+    OpenDDS::DCPS::SequenceNumber sequence_number;
 
     RequestDataWriter_var request_datawriter;
 

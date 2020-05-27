@@ -232,8 +232,8 @@ int64_t send_request__@(service.namespaced_type.name)(
     return -1;
   }
 
-  int64_t sequence_number = ((int64_t)requester->get_sequence_number().high) << 32 |
-    requester->get_sequence_number().low;
+  int64_t sequence_number = ((int64_t)requester->get_sequence_number().getHigh()) << 32 |
+    requester->get_sequence_number().getLow();
   return sequence_number;
 }
 

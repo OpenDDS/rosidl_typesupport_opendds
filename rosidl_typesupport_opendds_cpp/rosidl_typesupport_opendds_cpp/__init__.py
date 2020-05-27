@@ -141,7 +141,7 @@ def generate_cpp(arguments_file):
         '%s__rosidl_typesupport_opendds_cpp.hpp',
         'idl__dds_opendds__type_support.cpp.em':
         'dds_opendds/%s__type_support.cpp'
-}
+    }
     generate_files(arguments_file, mapping)
     return 0
 
@@ -149,7 +149,7 @@ def generate_idl(arguments_file):
     mapping = {
         'idl__rosidl_typesupport_opendds_cpp.idl.em':
         'dds_opendds/%s__RequestResponse.idl'
-}
+    }
     generate_files(arguments_file, mapping, None, True)
     return 0
 
