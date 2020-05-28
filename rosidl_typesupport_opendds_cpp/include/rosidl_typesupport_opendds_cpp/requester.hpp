@@ -43,7 +43,7 @@ namespace rosidl_typesupport_opendds_cpp
 
       DDS::DataWriter_var dw = requester_params.publisher()->create_datawriter(requester_params.request_topic(),
                                                                                DATAWRITER_QOS_DEFAULT,
-                                                                               DDS::DataWriterListener::_nil(),
+                                                                               nullptr,
                                                                                OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
       if (dw == nullptr) {
@@ -62,10 +62,10 @@ namespace rosidl_typesupport_opendds_cpp
 
       DDS::DataReader_var dr = requester_params.subscriber()->create_datareader(requester_params.reply_topic(),
                                                                                 DATAREADER_QOS_DEFAULT,
-                                                                                DDS::DataReaderListener::_nil(),
+                                                                                nullptr,
                                                                                 OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
-      if (CORBA::is_nil(dr.in())) {
+      if (!dr) {
         RMW_SET_ERROR_MSG("Response create_datareader failed");
         return;
       }
