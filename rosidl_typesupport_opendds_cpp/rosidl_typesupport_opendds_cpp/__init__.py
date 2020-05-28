@@ -122,7 +122,7 @@ def generate_dds_opendds_cpp(
 
             try:
                 generated_idl_file = output_path + "/" + msg_name + "_RequestResponseTypeSupport.idl"
-                cmd = ["tao_idl", generated_idl_file, "-o", output_path, "-I$TAO_ROOT", "-I$DDS_ROOT", "-I/opt/OpenDDS", "--idl-version",  "4", "-SS", "-Sa", "-St", "-Wb,pre_include=ace/pre.h", "-Wb,post_include=ace/post.h", "--unknown-annotations", "ignore"]
+                cmd = ["tao_idl", generated_idl_file, "-o", output_path, "-I$TAO_ROOT", "-I$DDS_ROOT", "-I/opt/OpenDDS", "--idl-version",  "4", "-SS", "-Sa", "-St", "-Cw", "-Wb,pre_include=ace/pre.h", "-Wb,post_include=ace/post.h", "--unknown-annotations", "ignore"]
                 for include_dir in include_dirs:
                     cmd += ['-I', include_dir]
                 cmd += ['-I', input_idl_path]
