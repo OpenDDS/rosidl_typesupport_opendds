@@ -58,6 +58,18 @@ public:
     return *this;
   }
 
+  ReplierParams& request_topic(const DDS::Topic_var& topic) {
+    request_topic_ = topic;
+    return *this;
+  }
+
+  ReplierParams& reply_topic(const DDS::Topic_var& topic) {
+    reply_topic_ = topic;
+    return *this;
+  }
+
+
+
   /*
   GET
   */
@@ -93,6 +105,15 @@ public:
     return reply_topic_name_;
   }
 
+  DDS::Topic_var request_topic() const{
+  return request_topic_;
+  }
+
+  DDS::Topic_var reply_topic() const{
+    return reply_topic_;
+  }
+
+
 private:
   DDS::DomainParticipant_var participant_;
   DDS::Publisher_var dds_publisher_;
@@ -102,6 +123,8 @@ private:
   std::string service_name_;
   std::string request_topic_name_;
   std::string reply_topic_name_;
+  DDS::Topic_var request_topic_;
+  DDS::Topic_var reply_topic_;
 };
 
 }

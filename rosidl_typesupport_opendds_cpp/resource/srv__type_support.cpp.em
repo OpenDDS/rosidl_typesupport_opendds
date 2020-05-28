@@ -16,6 +16,7 @@ header_files = [
     'rosidl_typesupport_opendds_cpp/requester_parameters.h',
     'rosidl_typesupport_opendds_cpp/replier_parameters.h',
     'rosidl_typesupport_opendds_cpp/requester.hpp',
+    'rosidl_typesupport_opendds_cpp/replier.hpp',
     include_base + '/' + c_include_prefix + '__struct.hpp',
 ]
 
@@ -178,6 +179,7 @@ void * create_requester__@(service.namespaced_type.name)(
     new (requester) RequesterType(requester_params);
   } catch (...) {
     RMW_SET_ERROR_MSG("C++ exception during construction of Requester");
+    free(requester);
     return nullptr;
   }
 
@@ -245,15 +247,93 @@ void * create_replier__@(service.namespaced_type.name)(
     DDS::Subscriber_var dds_subscriber,
     allocator_t allocator)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
+  @# TODO: remove next line when ready
+  return nullptr;
+
+  using ReplierType = rosidl_typesupport_opendds_cpp::Replier<
+    @(__dds_request_wrapper_msg_type),
+    @(__dds_response_wrapper_msg_type)
+  >;
+
+  @# Register TypeSupports
+  @(__dds_msg_typesupport_type)RequestWrapperTypeSupport_var tsRequest =
+    new @(__dds_msg_typesupport_type)RequestWrapperTypeSupportImpl;
+
+  if (tsRequest->register_type(dds_participant, "@(__dds_request_wrapper_msg_type)_") != DDS::RETCODE_OK) {
+    RMW_SET_ERROR_MSG("request register_type for replier failed");
+    return NULL;
+  }
+
+  @(__dds_msg_typesupport_type)ResponseWrapperTypeSupport_var tsResponse =
+    new @(__dds_msg_typesupport_type)ResponseWrapperTypeSupportImpl;
+
+  if (tsResponse->register_type(dds_participant, "@(__dds_response_wrapper_msg_type)_") != DDS::RETCODE_OK) {
+    RMW_SET_ERROR_MSG("request register_type for replier failed");
+    return NULL;
+  }
+
+  @# Create Topics
+  CORBA::String_var type_name = tsRequest->get_type_name();
+  DDS::Topic_var request_topic = dds_participant->create_topic(request_topic_str,
+                                                      type_name,
+                                                      TOPIC_QOS_DEFAULT,
+                                                      nullptr,
+                                                      OpenDDS::DCPS::DEFAULT_STATUS_MASK);
+
+  if (!request_topic) {
+    RMW_SET_ERROR_MSG("Request create_topic failed");
     return nullptr;
+  }
+
+  type_name = tsResponse->get_type_name();
+  DDS::Topic_var response_topic = dds_participant->create_topic(response_topic_str,
+                                        type_name,
+                                        TOPIC_QOS_DEFAULT,
+                                        nullptr,
+                                        OpenDDS::DCPS::DEFAULT_STATUS_MASK);
+
+  if (!response_topic) {
+    RMW_SET_ERROR_MSG("Response create_topic failed");
+    return nullptr;
+  }
+
+  auto _allocator = allocator ? allocator : &malloc;
+  rosidl_typesupport_opendds_cpp::ReplierParams replier_params(dds_participant);
+
+  replier_params.publisher(dds_publisher);
+  replier_params.subscriber(dds_subscriber);
+  replier_params.request_topic_name(request_topic_str);
+  replier_params.reply_topic_name(response_topic_str);
+  replier_params.request_topic(request_topic);
+  replier_params.reply_topic(response_topic);
+
+  ReplierType * replier = static_cast<ReplierType *>(_allocator(sizeof(ReplierType)));
+  try {
+    new (replier) ReplierType(replier_params);
+  } catch (...) {
+    RMW_SET_ERROR_MSG("C++ exception during construction of Replier");
+    return nullptr;
+  }
+
+  return replier;
 }
 
 const char * destroy_replier__@(service.namespaced_type.name)(
   void * untyped_replier,
   deallocator_t deallocator)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
+  @# TODO: remove next line when ready
+  return nullptr;
+
+  using ReplierType = rosidl_typesupport_opendds_cpp::Replier<
+    @(__dds_request_wrapper_msg_type),
+    @(__dds_response_wrapper_msg_type)
+  >;
+  auto replier = static_cast<ReplierType *>(untyped_replier);
+
+  replier->~ReplierType();
+  auto _deallocator = deallocator ? deallocator : &free;
+  _deallocator(replier);
   return nullptr;
 }
 
@@ -262,8 +342,38 @@ bool take_request__@(service.namespaced_type.name)(
   rmw_request_id_t * request_header,
   void * untyped_ros_request)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
-  return true;
+  using ROSRequestType = @(__ros_request_msg_type);
+  using ReplierType = rosidl_typesupport_opendds_cpp::Replier<
+    @(__dds_msg_typesupport_type)RequestWrapper,
+    @(__dds_msg_typesupport_type)ResponseWrapper
+  >;
+  if (!untyped_replier || !request_header || !untyped_ros_request) {
+    return false;
+  }
+  
+  ReplierType * replier = static_cast<ReplierType *>(untyped_replier);
+
+  @(__dds_msg_typesupport_type)RequestWrapper dds_request_wrapper;
+
+  if (DDS::RETCODE_OK != replier->take_request(dds_request_wrapper)) {
+    RMW_SET_ERROR_MSG("take_request failed");
+    return false;
+  }
+
+  int64_t sequence_number =
+    (((int64_t)dds_request_wrapper.header().request_id().sequence_number().high) << 32) |
+    dds_request_wrapper.header().request_id().sequence_number().low;
+  request_header->sequence_number = sequence_number;
+
+  size_t IDENTITY_SIZE = 16;
+  OpenDDS::DCPS::GUID_t id = dds_request_wrapper.header().request_id().writer_guid();
+  std::memcpy(&(request_header->writer_guid[0]), &id, IDENTITY_SIZE);
+
+  ROSRequestType* ros_request = static_cast<ROSRequestType *>(untyped_ros_request);
+  bool converted = @(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_dds_message_to_ros(
+    dds_request_wrapper.request(), *ros_request);
+
+  return converted;
 }
 
 bool take_response__@(service.namespaced_type.name)(
@@ -305,7 +415,49 @@ bool send_response__@(service.namespaced_type.name)(
   const rmw_request_id_t * request_header,
   const void * untyped_ros_response)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
+  using ROSResponseType = @(__ros_response_msg_type);
+  using DDSResponseType = @(__dds_response_msg_type);
+  using ReplierType = rosidl_typesupport_opendds_cpp::Replier<
+    @(__dds_msg_typesupport_type)RequestWrapper,
+    @(__dds_msg_typesupport_type)ResponseWrapper
+  >;
+  if (!untyped_replier || !request_header || !untyped_ros_response) {
+    return false;
+  }
+
+  const ROSResponseType & ros_response = *(static_cast<const ROSResponseType *>(untyped_ros_response));
+  DDSResponseType dds_response;
+
+  if (!@(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_ros_message_to_dds(
+    ros_response, dds_response)) {
+      RMW_SET_ERROR_MSG("failed to convert ROS response to DDS");
+      return false;
+    }
+
+  @(__dds_msg_typesupport_type)ResponseWrapper response_wrapper;
+  response_wrapper.response(dds_response);
+
+  @# Convert request_header to related_request_id
+  @(__rpc_header_prefix)SampleIdentity related_request_id;
+  OpenDDS::DCPS::RepoId id;
+  size_t IDENTITY_SIZE = 16;
+  std::memcpy(&id, &(request_header->writer_guid[0]), IDENTITY_SIZE);
+  related_request_id.writer_guid(id);
+
+  OpenDDS::RTPS::SequenceNumber_t sn;
+  sn.high = (::CORBA::Long)(request_header->sequence_number >> 32);
+  sn.low = (::CORBA::ULong)(request_header->sequence_number & 0xFFFFFFFF);
+  related_request_id.sequence_number(sn);
+
+  response_wrapper.header().related_request_id(related_request_id);
+  response_wrapper.header().remote_ex(@(__rpc_header_prefix)RemoteExceptionCode_t::REMOTE_EX_OK);
+
+  ReplierType * replier = static_cast<ReplierType *>(untyped_replier);
+  if (DDS::RETCODE_OK != replier->send_reply(response_wrapper)) {
+    RMW_SET_ERROR_MSG("send_reply failed");
+    return false;
+  }
+
   return true;
 }
 
@@ -334,15 +486,23 @@ get_reply_datareader__@(service.namespaced_type.name)(void * untyped_requester)
 void *
 get_request_datareader__@(service.namespaced_type.name)(void * untyped_replier)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
-    return nullptr;
+  using ReplierType = rosidl_typesupport_opendds_cpp::Replier<
+    @(__dds_msg_typesupport_type)RequestWrapper,
+    @(__dds_msg_typesupport_type)ResponseWrapper
+  >;
+  ReplierType * replier = static_cast<ReplierType *>(untyped_replier);
+  return replier->get_request_datareader();
 }
 
 void *
 get_reply_datawriter__@(service.namespaced_type.name)(void * untyped_replier)
 {
-@# TODO: Implement, considering original code in ffe10f9 or earlier
-    return nullptr;
+  using ReplierType = rosidl_typesupport_opendds_cpp::Replier<
+    @(__dds_msg_typesupport_type)RequestWrapper,
+    @(__dds_msg_typesupport_type)ResponseWrapper
+  >;
+  ReplierType * replier = static_cast<ReplierType *>(untyped_replier);
+  return replier->get_reply_datawriter();
 }
 
 static service_type_support_callbacks_t _@(service.namespaced_type.name)__callbacks = {
