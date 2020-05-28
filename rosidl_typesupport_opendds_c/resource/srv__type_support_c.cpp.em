@@ -15,15 +15,16 @@ header_files = [
     'rosidl_typesupport_cpp/service_type_support.hpp',
     'rosidl_typesupport_opendds_c/identifier.h',
     package_name + '/msg/rosidl_typesupport_opendds_c__visibility_control.h',
-    include_base + '/dds_opendds/' + cpp_include_prefix + '_TypeSupportImpl.h',
     include_base + '/' + c_include_prefix + '.h',
 # Re-use most of the functions from C++ typesupport
     include_base + '/' + c_include_prefix + '__rosidl_typesupport_opendds_cpp.hpp',
 ]
 
 dds_specific_header_files = [
-    include_base + '/dds_opendds/' + interface_path.stem + '_C.h',
-    include_base + '/dds_opendds/' + interface_path.stem + '_TypeSupportImpl.h'
+    include_base + '/dds_opendds/' + cpp_include_prefix + '_C.h',
+    include_base + '/dds_opendds/' + cpp_include_prefix + '_TypeSupportImpl.h',
+    include_base + '/dds_opendds/' + cpp_include_prefix + '__RequestResponseC.h',
+    include_base + '/dds_opendds/' + cpp_include_prefix + '__RequestResponseTypeSupportImpl.h',
 ]
 }@
 #ifdef OpenDDS_GLIBCXX_USE_CXX11_ABI_ZERO
