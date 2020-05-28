@@ -5,6 +5,7 @@ import sys
 
 from rosidl_cmake import read_generator_arguments
 from rosidl_typesupport_opendds_cpp import generate_cpp
+from rosidl_typesupport_opendds_cpp import generate_idl
 from rosidl_typesupport_opendds_cpp import generate_dds_opendds_cpp
 
 import glob, os, shutil
@@ -41,6 +42,10 @@ def main(argv=sys.argv[1:]):
     generator_args = read_generator_arguments(args.generator_arguments_file)
 
     rc = generate_cpp(args.generator_arguments_file)
+    if rc:
+        return rc
+
+    rc = generate_idl(args.generator_arguments_file)
     if rc:
         return rc
 

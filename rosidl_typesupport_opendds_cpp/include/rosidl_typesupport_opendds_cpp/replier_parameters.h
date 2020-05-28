@@ -1,10 +1,6 @@
 #ifndef ROSIDL_TYPESUPPORT_OPENDDS_CPP__REPLIER_PARAMETERS_H_
 #define ROSIDL_TYPESUPPORT_OPENDDS_CPP__REPLIER_PARAMETERS_H_
 
-#include <string>
-#include "dds/DCPS/Service_Participant.h"
-#include "dds/DCPS/Marked_Default_Qos.h"
-
 namespace rosidl_typesupport_opendds_cpp
 {
 // TODO: may need to be templated, if it needs a listener: http://community.rti.com/rti-doc/510/ndds/doc/html/api_cpp/classconnext_1_1ReplierParams.html
