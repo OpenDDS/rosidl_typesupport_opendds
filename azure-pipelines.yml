@@ -36,9 +36,14 @@ jobs:
     displayName:  rmw build repo and dependencies
   - script: |
         cd $(Agent.BuildDirectory)
-        ./rmw_build/build_all.sh
+        ./rmw_build/build_all.sh -r
     displayName:  build rmw and tests (build_all.sh)
   - script: |
         cd $(Agent.BuildDirectory)
         ./rmw_build/run_ci_test.sh
     displayName:  run tests (run_ci_test.sh)
+  - script: |
+        cd $(Agent.BuildDirectory)
+        ./rmw_build/run_ci_test_rpc.sh
+    displayName:  run tests (run_ci_test_rpc.sh)
+    
