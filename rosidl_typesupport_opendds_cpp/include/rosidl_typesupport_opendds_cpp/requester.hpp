@@ -32,6 +32,7 @@ namespace rosidl_typesupport_opendds_cpp
       sequence_number(0),
       request_datawriter(nullptr),
       reply_datareader(nullptr)
+    {
     }
 
 
