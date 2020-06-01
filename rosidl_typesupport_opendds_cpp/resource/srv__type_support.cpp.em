@@ -228,9 +228,7 @@ int64_t send_request__@(service.namespaced_type.name)(
     return -1;
   }
 
-  int64_t sequence_number = static_cast<int64_t>(requester->get_sequence_number().getHigh()) << 32 |
-    requester->get_sequence_number().getLow();
-  return sequence_number;
+  return requester->get_sequence_number().getValue();
 }
 
 void * create_replier__@(service.namespaced_type.name)(
@@ -430,10 +428,9 @@ bool send_response__@(service.namespaced_type.name)(
   std::memcpy(&id, &(request_header->writer_guid[0]), RPC_SAMPLE_IDENTITY_SIZE);
   related_request_id.writer_guid(id);
 
-  OpenDDS::RTPS::SequenceNumber_t sn;
-  sn.high = (::CORBA::Long)(request_header->sequence_number >> 32);
-  sn.low = (::CORBA::ULong)(request_header->sequence_number & 0xFFFFFFFF);
-  related_request_id.sequence_number(sn);
+  OpenDDS::DCPS::SequenceNumber sn = request_header->sequence_number;
+  related_request_id.sequence_number().high = sn.getHigh();
+  related_request_id.sequence_number().low = sn.getLow();
 
   response_wrapper.header().related_request_id(related_request_id);
   response_wrapper.header().remote_ex(@(__rpc_header_prefix)RemoteExceptionCode_t::REMOTE_EX_OK);

@@ -105,11 +105,11 @@ public:
     return reply_topic_name_;
   }
 
-  DDS::Topic_var request_topic() const{
-  return request_topic_;
+  DDS::Topic_var request_topic() const {
+    return request_topic_;
   }
 
-  DDS::Topic_var reply_topic() const{
+  DDS::Topic_var reply_topic() const {
     return reply_topic_;
   }
 
