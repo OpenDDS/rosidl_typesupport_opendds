@@ -10,6 +10,8 @@
 
 #include <string>
 
+const size_t RPC_SAMPLE_IDENTITY_SIZE = 16;
+
 namespace rosidl_typesupport_opendds_cpp
 {
 
@@ -135,7 +137,7 @@ namespace rosidl_typesupport_opendds_cpp
         return this->take_reply(reply);
       }
 
-      if (reply.header().remote_ex() != ::typesupport_opendds_cpp::rpc::RemoteExceptionCode_t::REMOTE_EX_OK) {
+      if (reply.header().remote_ex() != ::typesupport_opendds_cpp_dds::rpc::RemoteExceptionCode_t::REMOTE_EX_OK) {
         RMW_SET_ERROR_MSG("error code returned from the server");
         return DDS::RETCODE_ERROR;
       }

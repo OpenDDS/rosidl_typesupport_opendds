@@ -240,7 +240,7 @@ if isinstance(type_, AbstractNestedType):
       }
       std::wstring wstr;
       rosidl_typesupport_opendds_c::u16string_to_wstring(*str, wstr);
-      dds_message->@(member.name)_[static_cast<int>(i)] = wstr;
+      dds_message->@(member.name)_()[i] = wstr;
 @[    elif isinstance(type_, BasicType)]@
 @[      if type_.typename == 'boolean']@
       dds_message->@(member.name)_()[i] = 1 ? ros_i : 0;
@@ -360,7 +360,7 @@ if isinstance(type_, AbstractNestedType):
       if (!ros_i.data) {
         rosidl_generator_c__U16String__init(&ros_i);
       }
-      bool succeeded = rosidl_typesupport_opendds_c::wstring_to_u16string(dds_message->@(member.name)_[i], ros_i);
+      bool succeeded = rosidl_typesupport_opendds_c::wstring_to_u16string(dds_message->@(member.name)_()[i], ros_i);
       if (!succeeded) {
         fprintf(stderr, "failed to create wstring from u16string\n");
         rosidl_generator_c__U16String__fini(&ros_i);

@@ -103,7 +103,7 @@ __dds_request_wrapper_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.nam
 __dds_response_wrapper_msg_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name + 'ResponseWrapper'
 __dds_msg_typesupport_type = __ros_srv_pkg_prefix + '::dds_::' + service.namespaced_type.name
 __dds_header_prefix = __ros_srv_pkg_prefix + '::dds_::'
-__rpc_header_prefix = '::typesupport_opendds_cpp::rpc::'
+__rpc_header_prefix = '::typesupport_opendds_cpp_dds::rpc::'
 }@
 
 void * create_requester__@(service.namespaced_type.name)(
@@ -114,9 +114,6 @@ void * create_requester__@(service.namespaced_type.name)(
     DDS::Subscriber_var dds_subscriber,
     allocator_t allocator)
 {
-  @# TODO: remove next line when ready
-  return nullptr;
-
   using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
     @(__dds_request_wrapper_msg_type),
     @(__dds_response_wrapper_msg_type)
@@ -190,9 +187,6 @@ const char * destroy_requester__@(service.namespaced_type.name)(
   void * untyped_requester,
   deallocator_t deallocator)
 {
-  @# TODO: remove next line when ready
-  return nullptr;
-
   using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
     @(__dds_request_wrapper_msg_type),
     @(__dds_response_wrapper_msg_type)
@@ -234,7 +228,7 @@ int64_t send_request__@(service.namespaced_type.name)(
     return -1;
   }
 
-  int64_t sequence_number = ((int64_t)requester->get_sequence_number().getHigh()) << 32 |
+  int64_t sequence_number = static_cast<int64_t>(requester->get_sequence_number().getHigh()) << 32 |
     requester->get_sequence_number().getLow();
   return sequence_number;
 }
@@ -247,9 +241,6 @@ void * create_replier__@(service.namespaced_type.name)(
     DDS::Subscriber_var dds_subscriber,
     allocator_t allocator)
 {
-  @# TODO: remove next line when ready
-  return nullptr;
-
   using ReplierType = rosidl_typesupport_opendds_cpp::Replier<
     @(__dds_request_wrapper_msg_type),
     @(__dds_response_wrapper_msg_type)
@@ -322,9 +313,6 @@ const char * destroy_replier__@(service.namespaced_type.name)(
   void * untyped_replier,
   deallocator_t deallocator)
 {
-  @# TODO: remove next line when ready
-  return nullptr;
-
   using ReplierType = rosidl_typesupport_opendds_cpp::Replier<
     @(__dds_request_wrapper_msg_type),
     @(__dds_response_wrapper_msg_type)
@@ -361,13 +349,12 @@ bool take_request__@(service.namespaced_type.name)(
   }
 
   int64_t sequence_number =
-    (((int64_t)dds_request_wrapper.header().request_id().sequence_number().high) << 32) |
+    static_cast<int64_t>(dds_request_wrapper.header().request_id().sequence_number().high) << 32 |
     dds_request_wrapper.header().request_id().sequence_number().low;
   request_header->sequence_number = sequence_number;
 
-  size_t IDENTITY_SIZE = 16;
   OpenDDS::DCPS::GUID_t id = dds_request_wrapper.header().request_id().writer_guid();
-  std::memcpy(&(request_header->writer_guid[0]), &id, IDENTITY_SIZE);
+  std::memcpy(&(request_header->writer_guid[0]), &id, RPC_SAMPLE_IDENTITY_SIZE);
 
   ROSRequestType* ros_request = static_cast<ROSRequestType *>(untyped_ros_request);
   bool converted = @(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_dds_message_to_ros(
@@ -399,7 +386,7 @@ bool take_response__@(service.namespaced_type.name)(
   }
 
   int64_t sequence_number =
-    (((int64_t)dds_response_wrapper.header().related_request_id().sequence_number().high) << 32) |
+    static_cast<int64_t>(dds_response_wrapper.header().related_request_id().sequence_number().high) << 32 |
     dds_response_wrapper.header().related_request_id().sequence_number().low;
   request_header->sequence_number = sequence_number;
 
@@ -440,8 +427,7 @@ bool send_response__@(service.namespaced_type.name)(
   @# Convert request_header to related_request_id
   @(__rpc_header_prefix)SampleIdentity related_request_id;
   OpenDDS::DCPS::RepoId id;
-  size_t IDENTITY_SIZE = 16;
-  std::memcpy(&id, &(request_header->writer_guid[0]), IDENTITY_SIZE);
+  std::memcpy(&id, &(request_header->writer_guid[0]), RPC_SAMPLE_IDENTITY_SIZE);
   related_request_id.writer_guid(id);
 
   OpenDDS::RTPS::SequenceNumber_t sn;
