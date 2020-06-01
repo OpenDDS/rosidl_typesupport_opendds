@@ -29,17 +29,16 @@ namespace rosidl_typesupport_opendds_cpp
     typedef TReply ReplyType;
 
     Requester() :
+      sequence_number(0),
       request_datawriter(nullptr),
-      reply_datareader(nullptr),
-      sequence_number(0)
-    {
+      reply_datareader(nullptr)
     }
 
 
     explicit Requester(const RequesterParams& params) :
+      sequence_number(0),
       request_datawriter(nullptr),
-      reply_datareader(nullptr),
-      sequence_number(0)
+      reply_datareader(nullptr)
     {
       requester_params = params;
 
