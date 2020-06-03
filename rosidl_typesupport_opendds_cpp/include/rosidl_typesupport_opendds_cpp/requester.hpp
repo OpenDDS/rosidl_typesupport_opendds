@@ -10,6 +10,8 @@
 
 #include <string>
 
+const size_t RPC_SAMPLE_IDENTITY_SIZE = 16;
+
 namespace rosidl_typesupport_opendds_cpp
 {
 
@@ -27,17 +29,17 @@ namespace rosidl_typesupport_opendds_cpp
     typedef TReply ReplyType;
 
     Requester() :
+      sequence_number(0),
       request_datawriter(nullptr),
-      reply_datareader(nullptr),
-      sequence_number(0)
+      reply_datareader(nullptr)
     {
     }
 
 
     explicit Requester(const RequesterParams& params) :
+      sequence_number(0),
       request_datawriter(nullptr),
-      reply_datareader(nullptr),
-      sequence_number(0)
+      reply_datareader(nullptr)
     {
       requester_params = params;
 
@@ -135,7 +137,7 @@ namespace rosidl_typesupport_opendds_cpp
         return this->take_reply(reply);
       }
 
-      if (reply.header().remote_ex() != ::typesupport_opendds_cpp::rpc::RemoteExceptionCode_t::REMOTE_EX_OK) {
+      if (reply.header().remote_ex() != ::typesupport_opendds_cpp_dds::rpc::RemoteExceptionCode_t::REMOTE_EX_OK) {
         RMW_SET_ERROR_MSG("error code returned from the server");
         return DDS::RETCODE_ERROR;
       }
