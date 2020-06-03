@@ -5,7 +5,7 @@
 #include "dds/DdsDcpsGuid.idl"
 #include "dds/DCPS/RTPS/RtpsCore.idl"
 
-module typesupport_opendds_cpp {
+module typesupport_opendds_cpp_dds{
 
 module rpc {
 struct SampleIdentity {
@@ -34,6 +34,6 @@ struct ResponseHeader {
 };
 
 }; // module rpc
-}; // module typesupport_opendds_cpp
+}; // module typesupport_opendds_cpp_dds
 
 #endif /* TYPESUPPORT_OPENDDS_RPC_IDL */
