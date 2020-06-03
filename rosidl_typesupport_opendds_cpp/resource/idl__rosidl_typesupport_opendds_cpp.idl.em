@@ -22,10 +22,11 @@ include_directives = set()
 #ifndef @(header_guard_variable)
 #define @(header_guard_variable)
 
+#include "RPC.idl"
+
 @{from rosidl_parser.definition import Service}
 @[for service in content.get_elements_of_type(Service)]
 #include "@(service.namespaced_type.name)_.idl"
-#include "RPC.idl"
 
 module @(package_name) {
 
@@ -35,18 +36,58 @@ module dds_ {
 
 @@topic
 struct @(service.namespaced_type.name)RequestWrapper {
-  typesupport_opendds_cpp::rpc::RequestHeader header;
+  ::typesupport_opendds_cpp_dds::rpc::RequestHeader header;
   @(service.namespaced_type.name)_Request_ request;
 };
 @@topic
 struct @(service.namespaced_type.name)ResponseWrapper {
-  typesupport_opendds_cpp::rpc::ResponseHeader header;
+  ::typesupport_opendds_cpp_dds::rpc::ResponseHeader header;
   @(service.namespaced_type.name)_Response_ response;
 };
 
 };  // module dds_
 
 };  // module srv
+
+};  // module @(package_name)
+
+@[end for]
+
+@{from rosidl_parser.definition import Action}
+@[for action in content.get_elements_of_type(Action)]
+#include "@(action.namespaced_type.name)_.idl"
+
+module @(package_name) {
+
+module action {
+
+module dds_ {
+
+@@topic
+struct @(action.send_goal_service.namespaced_type.name)RequestWrapper {
+  ::typesupport_opendds_cpp_dds::rpc::RequestHeader header;
+  @(action.send_goal_service.namespaced_type.name)_Request_ request;
+};
+@@topic
+struct @(action.send_goal_service.namespaced_type.name)ResponseWrapper {
+  ::typesupport_opendds_cpp_dds::rpc::ResponseHeader header;
+  @(action.send_goal_service.namespaced_type.name)_Response_ response;
+};
+
+@@topic
+struct @(action.get_result_service.namespaced_type.name)RequestWrapper {
+  ::typesupport_opendds_cpp_dds::rpc::RequestHeader header;
+  @(action.get_result_service.namespaced_type.name)_Request_ request;
+};
+@@topic
+struct @(action.get_result_service.namespaced_type.name)ResponseWrapper {
+  ::typesupport_opendds_cpp_dds::rpc::ResponseHeader header;
+  @(action.get_result_service.namespaced_type.name)_Response_ response;
+};
+
+};  // module dds_
+
+};  // module action
 
 };  // module @(package_name)
 
