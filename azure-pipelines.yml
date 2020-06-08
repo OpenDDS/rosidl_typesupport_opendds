@@ -11,8 +11,8 @@ jobs:
 - job: Linux
   timeoutInMinutes: 90
   pool:
-    vmImage: 'ubuntu-18.04'
-  container: objectcomputing/opendds_ros2:latest
+    vmImage: 'ubuntu-20.04'
+  container: adamsjoci/opendds_ros2:foxy
   steps:
   - script: |
       printenv
@@ -28,6 +28,9 @@ jobs:
   - script: |
         cd $(Agent.BuildDirectory)
         git clone https://github.com/adamsj-oci/rmw_build
+        pushd rmw_build
+        git checkout foxy-release
+        popd
         vcs import s < rmw_build/ros2.repos
         echo "ls"
         ls
