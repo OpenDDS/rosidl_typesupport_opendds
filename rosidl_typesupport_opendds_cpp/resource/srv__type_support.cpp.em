@@ -125,7 +125,7 @@ void * create_requester__@(service.namespaced_type.name)(
 
   if (tsRequest->register_type(dds_participant, "@(__dds_request_wrapper_msg_type)_") != DDS::RETCODE_OK) {
     RMW_SET_ERROR_MSG("request register_type for requester failed");
-    return NULL;
+    return nullptr;
   }
 
   @(__dds_msg_typesupport_type)ResponseWrapperTypeSupport_var tsResponse =
@@ -133,7 +133,7 @@ void * create_requester__@(service.namespaced_type.name)(
 
   if (tsResponse->register_type(dds_participant, "@(__dds_response_wrapper_msg_type)_") != DDS::RETCODE_OK) {
     RMW_SET_ERROR_MSG("response register_type for requester failed");
-    return NULL;
+    return nullptr;
   }
 
   @# Create Topics
@@ -250,7 +250,7 @@ void * create_replier__@(service.namespaced_type.name)(
 
   if (tsRequest->register_type(dds_participant, "@(__dds_request_wrapper_msg_type)_") != DDS::RETCODE_OK) {
     RMW_SET_ERROR_MSG("request register_type for replier failed");
-    return NULL;
+    return nullptr;
   }
 
   @(__dds_msg_typesupport_type)ResponseWrapperTypeSupport_var tsResponse =
@@ -258,7 +258,7 @@ void * create_replier__@(service.namespaced_type.name)(
 
   if (tsResponse->register_type(dds_participant, "@(__dds_response_wrapper_msg_type)_") != DDS::RETCODE_OK) {
     RMW_SET_ERROR_MSG("request register_type for replier failed");
-    return NULL;
+    return nullptr;
   }
 
   @# Create Topics
