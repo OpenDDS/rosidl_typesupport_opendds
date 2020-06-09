@@ -119,7 +119,7 @@ void * create_requester__@(service.namespaced_type.name)(
     @(__dds_response_wrapper_msg_type)
   >;
 
-  if (request_topic_str == nullptr || response_topic_str == nullptr || dds_participant==nullptr
+  if (request_topic_str == nullptr || response_topic_str == nullptr || dds_participant == nullptr
       || dds_publisher == nullptr || dds_subscriber == nullptr) {
      RMW_SET_ERROR_MSG("Invalid parameters for create_requester");
      return nullptr;
@@ -248,7 +248,7 @@ void * create_replier__@(service.namespaced_type.name)(
     @(__dds_response_wrapper_msg_type)
   >;
 
-  if (request_topic_str == nullptr || response_topic_str == nullptr || dds_participant==nullptr
+  if (request_topic_str == nullptr || response_topic_str == nullptr || dds_participant == nullptr
       || dds_publisher == nullptr || dds_subscriber == nullptr) {
      RMW_SET_ERROR_MSG("Invalid parameters for create_replier");
      return nullptr;
