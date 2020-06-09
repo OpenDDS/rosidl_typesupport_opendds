@@ -138,8 +138,8 @@ configure_file(
 set(_target_suffix "__rosidl_typesupport_opendds_cpp")
 
 link_directories(${OpenDDS_LIBRARY_DIRS})
-add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED
-  ${_generated_files} ${_generated_external_files})
+add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED)
+OPENDDS_TARGET_SOURCES(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${_generated_files} ${_generated_external_files})
 if(rosidl_generate_interfaces_LIBRARY_NAME)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
@@ -176,8 +176,6 @@ ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "rmw"
   "rosidl_typesupport_opendds_cpp"
   "rosidl_typesupport_interface")
-
-target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} OpenDDS::OpenDDS)
 
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   set(_msg_include_dir "${${_pkg_name}_DIR}/../../../include/${_pkg_name}/msg/dds_opendds")
