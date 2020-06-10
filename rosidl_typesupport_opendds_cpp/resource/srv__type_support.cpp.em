@@ -119,12 +119,18 @@ void * create_requester__@(service.namespaced_type.name)(
     @(__dds_response_wrapper_msg_type)
   >;
 
+  if (request_topic_str == nullptr || response_topic_str == nullptr || dds_participant == nullptr
+      || dds_publisher == nullptr || dds_subscriber == nullptr) {
+     RMW_SET_ERROR_MSG("Invalid parameters for create_requester");
+     return nullptr;
+  }
+
   @# Register TypeSupports
   @(__dds_msg_typesupport_type)RequestWrapperTypeSupport_var tsRequest =
     new @(__dds_msg_typesupport_type)RequestWrapperTypeSupportImpl;
 
   if (tsRequest->register_type(dds_participant, "@(__dds_request_wrapper_msg_type)_") != DDS::RETCODE_OK) {
-    RMW_SET_ERROR_MSG("request register_type for requester failed");
+    RMW_SET_ERROR_MSG("Request register_type for requester failed with @(__dds_request_wrapper_msg_type)_ type");
     return nullptr;
   }
 
@@ -132,32 +138,30 @@ void * create_requester__@(service.namespaced_type.name)(
     new @(__dds_msg_typesupport_type)ResponseWrapperTypeSupportImpl;
 
   if (tsResponse->register_type(dds_participant, "@(__dds_response_wrapper_msg_type)_") != DDS::RETCODE_OK) {
-    RMW_SET_ERROR_MSG("response register_type for requester failed");
+    RMW_SET_ERROR_MSG("Response register_type for requester failed with @(__dds_response_wrapper_msg_type)_ type");
     return nullptr;
   }
 
   @# Create Topics
-  CORBA::String_var type_name = tsRequest->get_type_name();
   DDS::Topic_var request_topic = dds_participant->create_topic(request_topic_str,
-                                                      type_name,
+                                                      "@(__dds_request_wrapper_msg_type)_",
                                                       TOPIC_QOS_DEFAULT,
                                                       nullptr,
                                                       OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
   if (!request_topic) {
-    RMW_SET_ERROR_MSG("Request create_topic failed");
+    RMW_SET_ERROR_MSG("Request create_topic failed for Requester with @(__dds_request_wrapper_msg_type)_ type.");
     return nullptr;
   }
 
-  type_name = tsResponse->get_type_name();
   DDS::Topic_var response_topic = dds_participant->create_topic(response_topic_str,
-                                        type_name,
+                                        "@(__dds_response_wrapper_msg_type)_",
                                         TOPIC_QOS_DEFAULT,
                                         nullptr,
                                         OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
   if (!response_topic) {
-    RMW_SET_ERROR_MSG("Response create_topic failed");
+    RMW_SET_ERROR_MSG("Response create_topic failed for Requester with @(__dds_response_wrapper_msg_type)_ type");
     return nullptr;
   }
 
@@ -244,6 +248,12 @@ void * create_replier__@(service.namespaced_type.name)(
     @(__dds_response_wrapper_msg_type)
   >;
 
+  if (request_topic_str == nullptr || response_topic_str == nullptr || dds_participant == nullptr
+      || dds_publisher == nullptr || dds_subscriber == nullptr) {
+     RMW_SET_ERROR_MSG("Invalid parameters for create_replier");
+     return nullptr;
+  }
+
   @# Register TypeSupports
   @(__dds_msg_typesupport_type)RequestWrapperTypeSupport_var tsRequest =
     new @(__dds_msg_typesupport_type)RequestWrapperTypeSupportImpl;
@@ -257,32 +267,30 @@ void * create_replier__@(service.namespaced_type.name)(
     new @(__dds_msg_typesupport_type)ResponseWrapperTypeSupportImpl;
 
   if (tsResponse->register_type(dds_participant, "@(__dds_response_wrapper_msg_type)_") != DDS::RETCODE_OK) {
-    RMW_SET_ERROR_MSG("request register_type for replier failed");
+    RMW_SET_ERROR_MSG("response register_type for replier failed");
     return nullptr;
   }
 
   @# Create Topics
-  CORBA::String_var type_name = tsRequest->get_type_name();
   DDS::Topic_var request_topic = dds_participant->create_topic(request_topic_str,
-                                                      type_name,
+                                                      "@(__dds_request_wrapper_msg_type)_",
                                                       TOPIC_QOS_DEFAULT,
                                                       nullptr,
                                                       OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
   if (!request_topic) {
-    RMW_SET_ERROR_MSG("Request create_topic failed");
+    RMW_SET_ERROR_MSG("Request create_topic failed for Replier with @(__dds_request_wrapper_msg_type)_ type");
     return nullptr;
   }
 
-  type_name = tsResponse->get_type_name();
   DDS::Topic_var response_topic = dds_participant->create_topic(response_topic_str,
-                                        type_name,
-                                        TOPIC_QOS_DEFAULT,
-                                        nullptr,
-                                        OpenDDS::DCPS::DEFAULT_STATUS_MASK);
+                                                      "@(__dds_response_wrapper_msg_type)_",
+                                                      TOPIC_QOS_DEFAULT,
+                                                      nullptr,
+                                                      OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
   if (!response_topic) {
-    RMW_SET_ERROR_MSG("Response create_topic failed");
+    RMW_SET_ERROR_MSG("Response create_topic failed for Replier with @(__dds_response_wrapper_msg_type)_ type");
     return nullptr;
   }
 
