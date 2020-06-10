@@ -107,12 +107,12 @@ namespace rosidl_typesupport_opendds_cpp
         return DDS::RETCODE_ERROR;
       }
 
-      request.header().request_id().writer_guid(pub_id);
+      request.header().request_id.writer_guid = pub_id;
 
       ++sequence_number;
 
-      request.header().request_id().sequence_number().high = sequence_number.getHigh();
-      request.header().request_id().sequence_number().low = sequence_number.getLow();
+      request.header().request_id.sequence_number.high = sequence_number.getHigh();
+      request.header().request_id.sequence_number.low = sequence_number.getLow();
 
       if (request_datawriter->write(request, DDS::HANDLE_NIL) != DDS::RETCODE_OK) {
         RMW_SET_ERROR_MSG("write() failed in send_request");
@@ -137,7 +137,7 @@ namespace rosidl_typesupport_opendds_cpp
         return this->take_reply(reply);
       }
 
-      if (reply.header().remote_ex() != ::typesupport_opendds_cpp_dds::rpc::RemoteExceptionCode_t::REMOTE_EX_OK) {
+      if (reply.header().remote_ex != ::typesupport_opendds_cpp_dds::rpc::RemoteExceptionCode_t::REMOTE_EX_OK) {
         RMW_SET_ERROR_MSG("error code returned from the server");
         return DDS::RETCODE_ERROR;
       }

@@ -355,10 +355,10 @@ bool take_request__@(service.namespaced_type.name)(
   }
 
   OpenDDS::DCPS::SequenceNumber sn;
-  sn.setValue(dds_request_wrapper.header().request_id().sequence_number().high, dds_request_wrapper.header().request_id().sequence_number().low);
+  sn.setValue(dds_request_wrapper.header().request_id.sequence_number.high, dds_request_wrapper.header().request_id.sequence_number.low);
   request_header->sequence_number = sn.getValue();
 
-  OpenDDS::DCPS::GUID_t id = dds_request_wrapper.header().request_id().writer_guid();
+  OpenDDS::DCPS::GUID_t id = dds_request_wrapper.header().request_id.writer_guid;
   std::memcpy(&(request_header->writer_guid[0]), &id, RPC_SAMPLE_IDENTITY_SIZE);
 
   ROSRequestType* ros_request = static_cast<ROSRequestType *>(untyped_ros_request);
@@ -391,7 +391,7 @@ bool take_response__@(service.namespaced_type.name)(
   }
 
   OpenDDS::DCPS::SequenceNumber sn;
-  sn.setValue(dds_response_wrapper.header().related_request_id().sequence_number().high, dds_response_wrapper.header().related_request_id().sequence_number().low);
+  sn.setValue(dds_response_wrapper.header().related_request_id.sequence_number.high, dds_response_wrapper.header().related_request_id.sequence_number.low);
   request_header->sequence_number = sn.getValue();
 
   ROSResponseType* ros_response = static_cast<ROSResponseType *>(untyped_ros_response);
@@ -432,14 +432,14 @@ bool send_response__@(service.namespaced_type.name)(
   @(__rpc_header_prefix)SampleIdentity related_request_id;
   OpenDDS::DCPS::RepoId id;
   std::memcpy(&id, &(request_header->writer_guid[0]), RPC_SAMPLE_IDENTITY_SIZE);
-  related_request_id.writer_guid(id);
+  related_request_id.writer_guid = id;
 
   OpenDDS::DCPS::SequenceNumber sn = request_header->sequence_number;
-  related_request_id.sequence_number().high = sn.getHigh();
-  related_request_id.sequence_number().low = sn.getLow();
+  related_request_id.sequence_number.high = sn.getHigh();
+  related_request_id.sequence_number.low = sn.getLow();
 
-  response_wrapper.header().related_request_id(related_request_id);
-  response_wrapper.header().remote_ex(@(__rpc_header_prefix)RemoteExceptionCode_t::REMOTE_EX_OK);
+  response_wrapper.header().related_request_id = related_request_id;
+  response_wrapper.header().remote_ex = @(__rpc_header_prefix)RemoteExceptionCode_t::REMOTE_EX_OK;
 
   ReplierType * replier = static_cast<ReplierType *>(untyped_replier);
   if (DDS::RETCODE_OK != replier->send_reply(response_wrapper)) {
