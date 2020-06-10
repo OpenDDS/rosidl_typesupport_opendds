@@ -58,7 +58,6 @@ def generate_dds_opendds_cpp(
 
         package_prefix = get_package_prefix('rosidl_typesupport_opendds_cpp')
         rpc_file_path = package_prefix + '/include/rosidl_typesupport_opendds_cpp'
-        rpc_file = str(rpc_file_path) + '/RPC.idl'
 
         #msg_name is idl_file name without extension
         msg_name = os.path.splitext(os.path.basename(idl_file))[0]

@@ -38,7 +38,7 @@ ament_python_install_package(${PROJECT_NAME})
 
 add_library(${PROJECT_NAME} SHARED)
 OPENDDS_TARGET_SOURCES(${PROJECT_NAME} src/identifier.cpp src/wstring_conversion.cpp)
-OPENDDS_TARGET_SOURCES(${PROJECT_NAME} include/rosidl_typesupport_opendds_cpp/RPC.idl TAO_IDL_OPTIONS "-Sa -St")
+OPENDDS_TARGET_SOURCES(${PROJECT_NAME} include/rosidl_typesupport_opendds_cpp/RPC.idl OPENDDS_IDL_OPTIONS "-Sa -St -Lc++11")
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE "ROSIDL_TYPESUPPORT_OPENDDS_CPP_BUILDING_DLL")
