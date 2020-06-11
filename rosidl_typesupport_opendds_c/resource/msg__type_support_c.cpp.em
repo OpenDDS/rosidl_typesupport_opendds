@@ -1,9 +1,9 @@
 @# Included from rosidl_typesupport_opendds_c/resource/idl__dds_opendds__type_support_c.cpp.em
 @{
 from rosidl_cmake import convert_camel_case_to_lower_case_underscore
-from rosidl_runtime_c import idl_structure_type_to_c_include_prefix
-from rosidl_runtime_c import idl_structure_type_to_c_typename
-from rosidl_runtime_c import idl_type_to_c
+from rosidl_generator_c import idl_structure_type_to_c_include_prefix
+from rosidl_generator_c import idl_structure_type_to_c_typename
+from rosidl_generator_c import idl_type_to_c
 from rosidl_parser.definition import AbstractNestedType
 from rosidl_parser.definition import AbstractSequence
 from rosidl_parser.definition import AbstractString
@@ -81,18 +81,18 @@ from collections import OrderedDict
 includes = OrderedDict()
 for member in message.structure.members:
     if isinstance(member.type, AbstractSequence) and isinstance(member.type.value_type, BasicType):
-       includes.setdefault('rosidl_runtime_c/primitives_sequence.h', []).append(member.name)
-       includes.setdefault('rosidl_runtime_c/primitives_sequence_functions.h', []).append(member.name)
+       includes.setdefault('rosidl_generator_c/primitives_sequence.h', []).append(member.name)
+       includes.setdefault('rosidl_generator_c/primitives_sequence_functions.h', []).append(member.name)
        continue
     type_ = member.type
     if isinstance(type_, AbstractNestedType):
        type_ = type_.value_type
     if isinstance(type_, AbstractString):
-        includes.setdefault('rosidl_runtime_c/string.h', []).append(member.name)
-        includes.setdefault('rosidl_runtime_c/string_functions.h', []).append(member.name)
+        includes.setdefault('rosidl_generator_c/string.h', []).append(member.name)
+        includes.setdefault('rosidl_generator_c/string_functions.h', []).append(member.name)
     if isinstance(type_, AbstractWString):
-        includes.setdefault('rosidl_runtime_c/u16string.h', []).append(member.name)
-        includes.setdefault('rosidl_runtime_c/u16string_functions.h', []).append(member.name)
+        includes.setdefault('rosidl_generator_c/u16string.h', []).append(member.name)
+        includes.setdefault('rosidl_generator_c/u16string_functions.h', []).append(member.name)
     if isinstance(type_, NamespacedType):
         include_prefix = idl_structure_type_to_c_include_prefix(type_)
         if include_prefix.endswith('__request'):
@@ -514,7 +514,7 @@ _@(message.structure.namespaced_type.name)__to_message(
     fprintf(stderr, "OpenDDS deserializer failed\n");
     return false;
   }
-
+  
   bool success = _@(message.structure.namespaced_type.name)__convert_dds_to_ros(&dds_message, untyped_ros_message);
 
   return success;

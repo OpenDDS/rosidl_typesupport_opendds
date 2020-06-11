@@ -17,7 +17,7 @@
 
 #include <stdint.h>
 #include <rmw/types.h>
-#include "rosidl_runtime_c/service_type_support_struct.h"
+#include "rosidl_generator_c/service_type_support_struct.h"
 #include "dds/DCPS/Service_Participant.h"
 
 typedef void* (*allocator_t)(size_t);
@@ -29,7 +29,7 @@ typedef struct service_type_support_callbacks_t
   const char * service_name;
   //! Function to create a requester
   /*!
-  Default Reader / Writer QoS of the passed Publisher / Subscriber must be set to desired values prior to calling this function
+  Default Reader / Writer QoS of the passed Publisher / Subscriber must be set to desired values prior to calling this function 
   */
   void * (*create_requester)(
     DDS::DomainParticipant_var dds_participant,
