@@ -144,7 +144,7 @@ set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "rmw"
   "rosidl_typesupport_opendds_cpp"
-  "rosidl_generator_c"
+  "rosidl_runtime_c"
   "rosidl_typesupport_interface")
 if(WIN32)
   target_compile_definitions(${rosidl_generate_interfaces_TARGET}${_target_suffix}
@@ -169,7 +169,7 @@ set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PROPERTIES COMPILE_FLAGS "${_target_compile_flags}")
 target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC
-  ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_c
+  ${CMAKE_CURRENT_BINARY_DIR}/rosidl_runtime_c
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_opendds_c
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_opendds_cpp
