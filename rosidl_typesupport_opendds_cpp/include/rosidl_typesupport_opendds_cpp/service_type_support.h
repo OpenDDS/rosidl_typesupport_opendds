@@ -17,7 +17,7 @@
 
 #include <stdint.h>
 #include <rmw/types.h>
-#include "rosidl_generator_c/service_type_support_struct.h"
+#include "rosidl_runtime_c/service_type_support_struct.h"
 #include "dds/DCPS/Service_Participant.h"
 
 typedef void* (*allocator_t)(size_t);
