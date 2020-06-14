@@ -24,13 +24,6 @@ set(_dds_idl_base_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_dds_idl")
 
 get_filename_component(_rpc_base_path ${CMAKE_CURRENT_BINARY_DIR} PATH)
 set(_rpc_path "${_rpc_base_path}/rosidl_typesupport_opendds_cpp")
-set(_rpc_files "")
-
-list(APPEND _rpc_files "${_rpc_path}/RPCC.h")
-list(APPEND _rpc_files "${_rpc_path}/RPCTypeSupportImpl.h")
-list(APPEND _rpc_files "${_rpc_path}/RPCTypeSupportImpl.cpp")
-list(APPEND _rpc_files "${_rpc_path}/RPCTypeSupportC.h")
-list(APPEND _rpc_files "${_rpc_path}/RPCTypeSupportC.cpp")
 
 set(_dds_idl_files "")
 set(_generated_files "")
@@ -149,7 +142,7 @@ set(_target_suffix "__rosidl_typesupport_opendds_cpp")
 
 link_directories(${OpenDDS_LIBRARY_DIRS})
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED)
-OPENDDS_TARGET_SOURCES(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${_generated_files} ${_generated_external_files} ${_rpc_files})
+OPENDDS_TARGET_SOURCES(${rosidl_generate_interfaces_TARGET}${_target_suffix} ${_generated_files} ${_generated_external_files})
 if(rosidl_generate_interfaces_LIBRARY_NAME)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
