@@ -23,17 +23,11 @@ jobs:
     displayName: filesystem check
   - script: |
       cd $(Agent.BuildDirectory)/s
-      git clone https://github.com/adamsj-oci/rmw_opendds.git
-      pushd rmw_opendds
-      git checkout foxy
-      popd
+      git clone -b foxy https://github.com/oci-labs/rmw_opendds
     displayName: clone rmw_opendds
   - script: |
         cd $(Agent.BuildDirectory)
-        git clone https://github.com/adamsj-oci/rmw_build
-        pushd rmw_build
-        git checkout foxy-release
-        popd
+        git clone -b foxy-release https://github.com/adamsj-oci/rmw_build
         vcs import s < rmw_build/ros2.repos
         echo "ls"
         ls
