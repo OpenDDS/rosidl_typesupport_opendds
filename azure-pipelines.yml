@@ -23,7 +23,10 @@ jobs:
     displayName: filesystem check
   - script: |
       cd $(Agent.BuildDirectory)/s
-      git clone https://github.com/oci-labs/rmw_opendds.git
+      git clone https://github.com/adamsj-oci/rmw_opendds.git
+      pushd rmw_opendds
+      git checkout foxy
+      popd
     displayName: clone rmw_opendds
   - script: |
         cd $(Agent.BuildDirectory)
