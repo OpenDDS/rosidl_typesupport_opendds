@@ -112,7 +112,8 @@ void * create_requester__@(service.namespaced_type.name)(
     const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
-    allocator_t allocator)
+    allocator_t allocator,
+    deallocator_t deallocator)
 {
   using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
     @(__dds_request_wrapper_msg_type),
@@ -180,7 +181,8 @@ void * create_requester__@(service.namespaced_type.name)(
     new (requester) RequesterType(requester_params);
   } catch (...) {
     RMW_SET_ERROR_MSG("C++ exception during construction of Requester");
-    free(requester);
+    auto _deallocator = deallocator ? deallocator : &free;
+    _deallocator(requester);
     return nullptr;
   }
 
@@ -241,7 +243,8 @@ void * create_replier__@(service.namespaced_type.name)(
     const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
-    allocator_t allocator)
+    allocator_t allocator,
+    deallocator_t deallocator)
 {
   using ReplierType = rosidl_typesupport_opendds_cpp::Replier<
     @(__dds_request_wrapper_msg_type),
@@ -309,6 +312,8 @@ void * create_replier__@(service.namespaced_type.name)(
     new (replier) ReplierType(replier_params);
   } catch (...) {
     RMW_SET_ERROR_MSG("C++ exception during construction of Replier");
+    auto _deallocator = deallocator ? deallocator : &free;
+    _deallocator(replier);
     return nullptr;
   }
 
