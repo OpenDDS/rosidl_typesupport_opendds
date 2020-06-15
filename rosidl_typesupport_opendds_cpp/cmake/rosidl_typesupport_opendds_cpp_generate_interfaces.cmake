@@ -22,6 +22,9 @@ rosidl_generate_dds_interfaces(
 set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_opendds_cpp/${PROJECT_NAME}")
 set(_dds_idl_base_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_dds_idl")
 
+get_filename_component(_rpc_base_path ${CMAKE_CURRENT_BINARY_DIR} PATH)
+set(_rpc_path "${_rpc_base_path}/rosidl_typesupport_opendds_cpp")
+
 set(_dds_idl_files "")
 set(_generated_files "")
 set(_generated_external_files "")
@@ -170,6 +173,7 @@ target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   PUBLIC
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_opendds_cpp
+  ${_rpc_path}
 )
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "OpenDDS"
