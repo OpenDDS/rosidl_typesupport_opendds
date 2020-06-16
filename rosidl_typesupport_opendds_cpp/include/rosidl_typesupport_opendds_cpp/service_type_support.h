@@ -37,7 +37,8 @@ typedef struct service_type_support_callbacks_t
     const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
-    allocator_t allocator);
+    allocator_t allocator,
+    deallocator_t deallocator);
   //! Function to destroy a requester
   const char * (*destroy_requester)(
     void * untyped_requester, deallocator_t deallocator);
@@ -51,7 +52,8 @@ typedef struct service_type_support_callbacks_t
     const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
-    allocator_t allocator);
+    allocator_t allocator,
+    deallocator_t deallocator);
   //! Function to destroy a replier
   const char * (*destroy_replier)(
     void * untyped_replier, deallocator_t deallocator);
