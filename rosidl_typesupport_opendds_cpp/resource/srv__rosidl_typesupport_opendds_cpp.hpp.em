@@ -54,7 +54,8 @@ create_requester__@(service.namespaced_type.name)(
     const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
-    allocator_t allocator);
+    allocator_t allocator,
+    deallocator_t deallocator);
 
 ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 const char *
@@ -76,7 +77,8 @@ create_replier__@(service.namespaced_type.name)(
     const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
-    allocator_t allocator);
+    allocator_t allocator,
+    deallocator_t deallocator);
 
 ROSIDL_TYPESUPPORT_OPENDDS_CPP_PUBLIC_@(package_name)
 const char *

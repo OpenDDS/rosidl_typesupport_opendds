@@ -115,7 +115,8 @@ static void * create_requester__@(service.namespaced_type.name)(
     const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
-    allocator_t allocator)
+    allocator_t allocator,
+    deallocator_t deallocator)
 {
   return @('::'.join(service.namespaced_type.namespaces))::typesupport_opendds_cpp::create_requester__@(service.namespaced_type.name)(
     dds_participant,
@@ -123,7 +124,8 @@ static void * create_requester__@(service.namespaced_type.name)(
     response_topic_str,
     dds_publisher,
     dds_subscriber,
-    allocator);
+    allocator,
+    deallocator);
 }
 static const char * destroy_requester__@(service.namespaced_type.name)(
   void * untyped_requester,
@@ -176,7 +178,8 @@ static void * create_replier__@(service.namespaced_type.name)(
     const char * response_topic_str,
     DDS::Publisher_var dds_publisher,
     DDS::Subscriber_var dds_subscriber,
-    allocator_t allocator)
+    allocator_t allocator,
+    deallocator_t deallocator)
 {
   return @('::'.join(service.namespaced_type.namespaces))::typesupport_opendds_cpp::create_replier__@(service.namespaced_type.name)(
     dds_participant,
@@ -184,7 +187,8 @@ static void * create_replier__@(service.namespaced_type.name)(
     response_topic_str,
     dds_publisher,
     dds_subscriber,
-    allocator);
+    allocator,
+    deallocator);
 }
 
 static const char * destroy_replier__@(service.namespaced_type.name)(
