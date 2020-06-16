@@ -17,7 +17,7 @@ header_files = [
     'rosidl_typesupport_opendds_cpp/replier_parameters.h',
     'rosidl_typesupport_opendds_cpp/requester.hpp',
     'rosidl_typesupport_opendds_cpp/replier.hpp',
-    include_base + '/' + c_include_prefix + '__struct.hpp',
+    include_base + '/' + c_include_prefix + '.hpp',
 ]
 
 dds_specific_header_files = [
@@ -333,7 +333,7 @@ const char * destroy_replier__@(service.namespaced_type.name)(
 
 bool take_request__@(service.namespaced_type.name)(
   void * untyped_replier,
-  rmw_request_id_t * request_header,
+  rmw_service_info_t * request_header,
   void * untyped_ros_request)
 {
   using ROSRequestType = @(__ros_request_msg_type);
@@ -356,10 +356,10 @@ bool take_request__@(service.namespaced_type.name)(
 
   OpenDDS::DCPS::SequenceNumber sn;
   sn.setValue(dds_request_wrapper.header().request_id().sequence_number().high, dds_request_wrapper.header().request_id().sequence_number().low);
-  request_header->sequence_number = sn.getValue();
+  request_header->request_id.sequence_number = sn.getValue();
 
   OpenDDS::DCPS::GUID_t id = dds_request_wrapper.header().request_id().writer_guid();
-  std::memcpy(&(request_header->writer_guid[0]), &id, RPC_SAMPLE_IDENTITY_SIZE);
+  std::memcpy(&(request_header->request_id.writer_guid[0]), &id, RPC_SAMPLE_IDENTITY_SIZE);
 
   ROSRequestType* ros_request = static_cast<ROSRequestType *>(untyped_ros_request);
   bool converted = @(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_dds_message_to_ros(
@@ -370,7 +370,7 @@ bool take_request__@(service.namespaced_type.name)(
 
 bool take_response__@(service.namespaced_type.name)(
   void * untyped_requester,
-  rmw_request_id_t * request_header,
+  rmw_service_info_t * request_header,
   void * untyped_ros_response)
 {
   using ROSResponseType = @(__ros_response_msg_type);
@@ -392,7 +392,7 @@ bool take_response__@(service.namespaced_type.name)(
 
   OpenDDS::DCPS::SequenceNumber sn;
   sn.setValue(dds_response_wrapper.header().related_request_id().sequence_number().high, dds_response_wrapper.header().related_request_id().sequence_number().low);
-  request_header->sequence_number = sn.getValue();
+  request_header->request_id.sequence_number = sn.getValue();
 
   ROSResponseType* ros_response = static_cast<ROSResponseType *>(untyped_ros_response);
   bool converted = @(__ros_srv_pkg_prefix)::typesupport_opendds_cpp::convert_dds_message_to_ros(
