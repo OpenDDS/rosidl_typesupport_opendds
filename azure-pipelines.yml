@@ -44,6 +44,9 @@ jobs:
     displayName:  run tests (run_ci_test.sh)
   - script: |
         cd $(Agent.BuildDirectory)
+        ./rmw_build/run_ci_test_rpc.sh
+    displayName:  run tests (run_ci_test_rpc.sh)
+  - script: |
         rm -rf build
         rm -rf install
     displayName:  remove previous build artifacts (only do this short term)
