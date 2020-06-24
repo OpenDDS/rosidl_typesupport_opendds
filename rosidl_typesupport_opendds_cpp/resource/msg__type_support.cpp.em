@@ -107,7 +107,7 @@ convert_ros_message_to_dds(
     size_t size = @(member.type.size);
 @[    else]@
     size_t size = ros_message.@(member.name).size();
-    if (size > (std::numeric_limits<int>::max)()) {
+    if (size > static_cast<long unsigned int>((std::numeric_limits<int>::max)())) {
       throw std::runtime_error("array size exceeds maximum DDS sequence size");
     }
 @[      if isinstance(member.type, BoundedSequence)]@
