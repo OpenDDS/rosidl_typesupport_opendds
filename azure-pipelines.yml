@@ -23,11 +23,11 @@ jobs:
     displayName: filesystem check
   - script: |
       cd $(Agent.BuildDirectory)/s
-      git clone -b foxy https://github.com/oci-labs/rmw_opendds
+      git clone -b foxy https://github.com/kuznetsovmoci/rmw_opendds
     displayName: clone rmw_opendds
   - script: |
         cd $(Agent.BuildDirectory)
-        git clone -b foxy-release https://github.com/adamsj-oci/rmw_build
+        git clone -b foxy-release https://github.com/oci-labs/rmw_build
         vcs import s < rmw_build/ros2.repos
         echo "ls"
         ls
@@ -54,3 +54,7 @@ jobs:
         cd $(Agent.BuildDirectory)
         ./rmw_build/build_system_test.sh
     displayName:  build system tests
+  - script: |
+        cd $(Agent.BuildDirectory)
+        ./rmw_build/run_system_test.sh
+    displayName:  run system tests
