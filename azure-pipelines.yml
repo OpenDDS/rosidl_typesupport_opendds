@@ -58,3 +58,8 @@ jobs:
         cd $(Agent.BuildDirectory)
         ./rmw_build/run_system_test.sh
     displayName:  run system tests
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/*.xml'
+      searchFolder: '$(System.DefaultWorkingDirectory)/build'
