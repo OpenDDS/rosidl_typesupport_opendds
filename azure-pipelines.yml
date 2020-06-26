@@ -18,7 +18,7 @@ jobs:
       printenv
       pwd
       ls
-      echo "agend build directory"
+      echo "Agent.BuildDirectory"
       echo $(Agent.BuildDirectory)
     displayName: filesystem check
   - script: |
@@ -58,3 +58,8 @@ jobs:
         cd $(Agent.BuildDirectory)
         ./rmw_build/run_system_test.sh
     displayName:  run system tests
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/*.xml'
+      searchFolder: '$(Agent.BuildDirectory)/build/test_communication/'
