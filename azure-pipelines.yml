@@ -24,4 +24,4 @@ jobs:
     inputs:
       testResultsFormat: 'JUnit'
       testResultsFiles: '**/*.xml'
-      searchFolder: '$(System.DefaultWorkingDirectory)/s/rosidl_typesupport_opendds/build/'
+      searchFolder: '$(Agent.BuildDirectory)/s/rosidl_typesupport_opendds/build/'
