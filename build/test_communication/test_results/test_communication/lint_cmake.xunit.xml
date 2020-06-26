@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite
+  name="test_communication.lint_cmake"
+  tests="1"
+  errors="0"
+  failures="0"
+  time="0.017"
+>
+  <testcase
+    name="CMakeLists.txt"
+    classname="test_communication.lint_cmake"/>
+  <system-out>Checked files:
+* CMakeLists.txt</system-out>
+</testsuite>

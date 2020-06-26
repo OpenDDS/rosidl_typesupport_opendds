@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test_communication" tests="1" failures="0" time="0" errors="1" skipped="0">
+  <testcase classname="test_communication" name="test_publisher_subscriber_cpp__rmw_opendds_cpp__BasicTypes.missing_result" time="0">
+    <error message="The test did not generate a result file:&#10;&#10;[WARN] [1593039389.276218500] [rmw_opendds_shared_cpp]: unique topic attempted to be added twice, ignoring&#10;[WARN] [1593039389.344743700] [rmw_opendds_shared_cpp]: unique topic attempted to be added twice, ignoring&#10;[WARN] [1593039389.346707500] [rmw_opendds_shared_cpp]: unique topic attempted to be added twice, ignoring&#10;[WARN] [1593039389.388643000] [rmw_opendds_shared_cpp]: unexpected topic removal.&#10;"/>
+  </testcase>
+</testsuite>

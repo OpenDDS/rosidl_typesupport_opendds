@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite
+  name="test_communication.cpplint"
+  tests="11"
+  failures="0"
+  errors="0"
+  time="1.164"
+>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_action_client.cpp"
+    classname="test_communication.cpplint"/>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_action_server.cpp"
+    classname="test_communication.cpplint"/>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_message_serialization.cpp"
+    classname="test_communication.cpplint"/>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_messages_c.cpp"
+    classname="test_communication.cpplint"/>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_publisher.cpp"
+    classname="test_communication.cpplint"/>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_publisher_subscriber.cpp"
+    classname="test_communication.cpplint"/>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_publisher_subscriber_serialized.cpp"
+    classname="test_communication.cpplint"/>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_replier.cpp"
+    classname="test_communication.cpplint"/>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_requester.cpp"
+    classname="test_communication.cpplint"/>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_subscriber.cpp"
+    classname="test_communication.cpplint"/>
+  <testcase
+    name="/opt/workspace/src/system_tests/test_communication/test/test_subscription_valid_data.cpp"
+    classname="test_communication.cpplint"/>
+  <system-out>Checked files:
+* /opt/workspace/src/system_tests/test_communication/test/test_action_client.cpp
+* /opt/workspace/src/system_tests/test_communication/test/test_action_server.cpp
+* /opt/workspace/src/system_tests/test_communication/test/test_message_serialization.cpp
+* /opt/workspace/src/system_tests/test_communication/test/test_messages_c.cpp
+* /opt/workspace/src/system_tests/test_communication/test/test_publisher.cpp
+* /opt/workspace/src/system_tests/test_communication/test/test_publisher_subscriber.cpp
+* /opt/workspace/src/system_tests/test_communication/test/test_publisher_subscriber_serialized.cpp
+* /opt/workspace/src/system_tests/test_communication/test/test_replier.cpp
+* /opt/workspace/src/system_tests/test_communication/test/test_requester.cpp
+* /opt/workspace/src/system_tests/test_communication/test/test_subscriber.cpp
+* /opt/workspace/src/system_tests/test_communication/test/test_subscription_valid_data.cpp</system-out>
+</testsuite>

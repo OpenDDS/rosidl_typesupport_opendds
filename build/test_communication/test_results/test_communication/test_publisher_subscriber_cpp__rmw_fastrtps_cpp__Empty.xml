@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test_communication" tests="1" failures="0" time="0" errors="0" skipped="0">
+  <testcase classname="test_communication" name="test_publisher_subscriber_cpp__rmw_fastrtps_cpp__Empty.missing_result" time="0">
+    
+  </testcase>
+</testsuite>

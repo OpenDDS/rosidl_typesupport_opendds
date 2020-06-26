@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test_communication" tests="1" failures="0" time="0" errors="0" skipped="1">
+  <testcase classname="test_communication" name="test_requester_replier__rclcpp__rmw_fastrtps_cpp__rmw_opendds_cpp.xunit.missing_result" time="0">
+    <skipped type="skip" message="">![CDATA[Test Skipped by developer]]</skipped>
+  </testcase>
+</testsuite>

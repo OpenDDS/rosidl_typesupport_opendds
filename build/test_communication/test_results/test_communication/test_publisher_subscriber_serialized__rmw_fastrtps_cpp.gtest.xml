@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="1" failures="0" disabled="0" errors="0" timestamp="2020-06-24T23:12:04" time="1.108" name="AllTests">
+  <testsuite name="TestMessageSerialization" tests="1" failures="0" disabled="0" errors="0" time="1.108">
+    <testcase name="serialized_callback" status="run" time="1.108" classname="test_communication.TestMessageSerialization" />
+  </testsuite>
+</testsuites>

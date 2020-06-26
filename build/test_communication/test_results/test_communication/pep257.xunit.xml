@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite
+  name="test_communication.pep257"
+  tests="7"
+  errors="0"
+  failures="0"
+  time="0.102"
+>
+  <testcase
+    name="./test/__init__.py"
+    classname="test_communication.pep257"/>
+  <testcase
+    name="./test/action_client_py.py"
+    classname="test_communication.pep257"/>
+  <testcase
+    name="./test/action_server_py.py"
+    classname="test_communication.pep257"/>
+  <testcase
+    name="./test/publisher_py.py"
+    classname="test_communication.pep257"/>
+  <testcase
+    name="./test/replier_py.py"
+    classname="test_communication.pep257"/>
+  <testcase
+    name="./test/requester_py.py"
+    classname="test_communication.pep257"/>
+  <testcase
+    name="./test/subscriber_py.py"
+    classname="test_communication.pep257"/>
+  <system-out>Checked files:
+* ./test/__init__.py
+* ./test/action_client_py.py
+* ./test/action_server_py.py
+* ./test/publisher_py.py
+* ./test/replier_py.py
+* ./test/requester_py.py
+* ./test/subscriber_py.py</system-out>
+</testsuite>

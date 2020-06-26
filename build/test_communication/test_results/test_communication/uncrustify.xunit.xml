@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite
+  name="test_communication.uncrustify"
+  tests="11"
+  failures="0"
+  errors="0"
+  time="0.234"
+>
+  <testcase
+    name="test/test_action_client.cpp"
+    classname="test_communication.uncrustify"/>
+  <testcase
+    name="test/test_action_server.cpp"
+    classname="test_communication.uncrustify"/>
+  <testcase
+    name="test/test_message_serialization.cpp"
+    classname="test_communication.uncrustify"/>
+  <testcase
+    name="test/test_messages_c.cpp"
+    classname="test_communication.uncrustify"/>
+  <testcase
+    name="test/test_publisher.cpp"
+    classname="test_communication.uncrustify"/>
+  <testcase
+    name="test/test_publisher_subscriber.cpp"
+    classname="test_communication.uncrustify"/>
+  <testcase
+    name="test/test_publisher_subscriber_serialized.cpp"
+    classname="test_communication.uncrustify"/>
+  <testcase
+    name="test/test_replier.cpp"
+    classname="test_communication.uncrustify"/>
+  <testcase
+    name="test/test_requester.cpp"
+    classname="test_communication.uncrustify"/>
+  <testcase
+    name="test/test_subscriber.cpp"
+    classname="test_communication.uncrustify"/>
+  <testcase
+    name="test/test_subscription_valid_data.cpp"
+    classname="test_communication.uncrustify"/>
+  <system-out>Checked files:
+* test/test_action_client.cpp
+* test/test_action_server.cpp
+* test/test_message_serialization.cpp
+* test/test_messages_c.cpp
+* test/test_publisher.cpp
+* test/test_publisher_subscriber.cpp
+* test/test_publisher_subscriber_serialized.cpp
+* test/test_replier.cpp
+* test/test_requester.cpp
+* test/test_subscriber.cpp
+* test/test_subscription_valid_data.cpp</system-out>
+</testsuite>

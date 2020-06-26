@@ -15,51 +15,13 @@ jobs:
   container: objectcomputing/opendds_ros2_foxy:latest
   steps:
   - script: |
-      printenv
       pwd
-      ls
       echo "agend build directory"
       echo $(Agent.BuildDirectory)
+      find $(Agent.BuildDirectory)
     displayName: filesystem check
-  - script: |
-      cd $(Agent.BuildDirectory)/s
-      git clone -b foxy https://github.com/kuznetsovmoci/rmw_opendds
-    displayName: clone rmw_opendds
-  - script: |
-        cd $(Agent.BuildDirectory)
-        git clone -b foxy-release https://github.com/oci-labs/rmw_build
-        vcs import s < rmw_build/ros2.repos
-        echo "ls"
-        ls
-        echo "ls s"
-        ls s/
-    displayName:  rmw build repo and dependencies
-  - script: |
-        cd $(Agent.BuildDirectory)
-        ./rmw_build/build_all.sh
-    displayName:  build rmw and tests (build_all.sh)
-  - script: |
-        cd $(Agent.BuildDirectory)
-        ./rmw_build/run_ci_test.sh
-    displayName:  run tests (run_ci_test.sh)
-  - script: |
-        cd $(Agent.BuildDirectory)
-        ./rmw_build/run_ci_test_rpc.sh
-    displayName:  run tests (run_ci_test_rpc.sh)
-  - script: |
-        rm -rf build
-        rm -rf install
-    displayName:  remove previous build artifacts (only do this short term)
-  - script: |
-        cd $(Agent.BuildDirectory)
-        ./rmw_build/build_system_test.sh
-    displayName:  build system tests
-  - script: |
-        cd $(Agent.BuildDirectory)
-        ./rmw_build/run_system_test.sh
-    displayName:  run system tests
   - task: PublishTestResults@2
     inputs:
       testResultsFormat: 'JUnit'
       testResultsFiles: '**/*.xml'
-      searchFolder: '$(System.DefaultWorkingDirectory)/build'
+      searchFolder: '$(System.DefaultWorkingDirectory)/s/rosidl_typesupport_opendds/build/'

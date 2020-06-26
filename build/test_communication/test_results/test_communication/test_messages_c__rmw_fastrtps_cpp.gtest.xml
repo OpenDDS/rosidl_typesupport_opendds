@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="11" failures="0" disabled="0" errors="0" timestamp="2020-06-24T22:44:29" time="1.27" name="AllTests">
+  <testsuite name="TestMessagesFixture" tests="11" failures="0" disabled="0" errors="0" time="1.27">
+    <testcase name="test_basic_types" status="run" time="0.145" classname="test_communication.TestMessagesFixture" />
+    <testcase name="test_constants" status="run" time="0.114" classname="test_communication.TestMessagesFixture" />
+    <testcase name="test_defaults" status="run" time="0.112" classname="test_communication.TestMessagesFixture" />
+    <testcase name="test_empty" status="run" time="0.109" classname="test_communication.TestMessagesFixture" />
+    <testcase name="test_strings" status="run" time="0.111" classname="test_communication.TestMessagesFixture" />
+    <testcase name="test_nested" status="run" time="0.108" classname="test_communication.TestMessagesFixture" />
+    <testcase name="test_builtins" status="run" time="0.111" classname="test_communication.TestMessagesFixture" />
+    <testcase name="test_arrays" status="run" time="0.115" classname="test_communication.TestMessagesFixture" />
+    <testcase name="test_unbounded_sequences" status="run" time="0.12" classname="test_communication.TestMessagesFixture" />
+    <testcase name="test_bounded_sequences" status="run" time="0.11" classname="test_communication.TestMessagesFixture" />
+    <testcase name="test_multi_nested" status="run" time="0.113" classname="test_communication.TestMessagesFixture" />
+  </testsuite>
+</testsuites>

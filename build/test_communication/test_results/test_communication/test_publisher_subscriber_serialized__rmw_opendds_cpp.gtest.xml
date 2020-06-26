@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test_communication" tests="1" failures="0" time="0" errors="1" skipped="0">
+  <testcase classname="test_communication" name="test_publisher_subscriber_serialized__rmw_opendds_cpp.gtest.missing_result" time="0">
+    <error message="The test did not generate a result file:&#10;&#10;Running main() from /opt/ros/foxy/src/gtest_vendor/src/gtest_main.cc&#10;[==========] Running 1 test from 1 test case.&#10;[----------] Global test environment set-up.&#10;[----------] 1 test from TestMessageSerialization&#10;[ RUN      ] TestMessageSerialization.serialized_callback&#10;[WARN] [1593040326.693025900] [rmw_opendds_shared_cpp]: unique topic attempted to be added twice, ignoring&#10;[WARN] [1593040326.744136900] [rmw_opendds_shared_cpp]: unique topic attempted to be added twice, ignoring&#10;[WARN] [1593040326.745303100] [rmw_opendds_shared_cpp]: unique topic attempted to be added twice, ignoring&#10;"/>
+  </testcase>
+</testsuite>
