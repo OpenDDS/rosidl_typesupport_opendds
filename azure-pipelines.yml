@@ -43,27 +43,11 @@ jobs:
     displayName:  all repo summary
   - script: |
         cd $(Agent.BuildDirectory)
-        ./rmw_build/build_all.sh
-    displayName:  build rmw and tests (build_all.sh)
-  - script: |
-        cd $(Agent.BuildDirectory)
-        ./rmw_build/run_ci_test.sh
-    displayName:  run tests (run_ci_test.sh)
-  - script: |
-        cd $(Agent.BuildDirectory)
-        ./rmw_build/run_ci_test_rpc.sh
-    displayName:  run tests (run_ci_test_rpc.sh)
-  - script: |
-        rm -rf build
-        rm -rf install
-    displayName:  remove previous build artifacts (only do this short term)
-  - script: |
-        cd $(Agent.BuildDirectory)
-        ./rmw_build/build_system_test.sh
+        ./rmw_build/build_system_test.sh -f
     displayName:  build system tests
   - script: |
         cd $(Agent.BuildDirectory)
-        ./rmw_build/run_system_test.sh
+        ./rmw_build/run_system_test.sh -a rmw_fastrtps_cpp
     displayName:  run system tests
   - task: PublishTestResults@2
     inputs:
