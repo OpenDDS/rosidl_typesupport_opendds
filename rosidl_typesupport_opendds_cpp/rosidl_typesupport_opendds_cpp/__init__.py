@@ -81,7 +81,7 @@ def generate_dds_opendds_cpp(
             print("'%s' failed to generate the expected files for '%s/%s'" %
                   (idl_pp, pkg_name, msg_name), file=sys.stderr)
 
-        if "/srv/" or "/action/" in idl_file:
+        if "/srv/" in idl_file or "/action/" in idl_file:
             generated_idl_file = output_path + "/" + msg_name + "_RequestResponse.idl"
             input_idl_path = os.path.dirname(idl_file)
 
