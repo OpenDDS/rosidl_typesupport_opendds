@@ -201,7 +201,7 @@ static const char * destroy_replier__@(service.namespaced_type.name)(
 
 static bool take_request__@(service.namespaced_type.name)(
   void * untyped_replier,
-  rmw_request_id_t * request_header,
+  rmw_service_info_t * request_header,
   void * untyped_ros_request)
 {
   using ReplierType = rosidl_typesupport_opendds_cpp::Replier<
@@ -223,10 +223,10 @@ static bool take_request__@(service.namespaced_type.name)(
 
   OpenDDS::DCPS::SequenceNumber sn;
   sn.setValue(dds_request_wrapper.header().request_id().sequence_number().high, dds_request_wrapper.header().request_id().sequence_number().low);
-  request_header->sequence_number = sn.getValue();
+  request_header->request_id.sequence_number = sn.getValue();
 
   OpenDDS::DCPS::GUID_t id = dds_request_wrapper.header().request_id().writer_guid();
-  std::memcpy(&(request_header->writer_guid[0]), &id, RPC_SAMPLE_IDENTITY_SIZE);
+  std::memcpy(&(request_header->request_id.writer_guid[0]), &id, RPC_SAMPLE_IDENTITY_SIZE);
 
   const rosidl_message_type_support_t * ts =
     ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(
@@ -240,7 +240,7 @@ static bool take_request__@(service.namespaced_type.name)(
 
 static bool take_response__@(service.namespaced_type.name)(
   void * untyped_requester,
-  rmw_request_id_t * request_header,
+  rmw_service_info_t * request_header,
   void * untyped_ros_response)
 {
   using RequesterType = rosidl_typesupport_opendds_cpp::Requester<
@@ -261,7 +261,7 @@ static bool take_response__@(service.namespaced_type.name)(
 
   OpenDDS::DCPS::SequenceNumber sn;
   sn.setValue(dds_response_wrapper.header().related_request_id().sequence_number().high, dds_response_wrapper.header().related_request_id().sequence_number().low);
-  request_header->sequence_number = sn.getValue();
+  request_header->request_id.sequence_number = sn.getValue();
 
   const rosidl_message_type_support_t * ts =
     ROSIDL_TYPESUPPORT_INTERFACE__MESSAGE_SYMBOL_NAME(

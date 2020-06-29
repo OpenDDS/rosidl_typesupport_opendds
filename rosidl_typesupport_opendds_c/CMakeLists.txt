@@ -32,15 +32,14 @@ find_package(rosidl_typesupport_opendds_cpp REQUIRED)
 ament_export_dependencies(rcutils)
 ament_export_dependencies(rmw)
 ament_export_dependencies(rosidl_cmake)
-ament_export_dependencies(rosidl_generator_c)
+ament_export_dependencies(rosidl_runtime_c)
 ament_export_dependencies(rosidl_generator_dds_idl)
 ament_export_dependencies(rosidl_typesupport_opendds_cpp)
 ament_export_include_directories(include)
 
 ament_python_install_package(${PROJECT_NAME})
 
-add_library(${PROJECT_NAME} SHARED)
-OPENDDS_TARGET_SOURCES(${PROJECT_NAME} src/identifier.cpp src/wstring_conversion.cpp)
+add_library(${PROJECT_NAME} SHARED src/identifier.cpp src/wstring_conversion.cpp)
 if(WIN32)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE "ROSIDL_TYPESUPPORT_OPENDDS_C_BUILDING_DLL")
