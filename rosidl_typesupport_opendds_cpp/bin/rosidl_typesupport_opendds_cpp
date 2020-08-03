@@ -8,8 +8,6 @@ from rosidl_typesupport_opendds_cpp import generate_cpp
 from rosidl_typesupport_opendds_cpp import generate_idl
 from rosidl_typesupport_opendds_cpp import generate_dds_opendds_cpp
 
-import glob, os, shutil
-
 def main(argv=sys.argv[1:]):
     parser = argparse.ArgumentParser(
         description='Generate the C++ interfaces for OpenDDS.',
