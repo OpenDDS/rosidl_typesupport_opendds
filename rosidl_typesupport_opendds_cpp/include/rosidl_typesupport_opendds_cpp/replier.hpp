@@ -54,7 +54,7 @@ namespace rosidl_typesupport_opendds_cpp
         RMW_SET_ERROR_MSG("Replier failed to get DataWriterImpl");
         return;
       }
-      pub_id = dw_impl->get_publication_id();
+      pub_id = dw_impl->get_repo_id();
 
       reply_datawriter = ReplyDataWriter::_narrow(dw);
 
