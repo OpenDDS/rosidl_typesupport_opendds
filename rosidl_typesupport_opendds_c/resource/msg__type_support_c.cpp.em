@@ -436,12 +436,17 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
     return false;
   }
 
+  const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
+  OpenDDS::DCPS::EncapsulationHeader encap;
+  if (!encap.from_encoding(encoding, OpenDDS::DCPS::MarshalTraits<Type>::extensibility())) {
+    // Handle Error However
+  }
+
   const size_t header_size = 4;
-  size_t size = 0;
-  size_t padding = 0;
-  OpenDDS::DCPS::gen_find_size(dds_message, size, padding);
-  size += (padding + header_size);
-    cdr_stream->buffer_length = size;
+  size_t size = OpenDDS::DCPS::serialized_size(encoding, encap);
+  const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
+  OpenDDS::DCPS::serialized_size(encoding, size, dds_message);
+  cdr_stream->buffer_length = size;
   if (cdr_stream->buffer_length > (std::numeric_limits<unsigned int>::max)()) {
     fprintf(stderr, "cdr_stream->buffer_length, unexpectedly larger than max unsigned int\n");
     return false;
@@ -451,22 +456,14 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
     cdr_stream->buffer = static_cast<uint8_t *>(cdr_stream->allocator.allocate(cdr_stream->buffer_length, cdr_stream->allocator.state));
   }
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
-  OpenDDS::DCPS::Serializer serializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
+  OpenDDS::DCPS::Serializer serializer(b.get(), encoding);
 
-  unsigned char header[header_size] = { 0 };
-  header[1] = ACE_CDR_BYTE_ORDER;
-  if (!serializer.write_octet_array(header, header_size)) {
-    fprintf(stderr, "OpenDDS serializer failed to write header\n");
-    return false;
-  }
-
-  serializer.reset_alignment();
-
-  if (!(serializer << dds_message)) {
+  if (!(serializer << encap && serializer << dds_message)) {
     fprintf(stderr, "OpenDDS serializer failed\n");
     return false;
   }
-  memcpy(cdr_stream->buffer, b->rd_ptr(), size);
+
+  encap.set_encapsulation_options(b);
 
   return true;
 }
