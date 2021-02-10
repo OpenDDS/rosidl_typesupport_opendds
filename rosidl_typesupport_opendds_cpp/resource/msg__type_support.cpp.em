@@ -271,7 +271,8 @@ to_cdr_stream__@(message.structure.namespaced_type.name)(
   // size_t size = OpenDDS::DCPS::serialized_size(encoding, encap);
   // const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
   OpenDDS::DCPS::serialized_size(encoding, size, dds_message);
-  cdr_stream->buffer_length = size + header_size;
+  size += header_size;
+  cdr_stream->buffer_length = size;
   if (cdr_stream->buffer_length > (std::numeric_limits<unsigned int>::max)()) {
     fprintf(stderr, "cdr_stream->buffer_length, unexpectedly larger than max unsigned int\n");
     return false;
