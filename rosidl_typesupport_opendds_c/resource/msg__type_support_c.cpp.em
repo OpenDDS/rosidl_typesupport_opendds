@@ -437,16 +437,17 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
   }
 
   const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
-  OpenDDS::DCPS::EncapsulationHeader encap;
-  if (!encap.from_encoding(encoding, OpenDDS::DCPS::MarshalTraits<Type>::extensibility())) {
-    // Handle Error However
-  }
+  // OpenDDS::DCPS::EncapsulationHeader encap;
+  // if (!encap.from_encoding(encoding, OpenDDS::DCPS::MarshalTraits<@(message.structure.namespaced_type.name)>::extensibility())) {
+  //   // Handle Error However
+  // }
 
+  size_t size = 0;
   const size_t header_size = 4;
-  size_t size = OpenDDS::DCPS::serialized_size(encoding, encap);
-  const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
+  // size_t size = OpenDDS::DCPS::serialized_size(encoding, encap);
+  // const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
   OpenDDS::DCPS::serialized_size(encoding, size, dds_message);
-  cdr_stream->buffer_length = size;
+  cdr_stream->buffer_length = size + header_size;
   if (cdr_stream->buffer_length > (std::numeric_limits<unsigned int>::max)()) {
     fprintf(stderr, "cdr_stream->buffer_length, unexpectedly larger than max unsigned int\n");
     return false;
@@ -458,12 +459,20 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
   OpenDDS::DCPS::Serializer serializer(b.get(), encoding);
 
-  if (!(serializer << encap && serializer << dds_message)) {
-    fprintf(stderr, "OpenDDS serializer failed\n");
+  unsigned char header[header_size] = { 0 };
+  header[1] = ACE_CDR_BYTE_ORDER;
+  if (!serializer.write_octet_array(header, header_size)) {
+    fprintf(stderr, "OpenDDS serializer failed to write header\n");
     return false;
   }
 
-  encap.set_encapsulation_options(b);
+  serializer.reset_alignment();
+
+  if (!(serializer << dds_message)) {
+    fprintf(stderr, "OpenDDS serializer failed\n");
+    return false;
+  }
+  memcpy(cdr_stream->buffer, b->rd_ptr(), size);
 
   return true;
 }
@@ -490,7 +499,9 @@ _@(message.structure.namespaced_type.name)__to_message(
   memcpy(b->wr_ptr(), cdr_stream->buffer, cdr_stream->buffer_length);
   b->wr_ptr(cdr_stream->buffer_length);
 
-  OpenDDS::DCPS::Serializer deserializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
+  // OpenDDS::DCPS::Serializer deserializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
+  const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
+  OpenDDS::DCPS::Serializer deserializer(b.get(), encoding);
 
   const size_t header_size = 4;
   unsigned char header[header_size] = { 0 };
