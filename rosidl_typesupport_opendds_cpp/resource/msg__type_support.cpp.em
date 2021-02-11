@@ -261,15 +261,9 @@ to_cdr_stream__@(message.structure.namespaced_type.name)(
   }
 
   const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
-  // OpenDDS::DCPS::EncapsulationHeader encap;
-  // if (!encap.from_encoding(encoding, OpenDDS::DCPS::MarshalTraits<@(message.structure.namespaced_type.name)>::extensibility())) {
-    // Handle Error However
-  // }
 
   size_t size = 0;
   const size_t header_size = 4;
-  // size_t size = OpenDDS::DCPS::serialized_size(encoding, encap);
-  // const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
   OpenDDS::DCPS::serialized_size(encoding, size, dds_message);
   size += header_size;
   cdr_stream->buffer_length = size;
@@ -330,7 +324,6 @@ to_message__@(message.structure.namespaced_type.name)(
 
   const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
   OpenDDS::DCPS::Serializer deserializer(b.get(), encoding);
-  // OpenDDS::DCPS::Serializer deserializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
 
   const size_t header_size = 4;
   unsigned char header[header_size] = { 0 };
