@@ -260,12 +260,13 @@ to_cdr_stream__@(message.structure.namespaced_type.name)(
     return false;
   }
 
-  const size_t header_size = 4;
+  const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
+
   size_t size = 0;
-  size_t padding = 0;
-  OpenDDS::DCPS::gen_find_size(dds_message, size, padding);
-  size += (padding + header_size);
-    cdr_stream->buffer_length = size;
+  const size_t header_size = 4;
+  OpenDDS::DCPS::serialized_size(encoding, size, dds_message);
+  size += header_size;
+  cdr_stream->buffer_length = size;
   if (cdr_stream->buffer_length > (std::numeric_limits<unsigned int>::max)()) {
     fprintf(stderr, "cdr_stream->buffer_length, unexpectedly larger than max unsigned int\n");
     return false;
@@ -274,8 +275,9 @@ to_cdr_stream__@(message.structure.namespaced_type.name)(
     cdr_stream->allocator.deallocate(cdr_stream->buffer, cdr_stream->allocator.state);
     cdr_stream->buffer = static_cast<uint8_t *>(cdr_stream->allocator.allocate(cdr_stream->buffer_length, cdr_stream->allocator.state));
   }
+
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
-  OpenDDS::DCPS::Serializer serializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
+  OpenDDS::DCPS::Serializer serializer(b.get(), encoding);
 
   unsigned char header[header_size] = { 0 };
   header[1] = ACE_CDR_BYTE_ORDER;
@@ -320,7 +322,8 @@ to_message__@(message.structure.namespaced_type.name)(
   memcpy(b->wr_ptr(), cdr_stream->buffer, cdr_stream->buffer_length);
   b->wr_ptr(cdr_stream->buffer_length);
 
-  OpenDDS::DCPS::Serializer deserializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
+  const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
+  OpenDDS::DCPS::Serializer deserializer(b.get(), encoding);
 
   const size_t header_size = 4;
   unsigned char header[header_size] = { 0 };
@@ -339,7 +342,7 @@ to_message__@(message.structure.namespaced_type.name)(
     fprintf(stderr, "OpenDDS deserializer failed\n");
     return false;
   }
-  
+
   @(__ros_msg_type) & ros_message =
     *(@(__ros_msg_type) *)untyped_ros_message;
   bool success = convert_dds_message_to_ros(dds_message, ros_message);

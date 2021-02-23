@@ -436,12 +436,13 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
     return false;
   }
 
-  const size_t header_size = 4;
+  const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
+
   size_t size = 0;
-  size_t padding = 0;
-  OpenDDS::DCPS::gen_find_size(dds_message, size, padding);
-  size += (padding + header_size);
-    cdr_stream->buffer_length = size;
+  const size_t header_size = 4;
+  OpenDDS::DCPS::serialized_size(encoding, size, dds_message);
+  size += header_size;
+  cdr_stream->buffer_length = size;
   if (cdr_stream->buffer_length > (std::numeric_limits<unsigned int>::max)()) {
     fprintf(stderr, "cdr_stream->buffer_length, unexpectedly larger than max unsigned int\n");
     return false;
@@ -451,7 +452,7 @@ _@(message.structure.namespaced_type.name)__to_cdr_stream(
     cdr_stream->buffer = static_cast<uint8_t *>(cdr_stream->allocator.allocate(cdr_stream->buffer_length, cdr_stream->allocator.state));
   }
   OpenDDS::DCPS::Message_Block_Ptr b(new ACE_Message_Block(size));
-  OpenDDS::DCPS::Serializer serializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
+  OpenDDS::DCPS::Serializer serializer(b.get(), encoding);
 
   unsigned char header[header_size] = { 0 };
   header[1] = ACE_CDR_BYTE_ORDER;
@@ -493,7 +494,8 @@ _@(message.structure.namespaced_type.name)__to_message(
   memcpy(b->wr_ptr(), cdr_stream->buffer, cdr_stream->buffer_length);
   b->wr_ptr(cdr_stream->buffer_length);
 
-  OpenDDS::DCPS::Serializer deserializer(b.get(), false, OpenDDS::DCPS::Serializer::ALIGN_CDR);
+  const OpenDDS::DCPS::Encoding encoding(OpenDDS::DCPS::Encoding::KIND_XCDR1);
+  OpenDDS::DCPS::Serializer deserializer(b.get(), encoding);
 
   const size_t header_size = 4;
   unsigned char header[header_size] = { 0 };
