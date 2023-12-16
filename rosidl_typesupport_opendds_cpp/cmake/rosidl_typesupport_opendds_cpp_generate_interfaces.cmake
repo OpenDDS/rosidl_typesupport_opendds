@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+find_package(rmw REQUIRED)
+find_package(rosidl_runtime_c REQUIRED)
+find_package(rosidl_runtime_cpp REQUIRED)
+find_package(rosidl_typesupport_interface REQUIRED)
+
 rosidl_generate_dds_interfaces(
   ${rosidl_generate_interfaces_TARGET}__dds_opendds_idl
   IDL_TUPLES ${rosidl_generate_interfaces_IDL_TUPLES}
@@ -141,7 +146,13 @@ configure_file(
 set(_target_suffix "__rosidl_typesupport_opendds_cpp")
 
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_generated_files} ${_generated_external_files})
-target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} OpenDDS::Dcps)
+target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} 
+  OpenDDS::Dcps
+  rmw::rmw
+  rosidl_runtime_c::rosidl_runtime_c
+  rosidl_runtime_cpp::rosidl_runtime_cpp
+  rosidl_typesupport_interface::rosidl_typesupport_interface
+)
 if(rosidl_generate_interfaces_LIBRARY_NAME)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
