@@ -435,7 +435,7 @@ bool send_response__@(service.namespaced_type.name)(
 
   @# Convert request_header to related_request_id
   @(__rpc_header_prefix)SampleIdentity related_request_id;
-  OpenDDS::DCPS::RepoId id;
+  OpenDDS::DCPS::GUID_t id;
   std::memcpy(&id, &(request_header->writer_guid[0]), RPC_SAMPLE_IDENTITY_SIZE);
   related_request_id.writer_guid(id);
 
