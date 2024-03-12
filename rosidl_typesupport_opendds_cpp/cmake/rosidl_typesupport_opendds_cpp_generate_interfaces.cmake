@@ -195,6 +195,7 @@ ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
 
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
   set(_pkg_include_dir "${${_pkg_name}_DIR}/../../../include")
+  set(_pkg_include_dir "${${_pkg_name}_DIR}/../../../include")
   set(_msg_include_dir "${${_pkg_name}_DIR}/../../../include/${_pkg_name}/msg/dds_opendds")
   set(_srv_include_dir "${${_pkg_name}_DIR}/../../../include/${_pkg_name}/srv/dds_opendds")
   set(_action_include_dir "${${_pkg_name}_DIR}/../../../include/${_pkg_name}/action/dds_opendds")
@@ -211,8 +212,6 @@ foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
     "${_srv_include_dir}"
     "${_action_include_dir}"
   )
-  message(WARNING "${typesupport_opendds_cpp}")
-
   ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     ${_pkg_name})
   target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix}
