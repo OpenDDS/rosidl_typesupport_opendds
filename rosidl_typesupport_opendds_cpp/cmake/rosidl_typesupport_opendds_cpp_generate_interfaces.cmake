@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+find_package(rmw REQUIRED)
+find_package(rosidl_runtime_c REQUIRED)
+find_package(rosidl_runtime_cpp REQUIRED)
+find_package(rosidl_typesupport_interface REQUIRED)
+
 rosidl_generate_dds_interfaces(
   ${rosidl_generate_interfaces_TARGET}__dds_opendds_idl
   IDL_TUPLES ${rosidl_generate_interfaces_IDL_TUPLES}
@@ -23,7 +28,7 @@ set(_output_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_opendds_cpp/${P
 set(_dds_idl_base_path "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_dds_idl")
 
 get_filename_component(_rpc_base_path ${CMAKE_CURRENT_BINARY_DIR} PATH)
-set(_rpc_path "${_rpc_base_path}/rosidl_typesupport_opendds_cpp")
+set(_rpc_path "${_rpc_base_path}/rosidl_typesupport_opendds_cpp/opendds_generated")
 
 set(_dds_idl_files "")
 set(_generated_files "")
@@ -141,7 +146,13 @@ configure_file(
 set(_target_suffix "__rosidl_typesupport_opendds_cpp")
 
 add_library(${rosidl_generate_interfaces_TARGET}${_target_suffix} SHARED ${_generated_files} ${_generated_external_files})
-target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} OpenDDS::Dcps)
+target_link_libraries(${rosidl_generate_interfaces_TARGET}${_target_suffix} 
+  OpenDDS::Dcps
+  rmw::rmw
+  rosidl_runtime_c::rosidl_runtime_c
+  rosidl_runtime_cpp::rosidl_runtime_cpp
+  rosidl_typesupport_interface::rosidl_typesupport_interface
+)
 if(rosidl_generate_interfaces_LIBRARY_NAME)
   set_target_properties(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PROPERTIES OUTPUT_NAME "${rosidl_generate_interfaces_LIBRARY_NAME}${_target_suffix}")
@@ -174,6 +185,7 @@ target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_opendds_cpp
   ${_rpc_path}
 )
+
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "OpenDDS"
   "rmw"
@@ -181,14 +193,19 @@ ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "rosidl_typesupport_interface")
 
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
+  set(_pkg_include_dir "${${_pkg_name}_DIR}/../../../include")
   set(_msg_include_dir "${${_pkg_name}_DIR}/../../../include/${_pkg_name}/msg/dds_opendds")
   set(_srv_include_dir "${${_pkg_name}_DIR}/../../../include/${_pkg_name}/srv/dds_opendds")
   set(_action_include_dir "${${_pkg_name}_DIR}/../../../include/${_pkg_name}/action/dds_opendds")
+  set(typesupport_opendds_cpp "${rosidl_typesupport_opendds_cpp}")
+  normalize_path(_pkg_include_dir "${_pkg_include_dir}")
   normalize_path(_msg_include_dir "${_msg_include_dir}")
   normalize_path(_srv_include_dir "${_srv_include_dir}")
   normalize_path(_action_include_dir "${_action_include_dir}")
   target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
     PUBLIC
+    "${typesupport_opendds_cpp}"
+    "${_pkg_include_dir}"
     "${_msg_include_dir}"
     "${_srv_include_dir}"
     "${_action_include_dir}"
