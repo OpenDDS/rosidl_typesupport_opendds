@@ -132,7 +132,6 @@ add_custom_command(
   COMMENT "Generating C++ type support for OpenDDS (using '${_idl_pp}')"
   VERBATIM
 )
-message(WARNING ${generator_arguments_file})
 
 # generate header to switch between export and import for a specific package
 set(_visibility_control_file
@@ -186,7 +185,7 @@ target_include_directories(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   ${CMAKE_CURRENT_BINARY_DIR}/rosidl_typesupport_opendds_cpp
   ${_rpc_path}
 )
-message(WARNING ${_rpc_path})
+
 ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "OpenDDS"
   "rmw"
@@ -194,7 +193,6 @@ ament_target_dependencies(${rosidl_generate_interfaces_TARGET}${_target_suffix}
   "rosidl_typesupport_interface")
 
 foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
-  set(_pkg_include_dir "${${_pkg_name}_DIR}/../../../include")
   set(_pkg_include_dir "${${_pkg_name}_DIR}/../../../include")
   set(_msg_include_dir "${${_pkg_name}_DIR}/../../../include/${_pkg_name}/msg/dds_opendds")
   set(_srv_include_dir "${${_pkg_name}_DIR}/../../../include/${_pkg_name}/srv/dds_opendds")
